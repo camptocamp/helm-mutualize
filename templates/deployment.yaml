@@ -1,0 +1,174 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "apache.fullname" . }}
+  labels:
+{{ include "apache.labels" . | indent 4 }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  strategy:
+    type: RollingUpdate
+  selector:
+    matchLabels:
+      {{- include "apache.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+      {{- include "apache.selectorLabels" . | nindent 8 }}
+    spec:
+    {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+      serviceAccountName: {{ template "apache.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      {{- if .Values.config.enabled }}
+      initContainers:
+        - name: config
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          {{- if .Values.config.image.sha }}
+          image: "{{ .Values.config.image.repository }}@sha256:{{ .Values.config.image.sha }}"
+          {{- else }}
+          image: "{{ .Values.config.image.repository }}:{{ .Values.config.image.tag }}"
+          {{- end }}
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          args: ['bash', '-c', 'cp -a {{ .Values.config.folder }}/* /etc/config-volume/']
+          volumeMounts:
+            - mountPath: /etc/config-volume
+              name: configs
+          {{- if and ( not ( empty .Values.config.env ) ) ( not ( empty .Values.config.configMapEnv ) ) ( not ( empty .Values.config.secretEnv ) ) }}
+          env:
+            {{- range $name, $value := .Values.config.env }}
+            - name: {{ $name | quote }}
+              value: {{ $value | quote }}
+            {{- end }}
+            {{- range $name, $value := .Values.config.configMapEnv }}
+            - name: {{ $name | quote }}
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ $value.name | quote }}
+                  key: {{ $value.key | quote }}
+            {{- end }}
+            {{- range $name, $value := .Values.config.secretEnv }}
+            - name: {{ $name | quote }}
+              valueFrom:
+                secretKeyRef:
+                  name: {{ $value.name | quote }}
+                  key: {{ $value.key | quote }}
+            {{- end }}
+          {{- end }}
+          terminationMessagePolicy: FallbackToLogsOnError
+          resources:
+            {{- toYaml .Values.config.resources | nindent 12 }}
+      {{- end }}
+      containers:
+        - name: {{ .Chart.Name }}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          {{- if .Values.image.sha }}
+          image: "{{ .Values.image.repository }}@sha256:{{ .Values.image.sha }}"
+          {{- else }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          {{- end }}
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          {{- if and ( not ( empty .Values.env ) ) ( not ( empty .Values.configMapEnv ) ) ( not ( empty .Values.secretEnv ) ) }}
+          env:
+            {{- range $name, $value := .Values.env }}
+            - name: {{ $name | quote }}
+              value: {{ $value | quote }}
+            {{- end }}
+            {{- range $name, $value := .Values.configMapEnv }}
+            - name: {{ $name | quote }}
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ $value.name | quote }}
+                  key: {{ $value.key | quote }}
+            {{- end }}
+            {{- range $name, $value := .Values.config.secretEnv }}
+            - name: {{ $name | quote }}
+              valueFrom:
+                secretKeyRef:
+                  name: {{ $value.name | quote }}
+                  key: {{ $value.key | quote }}
+            {{- end }}
+          {{- end }}
+          terminationMessagePolicy: FallbackToLogsOnError
+          volumeMounts:
+            - mountPath: {{ .Values.config.folder }}
+              name: configs
+              readOnly: false
+            - mountPath: /tmp
+              name: tmp-volume
+          ports:
+            - name: http
+              containerPort: 8080
+              protocol: TCP
+          readinessProbe:
+            httpGet:
+              path: /
+              port: http
+            initialDelaySeconds: 5
+            timeoutSeconds: 10
+            periodSeconds: 20
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+        {{- if .Values.apacheExporter.enabled }}
+        - name: apache-exporter
+          {{- if .Values.apacheExporter.image.sha }}
+          image: "{{ .Values.apacheExporter.image.repository }}@sha256:{{ .Values.apacheExporter.image.sha }}"
+          {{- else }}
+          image: "{{ .Values.apacheExporter.image.repository }}:{{ .Values.apacheExporter.image.tag }}"
+          {{- end }}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          args:
+            - '--scrape_uri=http://{{ include "apache.fullname" . }}/server-status-remote?auto'
+          terminationMessagePolicy: FallbackToLogsOnError
+          ports:
+            - name: prometheus
+              containerPort: 9117
+              protocol: TCP
+          readinessProbe:
+            httpGet:
+              path: /
+              port: prometheus
+            initialDelaySeconds: 5
+            timeoutSeconds: 10
+            periodSeconds: 20
+          resources:
+            {{- toYaml .Values.apacheExporter.resources | nindent 12 }}
+        {{- end }}
+      volumes:
+        - name: configs
+          emptyDir: {}
+        - name: tmp-volume
+          emptyDir: {}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      affinity:
+      {{-   if .Values.affinity }}
+      {{      toYaml .Values.affinity | indent 2 }}
+      {{-   else }}
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+          - labelSelector:
+              matchExpressions:
+              - key: app.kubernetes.io/name
+                operator: In
+                values:
+                - {{ include "apache.name" . }}
+              - key: app.kubernetes.io/instance
+                operator: In
+                values:
+                - {{ .Release.Name }}
+            topologyKey: "kubernetes.io/hostname"
+      {{- end }}
+    {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}

@@ -1,0 +1,8 @@
+apiVersion: v2
+appVersion: '1.0'
+description: A Helm chart for deploying a mutualized servoces on Kubernetes
+name: mutualized
+version: 0.1.0
+sources:
+  - https://github.com/mapfish/mapfish-print
+  - https://github.com/camptocamp/tilecloud-chain

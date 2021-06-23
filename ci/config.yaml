@@ -1,0 +1,18 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/camptocamp/c2cciutils/master/c2cciutils/schema.json
+
+checks:
+  required_workflows:
+    clean.yaml: False
+    audit.yaml: False
+    dependabot-auto-merge.yaml: False
+    backport.yaml: False
+    codeql.yaml: False
+  black:
+    ignore_patterns_re:
+      - .*\.yaml
+
+publish:
+  docker:
+    images: []
+  pypi:
+    packages: []

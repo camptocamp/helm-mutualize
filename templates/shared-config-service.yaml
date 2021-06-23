@@ -1,0 +1,21 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "mapfishprint.fullname" . }}-shared-config
+  labels:
+    app: {{ template "mapfishprint.fullname" . }}
+    chart: {{ template "mapfishprint.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+    service: shared-config
+spec:
+  type: ClusterIP
+  ports:
+    - port: 80
+      targetPort: http
+      protocol: TCP
+      name: http
+  selector:
+    app: {{ template "mapfishprint.fullname" . }}
+    release: {{ .Release.Name }}
+    service: shared-config

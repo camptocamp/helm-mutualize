@@ -1,0 +1,178 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ template "mapfishprint.fullname" . }}-print
+  labels:
+    app: {{ template "mapfishprint.fullname" . }}
+    chart: {{ template "mapfishprint.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+    service: print
+  {{- if .Values.openshift }}
+  annotations:
+    image.openshift.io/triggers: |
+      [
+        {{ template "mapfishprint.trigger" (dict "image" "config" "tag" .Values.config.image.tag "container" "print-config" "root" . ) }},
+        {{ template "mapfishprint.trigger" (dict "image" "print" "tag" .Values.print.image.tag "container" "print" "root" . ) }}
+      ]
+  {{- end }}
+spec:
+  replicas: {{ .Values.print.replicaCount }}
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      {{- if (gt .Values.print.replicaCount 1.0) }}
+      # The print uses a lot of resources and cannot be installed twice on a node.
+      # So we stop an old POD before starting a new one.
+      maxSurge: 0
+      {{- else }}
+      maxSurge: 1
+      {{- end }}
+      maxUnavailable: 25%
+  selector:
+    matchLabels:
+      app: {{ template "mapfishprint.fullname" . }}
+      release: {{ .Release.Name }}
+      service: print
+  template:
+    metadata:
+      labels:
+        app: {{ template "mapfishprint.fullname" . }}
+        release: {{ .Release.Name }}
+        service: print
+    spec:
+      {{- include "common.podConfig" (dict "service" .Values.print "root" .) | indent 6 }}
+      containers:
+        - name: print-config
+          {{- template "sharedConfig" (dict "service" "print_config" "root" .) }}
+            - name: API_BASE_URL
+              value: http://{{ template "mapfishprint.fullname" . }}-shared-config/scm
+          {{- range $name, $value := .Values.config.env }}
+            - name: {{ $name | quote }}
+              value: {{ $value | quote }}
+          {{- end }}
+          args: ['shared-config-slave']
+          volumeMounts:
+            - mountPath: /config
+              name: configs
+          {{- include "common.containerConfig" (dict "service" .Values.config.slave "root" .) | indent 10 }}
+        - name: print
+          {{- if .Values.openshift }}
+          image: " "
+          {{- else }}
+          image: {{ .Values.print.image.name }}:{{ .Values.print.image.tag }}
+          {{- end }}
+          imagePullPolicy: {{ .Values.openshift | ternary "IfNotPresent" .Values.image.pullPolicy }}
+          volumeMounts:
+            - mountPath: /usr/local/tomcat/webapps/ROOT/print-apps
+              name: configs
+          ports:
+            - name: http
+              containerPort: 8080
+              protocol: TCP
+          env:
+          {{- range $name, $value := .Values.print.env }}
+            - name: {{ $name | quote }}
+              value: {{ $value | quote }}
+          {{- end }}
+          {{- if eq .Values.c2c.logging.type "logstash" }}
+            - name: TOMCAT_LOG_TYPE
+              value: logstash
+            - name: TOMCAT_LOG_HOST
+              value: {{ .Values.c2c.logging.host }}
+            - name: TOMCAT_LOG_PORT
+              value: {{ .Values.c2c.logging.port }}
+          {{- end }}
+          {{- if eq .Values.c2c.logging.type "console" }}
+            - name: TOMCAT_LOG_TYPE
+              value: classic
+          {{- end }}
+          {{- if eq .Values.c2c.logging.type "json" }}
+            - name: TOMCAT_LOG_TYPE
+              value: json
+          {{- end }}
+            - name: DB_HOST
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.postgresql.secret }}
+                  key: hostname
+            - name: DB_DATABASE
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.postgresql.secret }}
+                  key: database
+            - name: DB_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.postgresql.secret }}
+                  key: username
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.postgresql.secret }}
+                  key: password
+          {{- if .Values.c2c.statsd.enabled }}
+            - name: STATSD_ADDRESS
+              value: {{ .Values.c2c.statsd.url }}
+            - name: STATSD_PREFIX
+              value: {{ .Chart.Name }}.{{ .Release.Name }}.%h
+          {{- end }}
+            - name: CATALINA_OPTS
+              value: >-
+                -Dmapfish.maxContentLength={{ .Values.print.maxContentLength }}
+                -DmaxNumberOfRunningPrintJobs={{ .Values.print.maxNumberOfRunningPrintJobs }}
+                {{- if .Values.c2c.sentry.enabled }}
+                -Dsentry.dsn=https://{{ .Values.c2c.sentry.key }}:{{ .Values.c2c.sentry.secret }}@{{ .Values.c2c.sentry.hostname }}/{{ .Values.c2c.sentry.project }}
+                -Dsentry.release={{ .Values.print.image.tag }}
+                -Dsentry.environment={{ .Release.Name }}
+                -Dsentry.tags=service:print
+                {{- end }}
+                -Ddb.username=$(DB_USERNAME)
+                -Ddb.password=$(DB_PASSWORD)
+                -Ddb.host=$(DB_HOST)
+                -Ddb.name=$(DB_DATABASE)
+                -Ddb.schema={{ .Values.print.dbSchema }}
+                -DcacheDuration={{ .Values.print.cacheDurationSeconds }}
+                -Dsun.net.inetaddr.ttl=30
+                -Xmx{{ .Values.print.maxMemory }}M
+                -Xms{{ .Values.print.maxMemory }}M
+                -XX:GCTimeLimit=70
+                -XX:GCHeapFreeLimit=10
+                -XX:+ExitOnOutOfMemoryError
+                {{ .Values.print.catalinaOpts }}
+            - name: PGOPTIONS
+              value: "-c statement_timeout={{ .Values.postgresql.statementTimeout}}"
+            - name: PRINT_CANCEL_OLD_POLL_INTERVAL
+              value: "{{ mul .Values.print.replicaCount 60 }}"  # target a poll every minute
+            - name: PRINT_POLL_INTERVAL
+              value: "{{ div .Values.print.replicaCount 2.0 }}"  # target a poll every 0.5s
+            - name: EXTRA_JARS
+              value: /usr/local/tomcat/webapps/ROOT/print-apps/mfp_extras/jars
+          readinessProbe:
+            httpGet:
+              path: /metrics/ping?health_check=true
+              port: http
+            initialDelaySeconds: 15
+          livenessProbe:
+            exec:
+              # Be sure that the EPSG 2056 exists, see: https://jira.camptocamp.com/browse/GSGMF-1606
+              command:
+                - curl
+                - http://localhost:8080/print/examples:simple/buildreport.pdf
+                - --data-raw
+                - spec=%7B%0D%0A++++%22layout%22%3A+%22A4+portrait%22%2C%0D%0A++++%22attributes%22%3A+%7B%22map%22%3A+%7B%0D%0A++++++++%22center%22%3A+%5B%0D%0A++++++++++++1200000%2C%0D%0A++++++++++++2600000%0D%0A++++++++%5D%2C%0D%0A++++++++%22rotation%22%3A+0%2C%0D%0A++++++++%22longitudeFirst%22%3A+true%2C%0D%0A++++++++%22layers%22%3A+%5B%5D%2C%0D%0A++++++++%22scale%22%3A+100000000%2C%0D%0A++++++++%22projection%22%3A+%22EPSG%3A2056%22%2C%0D%0A++++++++%22dpi%22%3A+72%0D%0A++++%7D%7D%0D%0A%7D
+            initialDelaySeconds: 15
+          securityContext:
+            runAsNonRoot: true
+            {{- if not .Values.openshift }}
+            runAsUser: 33  # www-data
+            {{- end }}
+          lifecycle:
+            preStop:
+              exec:
+                command: ['/bin/bash', '-c', '/usr/local/tomcat/bin/docker_pre_stop_print.sh {{ .Values.print.terminationGracePeriodSeconds }} || true']
+          {{- include "common.containerConfig" (dict "service" .Values.print "root" .) | indent 10 }}
+      volumes:
+        - name: configs
+          emptyDir: {}
+  revisionHistoryLimit: {{ .Values.revisionHistoryLimit }}
