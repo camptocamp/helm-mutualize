@@ -1,6 +1,6 @@
 apiVersion: v2
 appVersion: '1.0'
-description: A Helm chart for deploying a mutualized servoces on Kubernetes
+description: A Helm chart for deploying a mutualized services on Kubernetes
 name: mutualized
 version: 0.1.0
 sources:
