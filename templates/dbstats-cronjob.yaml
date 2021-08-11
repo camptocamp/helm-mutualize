@@ -1,0 +1,77 @@
+{{- if .Values.statsd.enabled }}
+{{ $fullname := include "mutualized.fullname" . }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "mutualized.fullname" . }}
+  labels:
+{{ include "mutualized.labels" . | indent 4 }}
+spec:
+  schedule: "{{ mod (regexReplaceAll "[a-f]+" (printf "%s-%s" .Release.Namespace .Release.Name | sha256sum) "" | trunc 5) 60 }} * * * *"
+  successfulJobsHistoryLimit: 0
+  failedJobsHistoryLimit: 1
+  concurrencyPolicy: Forbid
+  jobTemplate:
+    spec:
+      backoffLimit: 0
+      template:  # POD level
+        metadata:
+          labels:
+{{ include "mutualized.labels" . | indent 12 }}
+        spec:
+          containers:
+            - name: dbstats
+              securityContext:
+                {{- toYaml .Values.securityContext | nindent 16 }}
+              {{- if .Values.dbstats.image.sha }}
+              image: "{{ .Values.dbstats.image.repository }}@sha256:{{ .Values.dbstats.image.sha }}"
+              {{- else }}
+              image: "{{ .Values.dbstats.image.repository }}:{{ .Values.dbstats.image.tag }}"
+              {{- end }}
+              imagePullPolicy: {{ .Values.image.pullPolicy }}
+              env:
+                - name: SENTRY_CLIENT_RELEASE
+                  value: {{ .Values.dbstats.image.tag | quote }}
+                {{- range $name, $value := .Values.dbstats.env }}
+                - name: {{ $name | quote }}
+                  value: {{ $value | quote }}
+                {{- end }}
+                {{- range $name, $value := .Values.dbstats.configMapEnv }}
+                - name: {{ $name | quote }}
+                  valueFrom:
+                    configMapKeyRef:
+                      {{- if $value.name }}
+                      name: {{ $value.name  }}
+                      {{- else }}
+                      name: {{ $fullname }}-{{ $value.postfix }}
+                      {{- end }}
+                      key: {{ $value.key | quote }}
+                {{- end }}
+                {{- range $name, $value := .Values.dbstats.secretEnv }}
+                - name: {{ $name | quote }}
+                  valueFrom:
+                    secretKeyRef:
+                      {{- if $value.name }}
+                      name: {{ $value.name  }}
+                      {{- else }}
+                      name: {{ $fullname }}-{{ $value.postfix }}
+                      {{- end }}
+                      key: {{ $value.key | quote }}
+                {{- end }}
+              args:
+                - bash
+                - -cxe
+                - |
+                  {{- if .Values.dbstats.prometheus }}
+                  TARGET="--prometheus_instance={{ .Release.Namespace }}-{{ template "mutualized.fullname" . }} --prometheus_url={{ .Values.dbstats.prometheus }}"
+                  {{- else }}
+                  TARGET="--statsd_address={{ .Values.statsd.url }} --statsd_prefix=dbstats"
+                  {{- end }}
+                  export STATSD_TAG_DB=$(PGDATABASE)
+                  c2cwsgiutils-stats-db \
+                    --db=postgresql://$(PGUSER):$(PGPASSWORD)@$(PGHOST):5432/$(PGDATABASE) \
+                    --verbosity WARNING \
+                    --schema=public \
+                    ${TARGET}
+          restartPolicy: Never
+{{- end }}

@@ -6,46 +6,280 @@ nameOverride: ''
 fullnameOverride: ''
 
 imagePullSecrets: []
-replicaCount: 1
-
-env: {}
-# Inject env from configmap
-# <env>:
-#   name: <configMap name>
-#   key: <configMap key>
-configMapEnv: {}
-secretEnv: {}
 
 image:
-  repository: camptocamp/mapserver
-  tag: latest
-  sha:
   pullPolicy: IfNotPresent
 
-config:
-  enabled: false
-  folder: /etc/mutualized
+print:
+  replicaCount: 1
+  terminationGracePeriodSeconds: 120
   image:
-    repository:
-    sha:
+    repository: camptocamp/mapfish_print
     tag: latest
-  env: {}
+    hash:
+  env:
+    LOG_LEVEL: INFO
+    PRINT_YAML_MAX_ALIASES: 200
+    DOLLAR: $
+    DISABLE_MUTUALIZED_PRINT: ''
+    DISABLE_LOCAL_PRINT: '#'
   # Inject env from configmap
   # <env>:
   #   name: <configMap name>
+  #   postfix: <configMap name> # after fullname-, exclusive with name
+  #   key: <configMap key>
+  configMapEnv: {}
+  secretEnv: {}
+  maxContentLength: '6291456'
+  maxNumberOfRunningPrintJobs: 2
+  cacheDurationSeconds: 60
+  dbSchema: public
+  # resources are automatically computed for this service (in function of maxMemory)
+  catalinaOpts: ''
+  # nodeSelector: {}
+  # tolerations: []
+  # affinity: {}
+  maxMemory: 3072
+  resources: {}
+
+config:
+  replicaCount: 1
+  image:
+    repository: camptocamp/shared_config_manager
+    tag: latest
+    sha:
+  env:
+    SCM_ENV_PREFIXES: MUTUALIZED_:DOLLAR:DISABLE_
+    DOLLAR: $
+    DISABLE_MUTUALIZED_PRINT: ''
+    DISABLE_LOCAL_PRINT: '#'
+    LOG_LEVEL: INFO
+  # Inject env from configmap
+  # <env>:
+  #   name: <configMap name>
+  #   postfix: <configMap name> # after fullname-, exclusive with name
   #   key: <configMap key>
   configMapEnv: {}
   secretEnv: {}
   resources: {}
+  slave:
+    env:
+      LOG_LEVEL: INFO
+      TAG_FILTER: master
+      C2C_SECRET: secret
+      C2C_REQUESTS_DEFAULT_TIMEOUT: '30'
+      SENTRY_TAG_SERVICE: config-slave
+      LOG_TYPE: json
+    # Inject env from configmap
+    # <env>:
+    #   name: <configMap name>
+    #   postfix: <configMap name> # after fullname-, exclusive with name
+    #   key: <configMap key>
+    configMapEnv:
+      MASTER_CONFIG:
+        postfix: scm-master-config
+        key: data
+      API_BASE_URL:
+        postfix: env
+        key: API_BASE_URL
+      C2C_REDIS_SENTINELS:
+        postfix: env
+        key: REDIS_SENTINELS
+      C2C_REDIS_DB:
+        postfix: env
+        key: REDIS_DB
+      C2C_REDIS_SERVICENAME:
+        postfix: env
+        key: REDIS_SERVICENAME
+      C2C_REDIS_TIMEOUT:
+        postfix: env
+        key: REDIS_TIMEOUT
+      C2C_BROADCAST_PREFIX:
+        postfix: env
+        key: C2C_BROADCAST_PREFIX
+      SENTRY_URL:
+        postfix: env
+        key: SENTRY_URL
+      SENTRY_CLIENT_ENVIRONMENT:
+        postfix: env
+        key: RELEASE_NAME
+      MUTUALIZED_PRINT_URL:
+        postfix: env
+        key: MUTUALIZED_PRINT_URL
 
-mutualizedExporter:
-  enabled: true
+    secretEnv: {}
+    resources: {}
+  # nodeSelector: {}
+  # tolerations: []
+  # affinity: {}
+
+logs:
+  replicaCount: 1
   image:
-    repository: quay.io/lusitaniae/mutualized-exporter
-    # repository: bitnami/mutualized-exporter
+    repository: camptocamp/mapfish-print-logs
+    tag: latest
     sha:
-    tag: 0.7.0
+  env:
+    DB_SCHEMA: print
+    C2C_SECRET: secret
+    SOURCES_KEY: lll
+    SENTRY_TAG_SERVICE: logs
+    LOG_TYPE: json
+    SHARED_CONFIG_MASTER: /master_config/master/shared_config_manager.yaml
+    ES_URL: https://elasticsearch.logs.camptocamp.com/
+    ES_INDEXES: openshift-ch-1-gs-mutualized-print-*
+
+  # Inject env from configmap
+  # <env>:
+  #   name: <configMap name>
+  #   postfix: <configMap name> # after fullname-, exclusive with name
+  #   key: <configMap key>
+  configMapEnv:
+    SQLALCHEMY_URL:
+      postfix: env
+      kex: SQLALCHEMY_URL
+    C2C_REDIS_SENTINELS:
+      postfix: env
+      key: REDIS_SENTINELS
+    C2C_REDIS_DB:
+      postfix: env
+      key: REDIS_DB
+    C2C_REDIS_SERVICENAME:
+      postfix: env
+      key: REDIS_SERVICENAME
+    C2C_REDIS_TIMEOUT:
+      postfix: env
+      key: REDIS_TIMEOUT
+    C2C_BROADCAST_PREFIX:
+      postfix: env
+      key: LOGS_BROADCAST_PREFIX
+    SENTRY_URL:
+      postfix: env
+      key: SENTRY_URL
+    SENTRY_CLIENT_ENVIRONMENT:
+      postfix: env
+      key: RELEASE_NAME
+    SCM_URL:
+      postfix: env
+      key: SCM_URL
+    SCM_URL_EXTERNAL:
+      postfix: env
+      key: SCM_URL_EXTERNAL
+    ES_FILTERS:
+      postfix: env
+      key: ES_FILTERS
+    ES_AUTH:
+      postfix: env
+      key: ES_AUTH
+  secretEnv:
+    PGPORT:
+      name: postgresql-secret
+      key: port
+    PGHOST:
+      name: postgresql-secret
+      key: hostnameSlave
+    PGHOST_MASTER:
+      name: postgresql-secret
+      key: hostname
+    PGDATABASE:
+      name: postgresql-secret
+      key: database
+    PGUSER:
+      name: postgresql-secret
+      key: username
+    PGPASSWORD:
+      name: postgresql-secret
+      key: password
+    DB_HOST:
+      name: postgresql-secret
+      key: hostnameSlave
+    DB_DATABASE:
+      name: postgresql-secret
+      key: database
+    DB_USERNAME:
+      name: postgresql-secret
+      key: username
+    DB_PASSWORD:
+      name: postgresql-secret
+      key: password
   resources: {}
+  elasticsearch:
+    auth:
+      user: ''
+      password: ''
+  # nodeSelector: {}
+  # tolerations: []
+  # affinity: {}
+
+dbstats:
+  image:
+    repository: camptocamp/c2cwsgiutils
+    tag: latest
+    sha:
+  env:
+    LOG_LEVEL: WARNING
+    LOG_TYPE: json
+    C2C_REQUESTS_DEFAULT_TIMEOUT: '30'
+    C2CWSGIUTILS_STATS_DB_TRYNUMBER: '10'
+    C2CWSGIUTILS_STATS_DB_SLEEP: '30'
+    SENTRY_TAG_SERVICE: dbstats
+    STATSD_USE_TAGS: '1'
+  # Inject env from configmap
+  # <env>:
+  #   name: <configMap name>
+  #   postfix: <configMap name> # after fullname-, exclusive with name
+  #   key: <configMap key>
+  configMapEnv:
+    SENTRY_URL:
+      postfix: env
+      key: SENTRY_URL
+    SENTRY_CLIENT_ENVIRONMENT:
+      postfix: env
+      key: RELEASE_NAME
+    STATSD_TAG_CHART:
+      postfix: env
+      key: CHART_NAME
+    STATSD_TAG_RELEASE:
+      postfix: env
+      key: RELEASE_NAME
+    STATSD_TAG_NAMESPACE:
+      postfix: env
+      key: RELEASE_NAMESPACE
+  secretEnv:
+    PGHOST:
+      name: postgresql-secret
+      key: hostnameSlave
+    PGDATABASE:
+      name: postgresql-secret
+      key: database
+    PGUSER:
+      name: postgresql-secret
+      key: username
+    PGPASSWORD:
+      name: postgresql-secret
+      key: password
+  resources: {}
+  prometheus: http://prometheus-pushgateway.gs-metrics.svc:9091/
+
+statsd:
+  enabled: true
+  url: monitoring-statsd:9125
+
+postgresql:
+  statementTimeout: 30000
+
+redis:
+  host: rfs-redis-redisfailover
+  port: 26379
+  db: 0
+  servicename: mymaster
+  timeout: 30
+
+sentry:
+  hostname: o330647.ingest.sentry.io
+  key: ''
+  secret: ''
+  project: 42
 
 serviceAccount:
   # Specifies whether a service account should be created
@@ -84,19 +318,6 @@ ingress:
   #  - secretName: chart-example-tls
   #    hosts:
   #      - chart-example.local
-
-resources:
-  {}
-  # We usually recommend not to specify default resources and to leave this as a conscious
-  # choice for the user. This also increases chances charts run on environments with little
-  # resources, such as Minikube. If you do want to specify resources, uncomment the following
-  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
-  # limits:
-  #   cpu: 100m
-  #   memory: 128Mi
-  # requests:
-  #   cpu: 100m
-  #   memory: 128Mi
 
 nodeSelector: {}
 
