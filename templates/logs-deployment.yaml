@@ -2,7 +2,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "mutualized.fullname" . }}
+  name: {{ include "mutualized.fullname" . }}-logs
   labels:
 {{ include "mutualized.labels" . | indent 4 }}
     service: logs

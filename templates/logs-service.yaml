@@ -1,15 +1,17 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ include "mutualized.fullname" . }}
+  name: {{ include "mutualized.fullname" . }}-logs
   labels:
 {{ include "mutualized.labels" . | indent 4 }}
+    service: logs
 spec:
-  type: {{ .Values.service.type }}
+  type: {{ .Values.logs.service.type }}
   ports:
-    - port: {{ .Values.service.port }}
+    - port: {{ .Values.logs.service.port }}
       targetPort: http
       protocol: TCP
       name: http
   selector:
     {{- include "mutualized.selectorLabels" . | nindent 4 }}
+    service: logs
