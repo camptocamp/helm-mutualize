@@ -24,7 +24,7 @@ image:
 
 config:
   enabled: false
-  folder: /etc/apache
+  folder: /etc/mutualized
   image:
     repository:
     sha:
@@ -38,11 +38,11 @@ config:
   secretEnv: {}
   resources: {}
 
-apacheExporter:
+mutualizedExporter:
   enabled: true
   image:
-    repository: quay.io/lusitaniae/apache-exporter
-    # repository: bitnami/apache-exporter
+    repository: quay.io/lusitaniae/mutualized-exporter
+    # repository: bitnami/mutualized-exporter
     sha:
     tag: 0.7.0
   resources: {}

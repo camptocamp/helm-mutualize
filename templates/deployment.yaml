@@ -1,26 +1,26 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "apache.fullname" . }}
+  name: {{ include "mutualized.fullname" . }}
   labels:
-{{ include "apache.labels" . | indent 4 }}
+{{ include "mutualized.labels" . | indent 4 }}
 spec:
   replicas: {{ .Values.replicaCount }}
   strategy:
     type: RollingUpdate
   selector:
     matchLabels:
-      {{- include "apache.selectorLabels" . | nindent 6 }}
+      {{- include "mutualized.selectorLabels" . | nindent 6 }}
   template:
     metadata:
       labels:
-      {{- include "apache.selectorLabels" . | nindent 8 }}
+      {{- include "mutualized.selectorLabels" . | nindent 8 }}
     spec:
     {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
     {{- end }}
-      serviceAccountName: {{ template "apache.serviceAccountName" . }}
+      serviceAccountName: {{ template "mutualized.serviceAccountName" . }}
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
       {{- if .Values.config.enabled }}
@@ -114,18 +114,18 @@ spec:
             periodSeconds: 20
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
-        {{- if .Values.apacheExporter.enabled }}
-        - name: apache-exporter
-          {{- if .Values.apacheExporter.image.sha }}
-          image: "{{ .Values.apacheExporter.image.repository }}@sha256:{{ .Values.apacheExporter.image.sha }}"
+        {{- if .Values.mutualizedExporter.enabled }}
+        - name: mutualized-exporter
+          {{- if .Values.mutualizedExporter.image.sha }}
+          image: "{{ .Values.mutualizedExporter.image.repository }}@sha256:{{ .Values.mutualizedExporter.image.sha }}"
           {{- else }}
-          image: "{{ .Values.apacheExporter.image.repository }}:{{ .Values.apacheExporter.image.tag }}"
+          image: "{{ .Values.mutualizedExporter.image.repository }}:{{ .Values.mutualizedExporter.image.tag }}"
           {{- end }}
           securityContext:
             {{- toYaml .Values.securityContext | nindent 12 }}
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           args:
-            - '--scrape_uri=http://{{ include "apache.fullname" . }}/server-status-remote?auto'
+            - '--scrape_uri=http://{{ include "mutualized.fullname" . }}/server-status-remote?auto'
           terminationMessagePolicy: FallbackToLogsOnError
           ports:
             - name: prometheus
@@ -139,7 +139,7 @@ spec:
             timeoutSeconds: 10
             periodSeconds: 20
           resources:
-            {{- toYaml .Values.apacheExporter.resources | nindent 12 }}
+            {{- toYaml .Values.mutualizedExporter.resources | nindent 12 }}
         {{- end }}
       volumes:
         - name: configs
@@ -161,7 +161,7 @@ spec:
               - key: app.kubernetes.io/name
                 operator: In
                 values:
-                - {{ include "apache.name" . }}
+                - {{ include "mutualized.name" . }}
               - key: app.kubernetes.io/instance
                 operator: In
                 values:

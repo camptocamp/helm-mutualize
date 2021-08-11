@@ -1,11 +1,11 @@
 apiVersion: policy/v1beta1
 kind: PodDisruptionBudget
 metadata:
-  name: {{ template "apache.fullname" . }}
+  name: {{ template "mutualized.fullname" . }}
   labels:
-    {{- include "apache.selectorLabels" . | nindent 4 }}
+    {{- include "mutualized.selectorLabels" . | nindent 4 }}
 spec:
   maxUnavailable: 1
   selector:
     matchLabels:
-      {{- include "apache.selectorLabels" . | nindent 6 }}
+      {{- include "mutualized.selectorLabels" . | nindent 6 }}
