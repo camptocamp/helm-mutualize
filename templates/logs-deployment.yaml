@@ -1,74 +1,22 @@
-{{ $fullname := include "mutualized.fullname" . }}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "mutualized.fullname" . }}-logs
-  labels:
-{{ include "mutualized.labels" . | indent 4 }}
-    service: logs
+  name: {{ include "common.fullname" ( dict "root" . "service" .Values.logs ) }}
+  labels: {{ include "common.labels" ( dict "root" . "service" .Values.logs ) | nindent 4 }}
 spec:
   replicas: {{ .Values.config.replicaCount }}
   strategy:
     type: RollingUpdate
   selector:
-    matchLabels:
-      {{- include "mutualized.selectorLabels" . | nindent 6 }}
-      service: logs
+    matchLabels: {{ include "common.selectorLabels" ( dict "root" . "service" .Values.logs ) | nindent 6 }}
   template:
     metadata:
-      labels:
-      {{- include "mutualized.selectorLabels" . | nindent 8 }}
-        service: logs
+      labels: {{ include "common.labels" ( dict "root" . "service" .Values.logs ) | nindent 8 }}
     spec:
-    {{- with .Values.imagePullSecrets }}
-      imagePullSecrets:
-        {{- toYaml . | nindent 8 }}
-    {{- end }}
-      serviceAccountName: {{ template "mutualized.serviceAccountName" . }}
-      securityContext:
-        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      {{- include "common.podConfig" ( dict "root" . "service" .Values.logs ) | nindent 6 }}
       containers:
         - name: config
-          securityContext:
-            {{- toYaml .Values.securityContext | nindent 12 }}
-          {{- if .Values.image.sha }}
-          image: "{{ .Values.config.image.repository }}@sha256:{{ .Values.config.image.sha }}"
-          {{- else }}
-          image: "{{ .Values.config.image.repository }}:{{ .Values.config.image.tag }}"
-          {{- end }}
-          imagePullPolicy: {{ .Values.image.pullPolicy }}
-          env:
-            - name: SENTRY_CLIENT_RELEASE
-              value: {{ .Values.config.image.tag | quote }}
-            {{- range $name, $value := .Values.config.slave.env }}
-            - name: {{ $name | quote }}
-              value: {{ $value | quote }}
-            {{- end }}
-            {{- range $name, $value := .Values.config.slave.configMapEnv }}
-            - name: {{ $name | quote }}
-              valueFrom:
-                configMapKeyRef:
-                  {{- if $value.name }}
-                  name: {{ $value.name  }}
-                  {{- else }}
-                  name: {{ $fullname }}-{{ $value.postfix }}
-                  {{- end }}
-                  key: {{ $value.key | quote }}
-            {{- end }}
-            {{- range $name, $value := .Values.config.slave.secretEnv }}
-            - name: {{ $name | quote }}
-              valueFrom:
-                secretKeyRef:
-                  {{- if $value.name }}
-                  name: {{ $value.name  }}
-                  {{- else }}
-                  name: {{ $fullname }}-{{ $value.postfix }}
-                  {{- end }}
-                  key: {{ $value.key | quote }}
-            {{- end }}
-          terminationMessagePolicy: FallbackToLogsOnError
-          resources:
-            {{- toYaml .Values.config.slave.resources | nindent 12 }}
+          {{- include "common.containerConfig" ( dict "root" . "container" .Values.config ) | nindent 10 }}
           args: ['shared-config-slave']
           readinessProbe: &configProbe
             exec:
@@ -79,44 +27,7 @@ spec:
             failureThreshold: 5
           livenessProbe: *configProbe
         - name: logs
-          securityContext:
-            {{- toYaml .Values.securityContext | nindent 12 }}
-          {{- if .Values.image.sha }}
-          image: "{{ .Values.logs.image.repository }}@sha256:{{ .Values.logs.image.sha }}"
-          {{- else }}
-          image: "{{ .Values.logs.image.repository }}:{{ .Values.logs.image.tag }}"
-          {{- end }}
-          imagePullPolicy: {{ .Values.image.pullPolicy }}
-          env:
-            - name: SENTRY_CLIENT_RELEASE
-              value: {{ .Values.logs.image.tag | quote }}
-            {{- range $name, $value := .Values.logs.env }}
-            - name: {{ $name | quote }}
-              value: {{ $value | quote }}
-            {{- end }}
-            {{- range $name, $value := .Values.logs.configMapEnv }}
-            - name: {{ $name | quote }}
-              valueFrom:
-                configMapKeyRef:
-                  {{- if $value.name }}
-                  name: {{ $value.name  }}
-                  {{- else }}
-                  name: {{ $fullname }}-{{ $value.postfix }}
-                  {{- end }}
-                  key: {{ $value.key | quote }}
-            {{- end }}
-            {{- range $name, $value := .Values.logs.secretEnv }}
-            - name: {{ $name | quote }}
-              valueFrom:
-                secretKeyRef:
-                  {{- if $value.name }}
-                  name: {{ $value.name  }}
-                  {{- else }}
-                  name: {{ $fullname }}-{{ $value.postfix }}
-                  {{- end }}
-                  key: {{ $value.key | quote }}
-            {{- end }}
-          terminationMessagePolicy: FallbackToLogsOnError
+          {{- include "common.containerConfig" ( dict "root" . "container" .Values.logs ) | nindent 10 }}
           ports:
             - name: http
               containerPort: 8080
@@ -131,31 +42,3 @@ spec:
               path: /logs/c2c/health_check
               port: http
             initialDelaySeconds: 15
-          resources:
-            {{- toYaml .Values.logs.resources | nindent 12 }}
-      {{- with .Values.nodeSelector }}
-      nodeSelector:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
-      affinity:
-      {{-   if .Values.affinity }}
-      {{      toYaml .Values.affinity | indent 2 }}
-      {{-   else }}
-        podAntiAffinity:
-          requiredDuringSchedulingIgnoredDuringExecution:
-          - labelSelector:
-              matchExpressions:
-              - key: app.kubernetes.io/name
-                operator: In
-                values:
-                - {{ include "mutualized.name" . }}
-              - key: app.kubernetes.io/instance
-                operator: In
-                values:
-                - {{ .Release.Name }}
-            topologyKey: "kubernetes.io/hostname"
-      {{- end }}
-    {{- with .Values.tolerations }}
-      tolerations:
-        {{- toYaml . | nindent 8 }}
-    {{- end }}

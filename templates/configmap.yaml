@@ -1,21 +1,20 @@
-{{ $fullname := include "mutualized.fullname" . }}
+{{ $fullname := include "common.fullname" ( dict "root" . "service" .Values ) }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: {{ include "mutualized.fullname" . }}-env
-  labels:
-{{ include "mutualized.labels" . | indent 4 }}
+  name: {{ include "common.fullname" ( dict "root" . "service" .Values ) }}-env
+  labels: {{ include "common.labels" ( dict "root" . "service" .Values ) | nindent 4 }}
 data:
   PGOPTIONS: "-c statement_timeout={{ .Values.postgresql.statementTimeout }}"
-  REDIS_SENTINELS: {{ .Values.redis.host }}:{{ .Values.redis.port }}
+  REDIS_SENTINELS: "{{ .Values.redis.host }}:{{ .Values.redis.port }}"
   REDIS_DB: {{ .Values.redis.db | quote }}
   REDIS_SERVICENAME: {{ .Values.redis.servicename }}
   REDIS_TIMEOUT: {{ .Values.redis.timeout | quote }}
   SCM_BROADCAST_PREFIX: broadcast_scm_{{ .Values.redis.db }}_
   LOGS_BROADCAST_PREFIX: broadcast_scm_{{ .Values.redis.db }}_
   SENTRY_URL: https://{{ .Values.sentry.key }}@{{ .Values.sentry.hostname }}/{{ .Values.sentry.project }}
-  API_BASE_URL: http://{{ template "mutualized.fullname" . }}-shared-config/scm
-  SQLALCHEMY_URL: postgresql://$(DB_USERNAME):$(DB_PASSWORD)@$(DB_HOST):5432/$(DB_DATABASE)
+  API_BASE_URL: http://{{ template "common.fullname" ( dict "root" . "service" .Values ) }}-shared-config/scm
+  SQLALCHEMY_URL: "postgresql://$(DB_USERNAME):$(DB_PASSWORD)@$(DB_HOST):5432/$(DB_DATABASE)"
   MUTUALIZED_PRINT_URL: {{ (index .Values.ingress.hosts 0).host }}
   SCM_URL: http://{{ $fullname }}-shared-config/scm/
   SCM_URL_EXTERNAL: https://{{ (index .Values.ingress.hosts 0).host }}/scm
@@ -24,3 +23,6 @@ data:
   RELEASE_NAMESPACE: {{ .Release.Namespace }}
   ES_FILTERS: kubernetes.labels.release={{ .Release.Name }},kubernetes.labels.service=print
   ES_AUTH: "Basic {{ (printf "%s:%s" .Values.logs.elasticsearch.auth.user .Values.logs.elasticsearch.auth.password) | b64enc }}"
+  CONFIG_IMAGE_TAG: {{ .Values.config.image.tag | quote }}
+  LOGS_IMAGE_TAG: {{ .Values.logs.image.tag | quote }}
+  DBSTATS_IMAGE_TAG: {{ .Values.dbstats.image.tag | quote }}

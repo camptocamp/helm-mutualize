@@ -6,3 +6,7 @@ version: 0.1.0
 sources:
   - https://github.com/mapfish/mapfish-print
   - https://github.com/camptocamp/tilecloud-chain
+dependencies:
+  - name: common
+    repository: https://camptocamp.github.io/helm-common
+    version: 0.1.1

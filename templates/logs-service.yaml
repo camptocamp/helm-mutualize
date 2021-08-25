@@ -1,10 +1,8 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ include "mutualized.fullname" . }}-logs
-  labels:
-{{ include "mutualized.labels" . | indent 4 }}
-    service: logs
+  name: {{ include "common.fullname" ( dict "root" . "service" .Values.logs ) }}
+  labels: {{ include "common.labels" ( dict "root" . "service" .Values.logs ) | nindent 4 }}
 spec:
   type: {{ .Values.logs.service.type }}
   ports:
@@ -12,6 +10,4 @@ spec:
       targetPort: http
       protocol: TCP
       name: http
-  selector:
-    {{- include "mutualized.selectorLabels" . | nindent 4 }}
-    service: logs
+  selector: {{- include "common.selectorLabels" ( dict "root" . "service" .Values.logs ) | nindent 4 }}

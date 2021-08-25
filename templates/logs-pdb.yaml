@@ -1,13 +1,9 @@
 apiVersion: policy/v1beta1
 kind: PodDisruptionBudget
 metadata:
-  name: {{ template "mutualized.fullname" . }}-logs
-  labels:
-    {{- include "mutualized.selectorLabels" . | nindent 4 }}
-    service: logs
+  name: {{ template "common.fullname" ( dict "root" . "service" .Values ) }}
+  labels: {{ include "common.labels" ( dict "root" . "service" .Values ) | nindent 4 }}
 spec:
   maxUnavailable: 1
   selector:
-    matchLabels:
-      {{- include "mutualized.selectorLabels" . | nindent 6 }}
-      service: logs
+    matchLabels: {{ include "common.selectorLabels" ( dict "root" . "service" .Values ) | nindent 6 }}

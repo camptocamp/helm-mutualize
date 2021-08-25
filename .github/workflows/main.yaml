@@ -33,6 +33,7 @@ jobs:
         run: c2cciutils-checks
 
       - uses: azure/setup-helm@v1
+      - run: helm dependency update .
       - run: helm lint .
       - run: helm template test .
 
