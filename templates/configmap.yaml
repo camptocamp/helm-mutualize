@@ -5,7 +5,6 @@ metadata:
   name: {{ include "common.fullname" ( dict "root" . "service" .Values ) }}-env
   labels: {{ include "common.labels" ( dict "root" . "service" .Values ) | nindent 4 }}
 data:
-  PGOPTIONS: "-c statement_timeout={{ .Values.postgresql.statementTimeout }}"
   REDIS_SENTINELS: "{{ .Values.redis.host }}:{{ .Values.redis.port }}"
   REDIS_DB: {{ .Values.redis.db | quote }}
   REDIS_SERVICENAME: {{ .Values.redis.servicename }}
@@ -22,7 +21,30 @@ data:
   RELEASE_NAME: {{ .Release.Name }}
   RELEASE_NAMESPACE: {{ .Release.Namespace }}
   ES_FILTERS: kubernetes.labels.release={{ .Release.Name }},kubernetes.labels.service=print
-  ES_AUTH: "Basic {{ (printf "%s:%s" .Values.logs.elasticsearch.auth.user .Values.logs.elasticsearch.auth.password) | b64enc }}"
+  ES_AUTH: "Basic {{ (printf "%s:%s" .Values.elasticsearch.auth.user .Values.elasticsearch.auth.password) | b64enc }}"
   CONFIG_IMAGE_TAG: {{ .Values.config.image.tag | quote }}
   LOGS_IMAGE_TAG: {{ .Values.logs.image.tag | quote }}
   DBSTATS_IMAGE_TAG: {{ .Values.dbstats.image.tag | quote }}
+  STATSD_PREFIX: {{ .Chart.Name }}.{{ .Release.Name }}.%h
+  CATALINA_OPTS: >-
+    -Dmapfish.maxContentLength={{ .Values.print.maxContentLength }}
+    -DmaxNumberOfRunningPrintJobs={{ .Values.print.maxNumberOfRunningPrintJobs }}
+    {{- if .Values.sentry.enabled }}
+    -Dsentry.dsn=https://{{ .Values.sentry.key }}:{{ .Values.sentry.secret }}@{{ .Values.sentry.hostname }}/{{ .Values.sentry.project }}
+    -Dsentry.release={{ .Values.print.image.tag }}
+    -Dsentry.environment={{ .Release.Name }}
+    -Dsentry.tags=service:print
+    {{- end }}
+    -Ddb.username=$(DB_USERNAME)
+    -Ddb.password=$(DB_PASSWORD)
+    -Ddb.host=$(DB_HOST)
+    -Ddb.name=$(DB_DATABASE)
+    -Ddb.schema={{ .Values.print.dbSchema }}
+    -DcacheDuration={{ .Values.print.cacheDurationSeconds }}
+    -Dsun.net.inetaddr.ttl=30
+    -Xmx{{ .Values.print.maxMemory }}M
+    -Xms{{ .Values.print.maxMemory }}M
+    -XX:GCTimeLimit=70
+    -XX:GCHeapFreeLimit=10
+    -XX:+ExitOnOutOfMemoryError
+    {{ .Values.print.catalinaOpts }}

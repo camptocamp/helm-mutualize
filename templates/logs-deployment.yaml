@@ -28,6 +28,9 @@ spec:
           livenessProbe: *configProbe
         - name: logs
           {{- include "common.containerConfig" ( dict "root" . "container" .Values.logs ) | nindent 10 }}
+          volumeMounts:
+            - mountPath: /master_config
+              name: master-config
           ports:
             - name: http
               containerPort: 8080
@@ -42,3 +45,6 @@ spec:
               path: /logs/c2c/health_check
               port: http
             initialDelaySeconds: 15
+      volumes:
+        - name: configs
+          emptyDir: {}

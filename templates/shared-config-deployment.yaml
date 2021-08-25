@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "common.fullname" ( dict "root" . "service" .Values.config ) }}
+  labels: {{ include "common.labels" ( dict "root" . "service" .Values.config ) | nindent 4 }}
+spec:
+  replicas: {{ .Values.config.replicaCount }}
+  strategy:
+    type: RollingUpdate
+  selector:
+    matchLabels: {{ include "common.selectorLabels" ( dict "root" . "service" .Values.config ) | nindent 6 }}
+  template:
+    metadata:
+      labels: {{ include "common.labels" ( dict "root" . "service" .Values.config ) | nindent 8 }}
+    spec:
+      {{- include "common.podConfig" ( dict "root" . "service" .Values.config ) | nindent 6 }}
+      containers:
+        - name: shared-config
+          {{- include "common.containerConfig" ( dict "root" . "container" .Values.config ) | nindent 10 }}
+          ports:
+            - name: http
+              containerPort: 8080
+              protocol: TCP
+          readinessProbe:
+            httpGet:
+              path: /scm/c2c/health_check
+              port: http
+            initialDelaySeconds: 10
+          volumeMounts:
+            - name: ssh-key
+              readOnly: true
+              mountPath: "/var/www/.ssh2"
+      volumes:
+        - name: ssh-key
+          secret:
+            secretName: secrets-ssh-key
+            defaultMode: 0440

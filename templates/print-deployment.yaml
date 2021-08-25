@@ -1,0 +1,70 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "common.fullname" ( dict "root" . "service" .Values.print ) }}
+  labels: {{ include "common.labels" ( dict "root" . "service" .Values.print ) | nindent 4 }}
+spec:
+  replicas: {{ .Values.config.replicaCount }}
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      {{- if (gt .Values.print.replicaCount 1.0) }}
+      # The print uses a lot of resources and cannot be installed twice on a node.
+      # So we stop an old POD before starting a new one.
+      maxSurge: 0
+      {{- else }}
+      maxSurge: 1
+      {{- end }}
+      maxUnavailable: 25%
+  selector:
+    matchLabels: {{ include "common.selectorLabels" ( dict "root" . "service" .Values.print ) | nindent 6 }}
+  template:
+    metadata:
+      labels: {{ include "common.labels" ( dict "root" . "service" .Values.print ) | nindent 8 }}
+    spec:
+      {{- include "common.podConfig" ( dict "root" . "service" .Values.print ) | nindent 6 }}
+      containers:
+        - name: config
+          {{- include "common.containerConfig" ( dict "root" . "container" .Values.config ) | nindent 10 }}
+          args: ['shared-config-slave']
+          volumeMounts:
+            - mountPath: /config
+              name: configs
+          readinessProbe: &configProbe
+            exec:
+              command:
+                - scm-is-ready
+            initialDelaySeconds: 30
+            periodSeconds: 30
+            failureThreshold: 5
+          livenessProbe: *configProbe
+        - name: print
+          {{- include "common.containerConfig" ( dict "root" . "container" .Values.print ) | nindent 10 }}
+          volumeMounts:
+            - mountPath: /usr/local/tomcat/webapps/ROOT/print-apps
+              name: configs
+          ports:
+            - name: http
+              containerPort: 8080
+              protocol: TCP
+          readinessProbe:
+            httpGet:
+              path: /metrics/ping?health_check=true
+              port: http
+            initialDelaySeconds: 15
+          livenessProbe:
+            exec:
+              # Be sure that the EPSG 2056 exists, see: https://jira.camptocamp.com/browse/GSGMF-1606
+              command:
+                - curl
+                - http://localhost:8080/print/examples:simple/buildreport.pdf
+                - --data-raw
+                - spec=%7B%0D%0A++++%22layout%22%3A+%22A4+portrait%22%2C%0D%0A++++%22attributes%22%3A+%7B%22map%22%3A+%7B%0D%0A++++++++%22center%22%3A+%5B%0D%0A++++++++++++1200000%2C%0D%0A++++++++++++2600000%0D%0A++++++++%5D%2C%0D%0A++++++++%22rotation%22%3A+0%2C%0D%0A++++++++%22longitudeFirst%22%3A+true%2C%0D%0A++++++++%22layers%22%3A+%5B%5D%2C%0D%0A++++++++%22scale%22%3A+100000000%2C%0D%0A++++++++%22projection%22%3A+%22EPSG%3A2056%22%2C%0D%0A++++++++%22dpi%22%3A+72%0D%0A++++%7D%7D%0D%0A%7D
+            initialDelaySeconds: 15
+          lifecycle:
+            preStop:
+              exec:
+                command: ['/bin/bash', '-c', '/usr/local/tomcat/bin/docker_pre_stop_print.sh {{ .Values.print.terminationGracePeriodSeconds }} || true']
+      volumes:
+        - name: configs
+          emptyDir: {}

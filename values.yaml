@@ -29,17 +29,50 @@ print:
       value: ''
     DISABLE_LOCAL_PRINT:
       value: '#'
+    TOMCAT_LOG_TYPE:
+      value: json
+    DB_HOST:
+      type: secret
+      name: postgresql-secret
+      key: hostnameSlave
+    DB_DATABASE:
+      type: secret
+      name: postgresql-secret
+      key: database
+    DB_USERNAME:
+      type: secret
+      name: postgresql-secret
+      key: username
+    DB_PASSWORD:
+      type: secret
+      name: postgresql-secret
+      key: password
+    STATSD_PREFIX:
+      type: configMap
+      name: env
+      key: STATSD_PREFIX
+    CATALINA_OPTS:
+      type: configMap
+      name: env
+      key: CATALINA_OPTS
+    PGOPTIONS:
+      value: -c statement_timeout=30000
+    PRINT_CANCEL_OLD_POLL_INTERVAL:
+      value: '120'
+    PRINT_POLL_INTERVAL:
+      value: '1.0'
+    EXTRA_JARS:
+      value: /usr/local/tomcat/webapps/ROOT/print-apps/mfp_extras/jars
   maxContentLength: '6291456'
   maxNumberOfRunningPrintJobs: 2
   cacheDurationSeconds: 60
   dbSchema: public
-  # resources are automatically computed for this service (in function of maxMemory)
   catalinaOpts: ''
-  # nodeSelector: {}
-  # tolerations: []
-  # affinity: {}
   maxMemory: 3072
   resources: {}
+  service:
+    type: ClusterIP
+    port: 8080
 
 config:
   serviceName: config
@@ -57,9 +90,62 @@ config:
       value: ''
     DISABLE_LOCAL_PRINT:
       value: '#'
+    MUTUALIZED_PRINT_URL:
+      type: configMap
+      name: env
+      key: MUTUALIZED_PRINT_URL
     LOG_LEVEL:
       value: INFO
+    API_MASTER:
+      value: '1'
+    MASTER_CONFIG:
+      type: configMap
+      name: scm-master-config
+      key: data
+    C2C_SECRET:
+      value: secret
+    C2C_REDIS_SENTINELS:
+      type: configMap
+      name: env
+      key: REDIS_SENTINELS
+    C2C_REDIS_DB:
+      type: configMap
+      name: env
+      key: REDIS_DB
+    C2C_REDIS_SERVICENAME:
+      type: configMap
+      name: env
+      key: REDIS_SERVICENAME
+    C2C_REDIS_TIMEOUT:
+      type: configMap
+      name: env
+      key: REDIS_TIMEOUT
+    C2C_BROADCAST_PREFIX:
+      type: configMap
+      name: env
+      key: C2C_BROADCAST_PREFIX
+    C2C_REQUESTS_DEFAULT_TIMEOUT:
+      value: '30'
+    SENTRY_URL:
+      type: configMap
+      name: env
+      key: SENTRY_URL
+    SENTRY_CLIENT_RELEASE:
+      type: configMap
+      name: env
+      key: CONFIG_IMAGE_TAG
+    SENTRY_CLIENT_ENVIRONMENT:
+      type: configMap
+      name: env
+      key: RELEASE_NAME
+    SENTRY_TAG_SERVICE:
+      value: config-slave
+    LOG_TYPE:
+      value: json
   resources: {}
+  service:
+    type: ClusterIP
+    port: 8080
   slave:
     env:
       LOG_LEVEL:
@@ -119,9 +205,6 @@ config:
         name: env
         key: MUTUALIZED_PRINT_URL
     resources: {}
-  # nodeSelector: {}
-  # tolerations: []
-  # affinity: {}
 
 logs:
   serviceName: logs
@@ -243,13 +326,6 @@ logs:
   service:
     type: ClusterIP
     port: 8080
-  elasticsearch:
-    auth:
-      user: ''
-      password: ''
-  # nodeSelector: {}
-  # tolerations: []
-  # affinity: {}
 
 dbstats:
   image:
@@ -314,12 +390,14 @@ dbstats:
   resources: {}
   prometheus: http://prometheus-pushgateway.gs-metrics.svc:9091/
 
+elasticsearch:
+  auth:
+    user: ''
+    password: ''
+
 statsd:
   enabled: true
   url: monitoring-statsd:9125
-
-postgresql:
-  statementTimeout: 30000
 
 redis:
   host: rfs-redis-redisfailover
@@ -329,6 +407,7 @@ redis:
   timeout: 30
 
 sentry:
+  enabled: true
   hostname: o330647.ingest.sentry.io
   key: ''
   secret: ''
