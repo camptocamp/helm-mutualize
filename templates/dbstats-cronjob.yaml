@@ -1,6 +1,6 @@
-{{- if .Values.statsd.enabled }}
-apiVersion: apps/v1
-kind: Deployment
+{{- if .Values.dbstats.enabled }}
+apiVersion: batch/v1
+kind: CronJob
 metadata:
   name: {{ include "common.fullname" ( dict "root" . "service" .Values.dbstats ) }}
   labels: {{ include "common.labels" ( dict "root" . "service" .Values.dbstats ) | nindent 4 }}
@@ -9,8 +9,6 @@ spec:
   successfulJobsHistoryLimit: 0
   failedJobsHistoryLimit: 1
   concurrencyPolicy: Forbid
-  selector:
-    matchLabels: {{ include "common.selectorLabels" ( dict "root" . "service" .Values.dbstats ) | nindent 6 }}
   jobTemplate:
     spec:
       backoffLimit: 0

@@ -10,6 +10,21 @@ imagePullSecrets: []
 image:
   pullPolicy: IfNotPresent
 
+sshKey: to be defined
+
+config:
+  serviceName: config
+  replicaCount: 1
+  image: &config-image
+    repository: camptocamp/shared_config_manager
+    tag: latest
+    sha:
+  env: {}
+  resources: {}
+  service:
+    type: ClusterIP
+    port: 8080
+
 print:
   serviceName: print
   replicaCount: 1
@@ -18,51 +33,7 @@ print:
     repository: camptocamp/mapfish_print
     tag: latest
     hash:
-  env:
-    LOG_LEVEL:
-      value: INFO
-    PRINT_YAML_MAX_ALIASES:
-      value: '200'
-    DOLLAR:
-      value: $
-    DISABLE_MUTUALIZED_PRINT:
-      value: ''
-    DISABLE_LOCAL_PRINT:
-      value: '#'
-    TOMCAT_LOG_TYPE:
-      value: json
-    DB_HOST:
-      type: secret
-      name: postgresql-secret
-      key: hostnameSlave
-    DB_DATABASE:
-      type: secret
-      name: postgresql-secret
-      key: database
-    DB_USERNAME:
-      type: secret
-      name: postgresql-secret
-      key: username
-    DB_PASSWORD:
-      type: secret
-      name: postgresql-secret
-      key: password
-    STATSD_PREFIX:
-      type: configMap
-      name: env
-      key: STATSD_PREFIX
-    CATALINA_OPTS:
-      type: configMap
-      name: env
-      key: CATALINA_OPTS
-    PGOPTIONS:
-      value: -c statement_timeout=30000
-    PRINT_CANCEL_OLD_POLL_INTERVAL:
-      value: '120'
-    PRINT_POLL_INTERVAL:
-      value: '1.0'
-    EXTRA_JARS:
-      value: /usr/local/tomcat/webapps/ROOT/print-apps/mfp_extras/jars
+  env: {}
   maxContentLength: '6291456'
   maxNumberOfRunningPrintJobs: 2
   cacheDurationSeconds: 60
@@ -73,320 +44,37 @@ print:
   service:
     type: ClusterIP
     port: 8080
-
-config:
-  serviceName: config
-  replicaCount: 1
-  image:
-    repository: camptocamp/shared_config_manager
-    tag: latest
-    sha:
-  env:
-    SCM_ENV_PREFIXES:
-      value: MUTUALIZED_:DOLLAR:DISABLE_
-    DOLLAR:
-      value: $
-    DISABLE_MUTUALIZED_PRINT:
-      value: ''
-    DISABLE_LOCAL_PRINT:
-      value: '#'
-    MUTUALIZED_PRINT_URL:
-      type: configMap
-      name: env
-      key: MUTUALIZED_PRINT_URL
-    LOG_LEVEL:
-      value: INFO
-    API_MASTER:
-      value: '1'
-    MASTER_CONFIG:
-      type: configMap
-      name: scm-master-config
-      key: data
-    C2C_SECRET:
-      value: secret
-    C2C_REDIS_SENTINELS:
-      type: configMap
-      name: env
-      key: REDIS_SENTINELS
-    C2C_REDIS_DB:
-      type: configMap
-      name: env
-      key: REDIS_DB
-    C2C_REDIS_SERVICENAME:
-      type: configMap
-      name: env
-      key: REDIS_SERVICENAME
-    C2C_REDIS_TIMEOUT:
-      type: configMap
-      name: env
-      key: REDIS_TIMEOUT
-    C2C_BROADCAST_PREFIX:
-      type: configMap
-      name: env
-      key: C2C_BROADCAST_PREFIX
-    C2C_REQUESTS_DEFAULT_TIMEOUT:
-      value: '30'
-    SENTRY_URL:
-      type: configMap
-      name: env
-      key: SENTRY_URL
-    SENTRY_CLIENT_RELEASE:
-      type: configMap
-      name: env
-      key: CONFIG_IMAGE_TAG
-    SENTRY_CLIENT_ENVIRONMENT:
-      type: configMap
-      name: env
-      key: RELEASE_NAME
-    SENTRY_TAG_SERVICE:
-      value: config-slave
-    LOG_TYPE:
-      value: json
-  resources: {}
-  service:
-    type: ClusterIP
-    port: 8080
-  slave:
-    env:
-      LOG_LEVEL:
-        value: INFO
-      TAG_FILTER:
-        value: master
-      C2C_SECRET:
-        value: secret
-      C2C_REQUESTS_DEFAULT_TIMEOUT:
-        value: '30'
-      SENTRY_TAG_SERVICE:
-        value: config-slave
-      LOG_TYPE:
-        value: json
-      MASTER_CONFIG:
-        type: configMap
-        name: scm-master-config
-        key: data
-      API_BASE_URL:
-        type: configMap
-        name: env
-        key: API_BASE_URL
-      C2C_REDIS_SENTINELS:
-        type: configMap
-        name: env
-        key: REDIS_SENTINELS
-      C2C_REDIS_DB:
-        type: configMap
-        name: env
-        key: REDIS_DB
-      C2C_REDIS_SERVICENAME:
-        type: configMap
-        name: env
-        key: REDIS_SERVICENAME
-      C2C_REDIS_TIMEOUT:
-        type: configMap
-        name: env
-        key: REDIS_TIMEOUT
-      C2C_BROADCAST_PREFIX:
-        type: configMap
-        name: env
-        key: C2C_BROADCAST_PREFIX
-      SENTRY_URL:
-        type: configMap
-        name: env
-        key: SENTRY_URL
-      SENTRY_CLIENT_ENVIRONMENT:
-        type: configMap
-        name: env
-        key: RELEASE_NAME
-      SENTRY_CLIENT_RELEASE:
-        type: configMap
-        name: env
-        key: CONFIG_IMAGE_TAG
-      MUTUALIZED_PRINT_URL:
-        type: configMap
-        name: env
-        key: MUTUALIZED_PRINT_URL
+  config:
+    image: *config-image
+    env: {}
     resources: {}
 
 logs:
+  enable: true
   serviceName: logs
   replicaCount: 1
   image:
     repository: camptocamp/mapfish-print-logs
     tag: latest
     sha:
-  env:
-    DB_SCHEMA:
-      value: print
-    C2C_SECRET:
-      value: secret
-    SOURCES_KEY:
-      value: lll
-    SENTRY_TAG_SERVICE:
-      value: logs
-    LOG_TYPE:
-      value: json
-    SHARED_CONFIG_MASTER:
-      value: /master_config/master/shared_config_manager.yaml
-    ES_URL:
-      value: https://elasticsearch.logs.camptocamp.com/
-    ES_INDEXES:
-      value: openshift-ch-1-gs-mutualized-print-*
-    SQLALCHEMY_URL:
-      type: configMap
-      name: env
-      kex: SQLALCHEMY_URL
-    C2C_REDIS_SENTINELS:
-      type: configMap
-      name: env
-      key: REDIS_SENTINELS
-    C2C_REDIS_DB:
-      type: configMap
-      name: env
-      key: REDIS_DB
-    C2C_REDIS_SERVICENAME:
-      type: configMap
-      name: env
-      key: REDIS_SERVICENAME
-    C2C_REDIS_TIMEOUT:
-      type: configMap
-      name: env
-      key: REDIS_TIMEOUT
-    C2C_BROADCAST_PREFIX:
-      type: configMap
-      name: env
-      key: LOGS_BROADCAST_PREFIX
-    SENTRY_URL:
-      type: configMap
-      name: env
-      key: SENTRY_URL
-    SENTRY_CLIENT_ENVIRONMENT:
-      type: configMap
-      name: env
-      key: RELEASE_NAME
-    SENTRY_CLIENT_RELEASE:
-      type: configMap
-      name: env
-      key: LOGS_IMAGE_TAG
-    SCM_URL:
-      type: configMap
-      name: env
-      key: SCM_URL
-    SCM_URL_EXTERNAL:
-      type: configMap
-      name: env
-      key: SCM_URL_EXTERNAL
-    ES_FILTERS:
-      type: configMap
-      name: env
-      key: ES_FILTERS
-    ES_AUTH:
-      type: configMap
-      name: env
-      key: ES_AUTH
-    PGPORT:
-      type: secret
-      name: postgresql-secret
-      key: port
-    PGHOST:
-      type: secret
-      name: postgresql-secret
-      key: hostnameSlave
-    PGHOST_MASTER:
-      type: secret
-      name: postgresql-secret
-      key: hostname
-    PGDATABASE:
-      type: secret
-      name: postgresql-secret
-      key: database
-    PGUSER:
-      type: secret
-      name: postgresql-secret
-      key: username
-    PGPASSWORD:
-      type: secret
-      name: postgresql-secret
-      key: password
-    DB_HOST:
-      type: secret
-      name: postgresql-secret
-      key: hostnameSlave
-    DB_DATABASE:
-      type: secret
-      name: postgresql-secret
-      key: database
-    DB_USERNAME:
-      type: secret
-      name: postgresql-secret
-      key: username
-    DB_PASSWORD:
-      type: secret
-      name: postgresql-secret
-      key: password
+  env: {}
   resources: {}
   service:
     type: ClusterIP
     port: 8080
+  config:
+    image: *config-image
+    env: {}
+    resources: {}
 
 dbstats:
+  enable: true
+  serviceName: dbstats
   image:
     repository: camptocamp/c2cwsgiutils
     tag: latest
     sha:
-  env:
-    LOG_LEVEL:
-      value: WARNING
-    LOG_TYPE:
-      value: json
-    C2C_REQUESTS_DEFAULT_TIMEOUT:
-      value: '30'
-    C2CWSGIUTILS_STATS_DB_TRYNUMBER:
-      value: '10'
-    C2CWSGIUTILS_STATS_DB_SLEEP:
-      value: '30'
-    SENTRY_TAG_SERVICE:
-      value: dbstats
-    STATSD_USE_TAGS:
-      value: '1'
-    SENTRY_URL:
-      type: configMap
-      name: env
-      key: SENTRY_URL
-    SENTRY_CLIENT_ENVIRONMENT:
-      type: configMap
-      name: env
-      key: RELEASE_NAME
-    SENTRY_CLIENT_RELEASE:
-      type: configMap
-      name: env
-      key: DBSTATS_IMAGE_TAG
-    STATSD_TAG_CHART:
-      type: configMap
-      name: env
-      key: CHART_NAME
-    STATSD_TAG_RELEASE:
-      type: configMap
-      name: env
-      key: RELEASE_NAME
-    STATSD_TAG_NAMESPACE:
-      type: configMap
-      name: env
-      key: RELEASE_NAMESPACE
-    PGHOST:
-      type: secret
-      name: postgresql-secret
-      key: hostnameSlave
-    PGDATABASE:
-      type: secret
-      name: postgresql-secret
-      key: database
-    PGUSER:
-      type: secret
-      name: postgresql-secret
-      key: username
-    PGPASSWORD:
-      type: secret
-      name: postgresql-secret
-      key: password
+  env: {}
   resources: {}
   prometheus: http://prometheus-pushgateway.gs-metrics.svc:9091/
 
@@ -425,9 +113,9 @@ podSecurityContext:
   # fsGroup: 2000
 
 securityContext:
-  runAsNonRoot: true
-  runAsUser: 33 # www-data
-  readOnlyRootFilesystem: true
+  {}
+  # runAsNonRoot: true
+  # runAsUser: 33 # www-data
   # capabilities:
   #   drop:
   #   - ALL

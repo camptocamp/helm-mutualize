@@ -1,0 +1,389 @@
+---
+# Source: mutualized/templates/logs-pdb.yaml
+apiVersion: policy/v1beta1
+kind: PodDisruptionBudget
+metadata:
+  name: test-mutualized-logs
+  labels:
+    helm.sh/chart: mutualized-0.1.0
+    app.kubernetes.io/version: "1.0"
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: mutualized
+    app.kubernetes.io/instance: test
+    app.kubernetes.io/component: logs
+spec:
+  maxUnavailable: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: mutualized
+      app.kubernetes.io/instance: test
+      app.kubernetes.io/component: logs
+---
+# Source: mutualized/templates/print-pdb.yaml
+apiVersion: policy/v1beta1
+kind: PodDisruptionBudget
+metadata:
+  name: test-mutualized-print
+  labels:
+    helm.sh/chart: mutualized-0.1.0
+    app.kubernetes.io/version: "1.0"
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: mutualized
+    app.kubernetes.io/instance: test
+    app.kubernetes.io/component: print
+spec:
+  maxUnavailable: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: mutualized
+      app.kubernetes.io/instance: test
+      app.kubernetes.io/component: print
+---
+# Source: mutualized/templates/secret.yaml
+apiVersion: v1
+kind: Secret
+type: Generic
+metadata:
+  name: test-mutualized
+  labels:
+    helm.sh/chart: mutualized-0.1.0
+    app.kubernetes.io/version: "1.0"
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: mutualized
+    app.kubernetes.io/instance: test
+    app.kubernetes.io/component: main
+data:
+  is_rsa: dG8gYmUgZGVmaW5lZA==
+---
+# Source: mutualized/templates/configmap.yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: test-mutualized-env
+  labels:
+    helm.sh/chart: mutualized-0.1.0
+    app.kubernetes.io/version: "1.0"
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: mutualized
+    app.kubernetes.io/instance: test
+    app.kubernetes.io/component: main
+data:
+  REDIS_SENTINELS: "rfs-redis-redisfailover:26379"
+  REDIS_DB: "0"
+  REDIS_SERVICENAME: mymaster
+  REDIS_TIMEOUT: "30"
+  SCM_BROADCAST_PREFIX: broadcast_scm_0_
+  LOGS_BROADCAST_PREFIX: broadcast_logs_0_
+  SENTRY_URL: https://@o330647.ingest.sentry.io/42
+  SQLALCHEMY_URL: "postgresql://$(DB_USERNAME):$(DB_PASSWORD)@$(DB_HOST):5432/$(DB_DATABASE)"
+  MUTUALIZED_PRINT_URL: chart-example.local
+  SCM_URL: http://test-mutualized-config:8080/scm/
+  SCM_URL_EXTERNAL: https://chart-example.local/scm
+  CHART_NAME: mutualized
+  RELEASE_NAME: test
+  RELEASE_NAMESPACE: default
+  ES_FILTERS: kubernetes.labels.release=test,kubernetes.labels.service=print
+  ES_AUTH: "Basic Og=="
+  CONFIG_IMAGE_TAG: "3.1"
+  LOGS_IMAGE_TAG: "1.2"
+  DBSTATS_IMAGE_TAG: "latest"
+  STATSD_PREFIX: mutualized.test.%h
+  CATALINA_OPTS: >-
+    -Dmapfish.maxContentLength=6291456
+    -DmaxNumberOfRunningPrintJobs=2
+    -Dsentry.dsn=https://:@o330647.ingest.sentry.io/42
+    -Dsentry.release=3.26
+    -Dsentry.environment=test
+    -Dsentry.tags=service:print
+    -Ddb.username=$(DB_USERNAME)
+    -Ddb.password=$(DB_PASSWORD)
+    -Ddb.host=$(DB_HOST)
+    -Ddb.name=$(DB_DATABASE)
+    -Ddb.schema=public
+    -DcacheDuration=60
+    -Dsun.net.inetaddr.ttl=30
+    -Xmx3072M
+    -Xms3072M
+    -XX:GCTimeLimit=70
+    -XX:GCHeapFreeLimit=10
+    -XX:+ExitOnOutOfMemoryError
+---
+# Source: mutualized/templates/logs-service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: test-mutualized-logs
+  labels:
+    helm.sh/chart: mutualized-0.1.0
+    app.kubernetes.io/version: "1.0"
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: mutualized
+    app.kubernetes.io/instance: test
+    app.kubernetes.io/component: logs
+spec:
+  type: ClusterIP
+  ports:
+    - port: 8080
+      targetPort: http
+      protocol: TCP
+      name: http
+  selector:
+    app.kubernetes.io/name: mutualized
+    app.kubernetes.io/instance: test
+    app.kubernetes.io/component: logs
+---
+# Source: mutualized/templates/print-service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: test-mutualized-print
+  labels:
+    helm.sh/chart: mutualized-0.1.0
+    app.kubernetes.io/version: "1.0"
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: mutualized
+    app.kubernetes.io/instance: test
+    app.kubernetes.io/component: print
+spec:
+  type: ClusterIP
+  ports:
+    - port: 8080
+      targetPort: http
+      protocol: TCP
+      name: http
+  selector:
+    app.kubernetes.io/name: mutualized
+    app.kubernetes.io/instance: test
+    app.kubernetes.io/component: print
+---
+# Source: mutualized/templates/shared-config-service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: test-mutualized-config
+  labels:
+    helm.sh/chart: mutualized-0.1.0
+    app.kubernetes.io/version: "1.0"
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: mutualized
+    app.kubernetes.io/instance: test
+    app.kubernetes.io/component: config
+spec:
+  type: ClusterIP
+  ports:
+    - port: 8080
+      targetPort: http
+      protocol: TCP
+      name: http
+  selector:
+    app.kubernetes.io/name: mutualized
+    app.kubernetes.io/instance: test
+    app.kubernetes.io/component: config
+---
+# Source: mutualized/templates/print-deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: test-mutualized-print
+  labels:
+    helm.sh/chart: mutualized-0.1.0
+    app.kubernetes.io/version: "1.0"
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: mutualized
+    app.kubernetes.io/instance: test
+    app.kubernetes.io/component: print
+spec:
+  replicas: 1
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 25%
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: mutualized
+      app.kubernetes.io/instance: test
+      app.kubernetes.io/component: print
+  template:
+    metadata:
+      labels:
+        helm.sh/chart: mutualized-0.1.0
+        app.kubernetes.io/version: "1.0"
+        app.kubernetes.io/managed-by: Helm
+        app.kubernetes.io/name: mutualized
+        app.kubernetes.io/instance: test
+        app.kubernetes.io/component: print
+    spec:
+
+      serviceAccountName: default
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 33
+      affinity:
+        {}
+      containers:
+        - name: config
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: 33
+          image: "camptocamp/shared_config_manager:3.1"
+          imagePullPolicy: IfNotPresent
+          env:
+              - name: "API_BASE_URL"
+                valueFrom:
+                  configMapKeyRef:
+                    name: "test-mutualized-env"
+                    key: "SCM_URL"
+              - name: "C2C_BROADCAST_PREFIX"
+                value: "broadcast_scm_1_"
+              - name: "C2C_REDIS_TIMEOUT"
+                value: "30"
+              - name: "C2C_REDIS_URL"
+                value: "redis://test-redis-master/1"
+              - name: "C2C_SECRET"
+                value: "secret"
+              - name: "LOG_LEVEL"
+                value: "DEBUG"
+              - name: "LOG_TYPE"
+                value: "console"
+              - name: "MASTER_CONFIG"
+                value: "type: git\nrepo: 'https://github.com/camptocamp/helm-mutualized.git'\nbranch: add-tests\nkey: secret\nsub_dir: tests/shared-config\nsparse: false\n"
+          terminationMessagePolicy: FallbackToLogsOnError
+          resources:
+            {}
+          args: ['shared-config-slave']
+          volumeMounts:
+            - mountPath: /config
+              name: configs
+          readinessProbe: &configProbe
+            exec:
+              command:
+                - scm-is-ready
+            initialDelaySeconds: 30
+            periodSeconds: 30
+            failureThreshold: 5
+          livenessProbe:
+            <<: *configProbe
+            failureThreshold: 50
+        - name: print
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: 33
+          image: "camptocamp/mapfish_print:3.26"
+          imagePullPolicy: IfNotPresent
+          terminationMessagePolicy: FallbackToLogsOnError
+          resources:
+            {}
+          volumeMounts:
+            - mountPath: /usr/local/tomcat/webapps/ROOT/print-apps
+              name: configs
+          ports:
+            - name: http
+              containerPort: 8080
+              protocol: TCP
+          readinessProbe:
+            httpGet:
+              path: /metrics/ping?health_check=true
+              port: http
+            initialDelaySeconds: 15
+          livenessProbe:
+            exec:
+              # Be sure that the EPSG 2056 exists, see: https://jira.camptocamp.com/browse/GSGMF-1606
+              command:
+                - curl
+                - http://localhost:8080/print/examples:simple/buildreport.pdf
+                - --data-raw
+                - spec=%7B%0D%0A++++%22layout%22%3A+%22A4+portrait%22%2C%0D%0A++++%22attributes%22%3A+%7B%22map%22%3A+%7B%0D%0A++++++++%22center%22%3A+%5B%0D%0A++++++++++++1200000%2C%0D%0A++++++++++++2600000%0D%0A++++++++%5D%2C%0D%0A++++++++%22rotation%22%3A+0%2C%0D%0A++++++++%22longitudeFirst%22%3A+true%2C%0D%0A++++++++%22layers%22%3A+%5B%5D%2C%0D%0A++++++++%22scale%22%3A+100000000%2C%0D%0A++++++++%22projection%22%3A+%22EPSG%3A2056%22%2C%0D%0A++++++++%22dpi%22%3A+72%0D%0A++++%7D%7D%0D%0A%7D
+            initialDelaySeconds: 15
+            failureThreshold: 50
+          lifecycle:
+            preStop:
+              exec:
+                command: ['/bin/bash', '-c', '/usr/local/tomcat/bin/docker_pre_stop_print.sh 120 || true']
+      volumes:
+        - name: configs
+          emptyDir: {}
+---
+# Source: mutualized/templates/shared-config-deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: test-mutualized-config
+  labels:
+    helm.sh/chart: mutualized-0.1.0
+    app.kubernetes.io/version: "1.0"
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: mutualized
+    app.kubernetes.io/instance: test
+    app.kubernetes.io/component: config
+spec:
+  replicas: 1
+  strategy:
+    type: RollingUpdate
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: mutualized
+      app.kubernetes.io/instance: test
+      app.kubernetes.io/component: config
+  template:
+    metadata:
+      labels:
+        helm.sh/chart: mutualized-0.1.0
+        app.kubernetes.io/version: "1.0"
+        app.kubernetes.io/managed-by: Helm
+        app.kubernetes.io/name: mutualized
+        app.kubernetes.io/instance: test
+        app.kubernetes.io/component: config
+    spec:
+
+      serviceAccountName: default
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 33
+      affinity:
+        {}
+      containers:
+        - name: shared-config
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: 33
+          image: "camptocamp/shared_config_manager:3.1"
+          imagePullPolicy: IfNotPresent
+          env:
+              - name: "API_MASTER"
+                value: "1"
+              - name: "C2C_BROADCAST_PREFIX"
+                value: "broadcast_scm_1_"
+              - name: "C2C_REDIS_TIMEOUT"
+                value: "30"
+              - name: "C2C_REDIS_URL"
+                value: "redis://test-redis-master/1"
+              - name: "C2C_SECRET"
+                value: "secret"
+              - name: "LOG_LEVEL"
+                value: "DEBUG"
+              - name: "LOG_TYPE"
+                value: "console"
+              - name: "MASTER_CONFIG"
+                value: "type: git\nrepo: 'https://github.com/camptocamp/helm-mutualized.git'\nbranch: add-tests\nkey: secret\nsub_dir: tests/shared-config\nsparse: false\n"
+          terminationMessagePolicy: FallbackToLogsOnError
+          resources:
+            {}
+          ports:
+            - name: http
+              containerPort: 8080
+              protocol: TCP
+          readinessProbe:
+            httpGet:
+              path: /scm/c2c/health_check
+              port: http
+            initialDelaySeconds: 10
+          volumeMounts:
+            - name: ssh-key
+              readOnly: true
+              mountPath: /var/www/.ssh2
+      volumes:
+        - name: ssh-key
+          secret:
+            secretName: test-mutualized
+            defaultMode: 0440
