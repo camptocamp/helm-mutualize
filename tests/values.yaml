@@ -11,7 +11,7 @@ config-env-base: &config-env-base
     value: |
       type: git
       repo: 'https://github.com/camptocamp/helm-mutualized.git'
-      branch: add-tests
+      branch: master
       key: secret
       sub_dir: tests/shared-config
       sparse: false
