@@ -10,12 +10,11 @@ data:
   REDIS_SERVICENAME: {{ .Values.redis.servicename }}
   REDIS_TIMEOUT: {{ .Values.redis.timeout | quote }}
   SCM_BROADCAST_PREFIX: broadcast_scm_{{ .Values.redis.db }}_
-  LOGS_BROADCAST_PREFIX: broadcast_scm_{{ .Values.redis.db }}_
+  LOGS_BROADCAST_PREFIX: broadcast_logs_{{ .Values.redis.db }}_
   SENTRY_URL: https://{{ .Values.sentry.key }}@{{ .Values.sentry.hostname }}/{{ .Values.sentry.project }}
-  API_BASE_URL: http://{{ template "common.fullname" ( dict "root" . "service" .Values ) }}-shared-config/scm
   SQLALCHEMY_URL: "postgresql://$(DB_USERNAME):$(DB_PASSWORD)@$(DB_HOST):5432/$(DB_DATABASE)"
   MUTUALIZED_PRINT_URL: {{ (index .Values.ingress.hosts 0).host }}
-  SCM_URL: http://{{ $fullname }}-shared-config/scm/
+  SCM_URL: http://{{ $fullname }}-config:8080/scm/
   SCM_URL_EXTERNAL: https://{{ (index .Values.ingress.hosts 0).host }}/scm
   CHART_NAME: {{ .Chart.Name }}
   RELEASE_NAME: {{ .Release.Name }}

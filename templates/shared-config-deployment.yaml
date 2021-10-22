@@ -29,9 +29,9 @@ spec:
           volumeMounts:
             - name: ssh-key
               readOnly: true
-              mountPath: "/var/www/.ssh2"
+              mountPath: /var/www/.ssh2
       volumes:
         - name: ssh-key
           secret:
-            secretName: secrets-ssh-key
+            secretName: {{ include "common.fullname" ( dict "root" . "service" .Values ) }}
             defaultMode: 0440

@@ -1,0 +1,84 @@
+configMapNameOverride: &config-map-name-override
+  env: test-mutualized-env
+  scm-master-config: test-mutualized-env
+
+config-env-base: &config-env-base
+  LOG_TYPE:
+    value: console
+  LOG_LEVEL:
+    value: DEBUG
+  MASTER_CONFIG:
+    value: |
+      type: git
+      repo: 'https://github.com/camptocamp/helm-mutualized.git'
+      branch: add-tests
+      key: secret
+      sub_dir: tests/shared-config
+      sparse: false
+  C2C_REDIS_URL:
+    value: redis://test-redis-master/1
+  C2C_BROADCAST_PREFIX:
+    value: broadcast_scm_1_
+  C2C_SECRET:
+    value: secret
+  C2C_REDIS_TIMEOUT:
+    value: 30
+
+config:
+  image: &config-image
+    tag: 3.1
+  env:
+    <<: *config-env-base
+    API_MASTER:
+      value: '1'
+  configMapNameOverride: *config-map-name-override
+
+print:
+  image:
+    tag: 3.26
+  configMapNameOverride: *config-map-name-override
+  config:
+    image: *config-image
+    env: &config-env-slave
+      <<: *config-env-base
+      API_BASE_URL:
+        type: configMap
+        name: env
+        key: SCM_URL
+    configMapNameOverride: *config-map-name-override
+
+logs:
+  enable: false
+  configMapNameOverride: *config-map-name-override
+  image:
+    tag: 1.2
+
+  env:
+    SQLALCHEMY_URL:
+      value: postgresql://postgres:mySuperTestingPassword@test-pg-postgresql:5432/
+    C2C_REDIS_URL:
+      value: redis://test-redis-master/2
+    C2C_BROADCAST_PREFIX:
+      value: broadcast_scm_2_
+    SOURCES_KEY:
+      value: secret
+    C2C_SECRET:
+      value: secret
+    SHARED_CONFIG_MASTER:
+      value: /master_config/master/shared_config_manager.yaml
+
+  config:
+    image: *config-image
+    env:
+      <<: *config-env-slave
+      TAG_FILTER:
+        value: master
+    configMapNameOverride: *config-map-name-override
+
+dbstats:
+  enable: false
+  configMapNameOverride: *config-map-name-override
+
+securityContext:
+  runAsNonRoot: true
+  runAsUser: 33 # www-data
