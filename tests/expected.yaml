@@ -247,7 +247,7 @@ spec:
               - name: "LOG_TYPE"
                 value: "console"
               - name: "MASTER_CONFIG"
-                value: "type: git\nrepo: 'https://github.com/camptocamp/helm-mutualized.git'\nbranch: add-tests\nkey: secret\nsub_dir: tests/shared-config\nsparse: false\n"
+                value: "type: git\nrepo: 'https://github.com/camptocamp/helm-mutualized.git'\nbranch: master\nkey: secret\nsub_dir: tests/shared-config\nsparse: false\n"
           terminationMessagePolicy: FallbackToLogsOnError
           resources:
             {}
@@ -365,7 +365,7 @@ spec:
               - name: "LOG_TYPE"
                 value: "console"
               - name: "MASTER_CONFIG"
-                value: "type: git\nrepo: 'https://github.com/camptocamp/helm-mutualized.git'\nbranch: add-tests\nkey: secret\nsub_dir: tests/shared-config\nsparse: false\n"
+                value: "type: git\nrepo: 'https://github.com/camptocamp/helm-mutualized.git'\nbranch: master\nkey: secret\nsub_dir: tests/shared-config\nsparse: false\n"
           terminationMessagePolicy: FallbackToLogsOnError
           resources:
             {}
