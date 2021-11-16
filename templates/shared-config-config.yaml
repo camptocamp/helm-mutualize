@@ -1,0 +1,10 @@
+apiVersion: camptocamp.com/v1
+kind: SharedConfigConfig
+metadata:
+  name: {{ include "common.fullname" ( dict "root" . "service" .Values.config ) }}
+  labels: {{ include "common.labels" ( dict "root" . "service" .Values.config ) | nindent 4 }}
+spec:
+  matchLabels:
+    mutualized-print-config: 'true'
+  property: sources
+  configmap_name: shared_config_manager.yaml

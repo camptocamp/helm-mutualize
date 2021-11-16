@@ -44,6 +44,11 @@ jobs:
       - name: Setup k3s/k3d
         run: c2cciutils-k8s-install
 
+      # Install operator
+      - run: helm repo add operator-shared-config-manager https://camptocamp.github.io/operator-shared-config-manager
+      - run: helm install operator-shared-config-manager --set=image.tag=0.1.0 --version=0.1.0 operator-shared-config-manager/operator-shared-config-manager
+
+      # Install Redis
       - run: helm repo add bitnami https://charts.bitnami.com/bitnami
       - run: helm install test-redis --set=auth.enabled=false --set=replica.replicaCount=0 --set=master.persistence.enabled=false bitnami/redis
 
