@@ -37,6 +37,8 @@ print:
   image:
     tag: 3.26
   configMapNameOverride: *config-map-name-override
+  annotations:
+    reloader.stakater.com/auto: 'true'
   config:
     image: *config-image
     env: &config-env-slave

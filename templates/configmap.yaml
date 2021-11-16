@@ -4,6 +4,7 @@ kind: ConfigMap
 metadata:
   name: {{ include "common.fullname" ( dict "root" . "service" .Values ) }}-env
   labels: {{ include "common.labels" ( dict "root" . "service" .Values ) | nindent 4 }}
+  annotations: {{- toYaml .Values.envConfigMap.annotations | nindent 4 }}
 data:
   REDIS_SENTINELS: "{{ .Values.redis.host }}:{{ .Values.redis.port }}"
   REDIS_DB: {{ .Values.redis.db | quote }}

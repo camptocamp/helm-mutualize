@@ -4,6 +4,7 @@ kind: CronJob
 metadata:
   name: {{ include "common.fullname" ( dict "root" . "service" .Values.dbstats ) }}
   labels: {{ include "common.labels" ( dict "root" . "service" .Values.dbstats ) | nindent 4 }}
+  annotations: {{- toYaml .Values.dbstats.annotations | nindent 4 }}
 spec:
   schedule: "{{ mod (regexReplaceAll "[a-f]+" (printf "%s-%s" .Release.Namespace .Release.Name | sha256sum) "" | trunc 5) 60 }} * * * *"
   successfulJobsHistoryLimit: 0

@@ -67,6 +67,8 @@ metadata:
     app.kubernetes.io/name: mutualized
     app.kubernetes.io/instance: test
     app.kubernetes.io/component: main
+  annotations:
+    {}
 data:
   REDIS_SENTINELS: "rfs-redis-redisfailover:26379"
   REDIS_DB: "0"
@@ -192,6 +194,8 @@ metadata:
     app.kubernetes.io/name: mutualized
     app.kubernetes.io/instance: test
     app.kubernetes.io/component: print
+  annotations:
+    reloader.stakater.com/auto: "true"
 spec:
   replicas: 1
   strategy:
@@ -316,6 +320,8 @@ metadata:
     app.kubernetes.io/name: mutualized
     app.kubernetes.io/instance: test
     app.kubernetes.io/component: config
+  annotations:
+    {}
 spec:
   replicas: 1
   strategy:
