@@ -12,6 +12,9 @@ image:
 
 sshKey: to be defined
 
+envConfigMap:
+  annotations: {}
+
 config:
   serviceName: config
   replicaCount: 1
@@ -20,6 +23,7 @@ config:
     tag: latest
     sha:
   env: {}
+  annotations: {}
   resources: {}
   service:
     type: ClusterIP
@@ -34,6 +38,7 @@ print:
     tag: latest
     hash:
   env: {}
+  annotations: {}
   maxContentLength: '6291456'
   maxNumberOfRunningPrintJobs: 2
   cacheDurationSeconds: 60
@@ -58,6 +63,7 @@ logs:
     tag: latest
     sha:
   env: {}
+  annotations: {}
   resources: {}
   service:
     type: ClusterIP
@@ -75,6 +81,7 @@ dbstats:
     tag: latest
     sha:
   env: {}
+  annotations: {}
   resources: {}
   prometheus: http://prometheus-pushgateway.gs-metrics.svc:9091/
 

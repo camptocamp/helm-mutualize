@@ -3,6 +3,7 @@ kind: Deployment
 metadata:
   name: {{ include "common.fullname" ( dict "root" . "service" .Values.print ) }}
   labels: {{ include "common.labels" ( dict "root" . "service" .Values.print ) | nindent 4 }}
+  annotations: {{- toYaml .Values.print.annotations | nindent 4 }}
 spec:
   replicas: {{ .Values.config.replicaCount }}
   strategy:

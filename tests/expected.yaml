@@ -67,6 +67,8 @@ metadata:
     app.kubernetes.io/name: mutualized
     app.kubernetes.io/instance: test
     app.kubernetes.io/component: main
+  annotations:
+    {}
 data:
   REDIS_SENTINELS: "rfs-redis-redisfailover:26379"
   REDIS_DB: "0"
@@ -192,6 +194,8 @@ metadata:
     app.kubernetes.io/name: mutualized
     app.kubernetes.io/instance: test
     app.kubernetes.io/component: print
+  annotations:
+    reloader.stakater.com/auto: "true"
 spec:
   replicas: 1
   strategy:
@@ -316,6 +320,8 @@ metadata:
     app.kubernetes.io/name: mutualized
     app.kubernetes.io/instance: test
     app.kubernetes.io/component: config
+  annotations:
+    {}
 spec:
   replicas: 1
   strategy:
@@ -387,3 +393,21 @@ spec:
           secret:
             secretName: test-mutualized
             defaultMode: 0440
+---
+# Source: mutualized/templates/shared-config-config.yaml
+apiVersion: camptocamp.com/v1
+kind: SharedConfigConfig
+metadata:
+  name: test-mutualized-config
+  labels:
+    helm.sh/chart: mutualized-0.1.0
+    app.kubernetes.io/version: "1.0"
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: mutualized
+    app.kubernetes.io/instance: test
+    app.kubernetes.io/component: config
+spec:
+  matchLabels:
+    mutualized-print-config: 'true'
+  property: sources
+  configmap_name: shared_config_manager.yaml
