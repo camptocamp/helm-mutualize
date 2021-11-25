@@ -84,3 +84,11 @@ dbstats:
 securityContext:
   runAsNonRoot: true
   runAsUser: 33 # www-data
+
+ingress:
+  enabled: true
+  hosts:
+    - name: main
+      host: mutualize.local
+      paths:
+        - /

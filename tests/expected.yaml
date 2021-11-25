@@ -78,9 +78,9 @@ data:
   LOGS_BROADCAST_PREFIX: broadcast_logs_0_
   SENTRY_URL: https://@o330647.ingest.sentry.io/42
   SQLALCHEMY_URL: "postgresql://$(DB_USERNAME):$(DB_PASSWORD)@$(DB_HOST):5432/$(DB_DATABASE)"
-  MUTUALIZED_PRINT_URL: chart-example.local
+  MUTUALIZED_PRINT_URL: mutualize.local
   SCM_URL: http://test-mutualized-config:8080/scm/
-  SCM_URL_EXTERNAL: https://chart-example.local/scm
+  SCM_URL_EXTERNAL: https://mutualize.local/scm
   CHART_NAME: mutualized
   RELEASE_NAME: test
   RELEASE_NAMESPACE: default
@@ -393,6 +393,38 @@ spec:
           secret:
             secretName: test-mutualized
             defaultMode: 0440
+---
+# Source: mutualized/templates/ingress.yaml
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: test-mutualized-main
+  labels:
+    helm.sh/chart: mutualized-0.1.0
+    app.kubernetes.io/version: "1.0"
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: mutualized
+    app.kubernetes.io/instance: test
+    app.kubernetes.io/component: main
+spec:
+  rules:
+    - host: mutualize.local
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: test-mutualized
+                port:
+                  number: 8080
+          - path: /logs
+            pathType: Prefix
+            backend:
+              service:
+                name: test-mutualized-logs
+                port:
+                  number: 8080
 ---
 # Source: mutualized/templates/shared-config-config.yaml
 apiVersion: camptocamp.com/v1
