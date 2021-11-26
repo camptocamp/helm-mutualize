@@ -1,44 +1,4 @@
 ---
-# Source: mutualize/templates/logs-pdb.yaml
-apiVersion: policy/v1beta1
-kind: PodDisruptionBudget
-metadata:
-  name: test-mutualize-logs
-  labels:
-    helm.sh/chart: mutualize-0.1.0
-    app.kubernetes.io/version: "1.0"
-    app.kubernetes.io/managed-by: Helm
-    app.kubernetes.io/name: mutualize
-    app.kubernetes.io/instance: test
-    app.kubernetes.io/component: logs
-spec:
-  maxUnavailable: 1
-  selector:
-    matchLabels:
-      app.kubernetes.io/name: mutualize
-      app.kubernetes.io/instance: test
-      app.kubernetes.io/component: logs
----
-# Source: mutualize/templates/print-pdb.yaml
-apiVersion: policy/v1beta1
-kind: PodDisruptionBudget
-metadata:
-  name: test-mutualize-print
-  labels:
-    helm.sh/chart: mutualize-0.1.0
-    app.kubernetes.io/version: "1.0"
-    app.kubernetes.io/managed-by: Helm
-    app.kubernetes.io/name: mutualize
-    app.kubernetes.io/instance: test
-    app.kubernetes.io/component: print
-spec:
-  maxUnavailable: 1
-  selector:
-    matchLabels:
-      app.kubernetes.io/name: mutualize
-      app.kubernetes.io/instance: test
-      app.kubernetes.io/component: print
----
 # Source: mutualize/templates/tilecloudchain-pdb.yaml
 apiVersion: policy/v1beta1
 kind: PodDisruptionBudget
@@ -98,15 +58,13 @@ data:
   LOGS_BROADCAST_PREFIX: broadcast_logs_0_
   SENTRY_URL: https://@o330647.ingest.sentry.io/42
   SQLALCHEMY_URL: "postgresql://$(DB_USERNAME):$(DB_PASSWORD)@$(DB_HOST):5432/$(DB_DATABASE)"
-  MUTUALIZED_PRINT_URL: mutualize.local
   SCM_URL: http://test-mutualize-config:8080/scm/
-  SCM_URL_EXTERNAL: https://mutualize.local/scm
   CHART_NAME: mutualize
   RELEASE_NAME: test
   RELEASE_NAMESPACE: default
   ES_FILTERS: kubernetes.labels.release=test,kubernetes.labels.service=print
   ES_AUTH: "Basic Og=="
-  CONFIG_IMAGE_TAG: "master"
+  CONFIG_IMAGE_TAG: "3.1"
   LOGS_IMAGE_TAG: "latest"
   DBSTATS_IMAGE_TAG: "latest"
   STATSD_PREFIX: mutualize.test.%h
@@ -114,7 +72,7 @@ data:
     -Dmapfish.maxContentLength=6291456
     -DmaxNumberOfRunningPrintJobs=2
     -Dsentry.dsn=https://:@o330647.ingest.sentry.io/42
-    -Dsentry.release=3.26
+    -Dsentry.release=latest
     -Dsentry.environment=test
     -Dsentry.tags=service:print
     -Ddb.username=$(DB_USERNAME)
@@ -144,14 +102,8 @@ metadata:
     app.kubernetes.io/component: tilecloudchain
 data:
   config.yaml: |
-    redis:
-      socket_timeout: 10
-      url: redis://test-redis-master:6379/2
-    server:
-      admin_path: tiles/admin
-      expires: 8
-      static_path: tiles/static
-      wmts_path: tiles
+    test: 111
+    toto: 222
 ---
 # Source: mutualize/templates/logs-service.yaml
 apiVersion: v1
@@ -176,30 +128,6 @@ spec:
     app.kubernetes.io/name: mutualize
     app.kubernetes.io/instance: test
     app.kubernetes.io/component: logs
----
-# Source: mutualize/templates/print-service.yaml
-apiVersion: v1
-kind: Service
-metadata:
-  name: test-mutualize-print
-  labels:
-    helm.sh/chart: mutualize-0.1.0
-    app.kubernetes.io/version: "1.0"
-    app.kubernetes.io/managed-by: Helm
-    app.kubernetes.io/name: mutualize
-    app.kubernetes.io/instance: test
-    app.kubernetes.io/component: print
-spec:
-  type: ClusterIP
-  ports:
-    - port: 8080
-      targetPort: http
-      protocol: TCP
-      name: http
-  selector:
-    app.kubernetes.io/name: mutualize
-    app.kubernetes.io/instance: test
-    app.kubernetes.io/component: print
 ---
 # Source: mutualize/templates/shared-config-service.yaml
 apiVersion: v1
@@ -249,230 +177,6 @@ spec:
     app.kubernetes.io/instance: test
     app.kubernetes.io/component: tilecloudchain
 ---
-# Source: mutualize/templates/logs-deployment.yaml
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: test-mutualize-logs
-  labels:
-    helm.sh/chart: mutualize-0.1.0
-    app.kubernetes.io/version: "1.0"
-    app.kubernetes.io/managed-by: Helm
-    app.kubernetes.io/name: mutualize
-    app.kubernetes.io/instance: test
-    app.kubernetes.io/component: logs
-  annotations:
-    {}
-spec:
-  replicas: 1
-  strategy:
-    type: RollingUpdate
-  selector:
-    matchLabels:
-      app.kubernetes.io/name: mutualize
-      app.kubernetes.io/instance: test
-      app.kubernetes.io/component: logs
-  template:
-    metadata:
-      labels:
-        helm.sh/chart: mutualize-0.1.0
-        app.kubernetes.io/version: "1.0"
-        app.kubernetes.io/managed-by: Helm
-        app.kubernetes.io/name: mutualize
-        app.kubernetes.io/instance: test
-        app.kubernetes.io/component: logs
-    spec:
-
-      serviceAccountName: default
-      securityContext:
-        runAsNonRoot: true
-        runAsUser: 33
-      affinity:
-        {}
-      containers:
-        - name: logs
-          securityContext:
-            runAsNonRoot: true
-            runAsUser: 33
-          image: "camptocamp/mapfish-print-logs:latest"
-          imagePullPolicy: IfNotPresent
-          env:
-              - name: "C2C_BROADCAST_PREFIX"
-                valueFrom:
-                  configMapKeyRef:
-                    name: "test-mutualize-env"
-                    key: "LOGS_BROADCAST_PREFIX"
-              - name: "C2C_REDIS_URL"
-                value: "redis://test-redis-master/2"
-              - name: "C2C_SECRET"
-                value: "secret"
-              - name: "ES_INDEXES"
-                value: "print"
-              - name: "SHARED_CONFIG_MASTER"
-                value: "/master_config/master/shared_config_manager.yaml"
-              - name: "SOURCES_KEY"
-                value: "secret"
-              - name: "SQLALCHEMY_URL"
-                value: "postgresql://postgres:mySuperTestingPassword@test-pg-postgresql:5432/"
-          terminationMessagePolicy: FallbackToLogsOnError
-          resources:
-            {}
-          volumeMounts:
-            - mountPath: /master_config
-              name: master-config
-          ports:
-            - name: http
-              containerPort: 8080
-              protocol: TCP
-          readinessProbe:
-            httpGet:
-              path: /logs/c2c/health_check
-              port: http
-            initialDelaySeconds: 15
-          livenessProbe:
-            httpGet:
-              path: /logs/c2c/health_check?max_level=0
-              port: http
-            initialDelaySeconds: 20
-            failureThreshold: 50
-      volumes:
-        - name: master-config
-          configMap:
-            name: test-mutualize-config
----
-# Source: mutualize/templates/print-deployment.yaml
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: test-mutualize-print
-  labels:
-    helm.sh/chart: mutualize-0.1.0
-    app.kubernetes.io/version: "1.0"
-    app.kubernetes.io/managed-by: Helm
-    app.kubernetes.io/name: mutualize
-    app.kubernetes.io/instance: test
-    app.kubernetes.io/component: print
-  annotations:
-    reloader.stakater.com/auto: "true"
-spec:
-  replicas:
-  strategy:
-    type: RollingUpdate
-    rollingUpdate:
-      maxSurge: 1
-      maxUnavailable: 25%
-  selector:
-    matchLabels:
-      app.kubernetes.io/name: mutualize
-      app.kubernetes.io/instance: test
-      app.kubernetes.io/component: print
-  template:
-    metadata:
-      labels:
-        helm.sh/chart: mutualize-0.1.0
-        app.kubernetes.io/version: "1.0"
-        app.kubernetes.io/managed-by: Helm
-        app.kubernetes.io/name: mutualize
-        app.kubernetes.io/instance: test
-        app.kubernetes.io/component: print
-    spec:
-
-      serviceAccountName: default
-      securityContext:
-        runAsNonRoot: true
-        runAsUser: 33
-      affinity:
-        {}
-      containers:
-        - name: config
-          securityContext:
-            runAsNonRoot: true
-            runAsUser: 33
-          image: "camptocamp/shared_config_manager:master"
-          imagePullPolicy: IfNotPresent
-          env:
-              - name: "API_BASE_URL"
-                valueFrom:
-                  configMapKeyRef:
-                    name: "test-mutualize-env"
-                    key: "SCM_URL"
-              - name: "C2C_BROADCAST_PREFIX"
-                valueFrom:
-                  configMapKeyRef:
-                    name: "test-mutualize-env"
-                    key: "SCM_BROADCAST_PREFIX"
-              - name: "C2C_REDIS_TIMEOUT"
-                value: "30"
-              - name: "C2C_REDIS_URL"
-                value: "redis://test-redis-master/1"
-              - name: "C2C_SECRET"
-                value: "secret"
-              - name: "LOG_LEVEL"
-                value: "DEBUG"
-              - name: "LOG_TYPE"
-                value: "console"
-              - name: "MASTER_CONFIG"
-                value: "{\"sources\": {}}"
-              - name: "TAG_FILTER"
-                value: "print"
-              - name: "TARGET"
-                value: "/config"
-          terminationMessagePolicy: FallbackToLogsOnError
-          resources:
-            {}
-          args: ['shared-config-slave']
-          volumeMounts:
-            - mountPath: /config
-              name: configs
-          readinessProbe: &configProbe
-            exec:
-              command:
-                - scm-is-ready
-            initialDelaySeconds: 30
-            periodSeconds: 30
-            failureThreshold: 5
-          livenessProbe:
-            <<: *configProbe
-            failureThreshold: 50
-        - name: print
-          securityContext:
-            runAsNonRoot: true
-            runAsUser: 33
-          image: "camptocamp/mapfish_print:3.26"
-          imagePullPolicy: IfNotPresent
-          terminationMessagePolicy: FallbackToLogsOnError
-          resources:
-            {}
-          volumeMounts:
-            - mountPath: /usr/local/tomcat/webapps/ROOT/print-apps
-              name: configs
-          ports:
-            - name: http
-              containerPort: 8080
-              protocol: TCP
-          readinessProbe:
-            httpGet:
-              path: /metrics/ping?health_check=true
-              port: http
-            initialDelaySeconds: 15
-          livenessProbe:
-            exec:
-              # Be sure that the EPSG 2056 exists, see: https://jira.camptocamp.com/browse/GSGMF-1606
-              command:
-                - curl
-                - http://localhost:8080/print/examples:simple/buildreport.pdf
-                - --data-raw
-                - spec=%7B%0D%0A++++%22layout%22%3A+%22A4+portrait%22%2C%0D%0A++++%22attributes%22%3A+%7B%22map%22%3A+%7B%0D%0A++++++++%22center%22%3A+%5B%0D%0A++++++++++++1200000%2C%0D%0A++++++++++++2600000%0D%0A++++++++%5D%2C%0D%0A++++++++%22rotation%22%3A+0%2C%0D%0A++++++++%22longitudeFirst%22%3A+true%2C%0D%0A++++++++%22layers%22%3A+%5B%5D%2C%0D%0A++++++++%22scale%22%3A+100000000%2C%0D%0A++++++++%22projection%22%3A+%22EPSG%3A2056%22%2C%0D%0A++++++++%22dpi%22%3A+72%0D%0A++++%7D%7D%0D%0A%7D
-            initialDelaySeconds: 15
-            failureThreshold: 50
-          lifecycle:
-            preStop:
-              exec:
-                command: ['/bin/bash', '-c', '/usr/local/tomcat/bin/docker_pre_stop_print.sh 120 || true']
-      volumes:
-        - name: configs
-          emptyDir: {}
----
 # Source: mutualize/templates/shared-config-deployment.yaml
 apiVersion: apps/v1
 kind: Deployment
@@ -518,7 +222,7 @@ spec:
           securityContext:
             runAsNonRoot: true
             runAsUser: 33
-          image: "camptocamp/shared_config_manager:master"
+          image: "camptocamp/shared_config_manager:3.1"
           imagePullPolicy: IfNotPresent
           env:
               - name: "API_BASE_URL"
@@ -618,7 +322,7 @@ spec:
           securityContext:
             runAsNonRoot: true
             runAsUser: 33
-          image: "camptocamp/shared_config_manager:master"
+          image: "camptocamp/shared_config_manager:3.1"
           imagePullPolicy: IfNotPresent
           env:
               - name: "API_BASE_URL"
@@ -642,7 +346,7 @@ spec:
               - name: "LOG_TYPE"
                 value: "console"
               - name: "MASTER_CONFIG"
-                value: "{\"sources\": {}}"
+                value: "type: git\nrepo: 'https://github.com/camptocamp/helm-mutualize.git'\nbranch: master\nkey: secret\nsub_dir: tests/shared-config\nsparse: false\n"
               - name: "TAG_FILTER"
                 value: "tilecloudchain"
               - name: "TARGET"
@@ -668,7 +372,7 @@ spec:
           securityContext:
             runAsNonRoot: true
             runAsUser: 33
-          image: "camptocamp/tilecloud-chain:master"
+          image: "camptocamp/tilecloud-chain:latest"
           imagePullPolicy: IfNotPresent
           env:
               - name: "C2C_BROADCAST_PREFIX"
@@ -715,37 +419,60 @@ spec:
           configMap:
             name: test-mutualize-tilecloud-main-config
 ---
-# Source: mutualize/templates/ingress.yaml
-apiVersion: networking.k8s.io/v1
-kind: Ingress
+# Source: mutualize/templates/dbstats-cronjob.yaml
+apiVersion: batch/v1
+kind: CronJob
 metadata:
-  name: test-mutualize-main
+  name: test-mutualize-dbstats
   labels:
     helm.sh/chart: mutualize-0.1.0
     app.kubernetes.io/version: "1.0"
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: mutualize
     app.kubernetes.io/instance: test
-    app.kubernetes.io/component: main
+    app.kubernetes.io/component: dbstats
+  annotations:
+    {}
 spec:
-  rules:
-    - host: mutualize.local
-      http:
-        paths:
-          - path: /
-            pathType: Prefix
-            backend:
-              service:
-                name: test-mutualize
-                port:
-                  number: 8080
-          - path: /logs
-            pathType: Prefix
-            backend:
-              service:
-                name: test-mutualize-logs
-                port:
-                  number: 8080
+  schedule: "32 * * * *"
+  successfulJobsHistoryLimit: 0
+  failedJobsHistoryLimit: 1
+  concurrencyPolicy: Forbid
+  jobTemplate:
+    spec:
+      backoffLimit: 0
+      template:  # POD level
+        metadata:
+          labels:
+            helm.sh/chart: mutualize-0.1.0
+            app.kubernetes.io/version: "1.0"
+            app.kubernetes.io/managed-by: Helm
+            app.kubernetes.io/name: mutualize
+            app.kubernetes.io/instance: test
+            app.kubernetes.io/component: dbstats
+        spec:
+          containers:
+            - name: dbstats
+              securityContext:
+                runAsNonRoot: true
+                runAsUser: 33
+              image: "camptocamp/c2cwsgiutils:latest"
+              imagePullPolicy: IfNotPresent
+              terminationMessagePolicy: FallbackToLogsOnError
+              resources:
+                {}
+              args:
+                - bash
+                - -cxe
+                - |
+                  TARGET="--prometheus_instance=default-test-mutualize --prometheus_url=http://prometheus-pushgateway.gs-metrics.svc:9091/"
+                  export STATSD_TAG_DB=$(PGDATABASE)
+                  c2cwsgiutils-stats-db \
+                    --db=postgresql://$(PGUSER):$(PGPASSWORD)@$(PGHOST):5432/$(PGDATABASE) \
+                    --verbosity WARNING \
+                    --schema=public \
+                    ${TARGET}
+          restartPolicy: Never
 ---
 # Source: mutualize/templates/shared-config-config.yaml
 apiVersion: camptocamp.com/v1

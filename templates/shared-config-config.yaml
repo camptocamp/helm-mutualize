@@ -5,6 +5,6 @@ metadata:
   labels: {{ include "common.labels" ( dict "root" . "service" .Values.config ) | nindent 4 }}
 spec:
   matchLabels:
-    mutualized-print-config: 'true'
+    mutualize-sharedconfig: 'true'
   property: sources
-  configmap_name: shared_config_manager.yaml
+  configmapName: config.yaml

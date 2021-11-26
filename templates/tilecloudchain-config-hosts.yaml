@@ -1,0 +1,11 @@
+{{- if .Values.tilecloudchain.enabled -}}
+apiVersion: camptocamp.com/v1
+kind: SharedConfigConfig
+metadata:
+  name: {{ include "common.fullname" ( dict "root" . "service" .Values.tilecloudchain ) }}-hosts
+  labels: {{ include "common.labels" ( dict "root" . "service" .Values.tilecloudchain ) | nindent 4 }}
+spec:
+  matchLabels:
+    mutualize-tilecloudchain-hosts: 'true'
+  configmapName: hosts.yaml
+{{- end }}

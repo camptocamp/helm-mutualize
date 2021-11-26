@@ -1,0 +1,53 @@
+{{- if and .Values.tilecloudchain.enabled .Values.tilecloudchain.ingress.enabled -}}
+{{- $fullName := include "common.fullname" ( dict "root" . "service" .Values.tilecloudchain ) -}}
+{{- $svcPort := .Values.tilecloudchain.service.port -}}
+{{- range $ingress_host := .Values.tilecloudchain.ingress.hosts }}
+---
+{{- if semverCompare ">=1.19.0" ( trimPrefix "v" $.Capabilities.KubeVersion.Version ) }}
+apiVersion: networking.k8s.io/v1
+{{- else -}}
+{{- if semverCompare ">=1.14-0" $.Capabilities.KubeVersion.GitVersion -}}
+apiVersion: networking.k8s.io/v1beta1
+{{- else -}}
+apiVersion: extensions/v1beta1
+{{- end }}
+{{- end }}
+kind: Ingress
+metadata:
+  name: {{ $fullName }}-{{ $ingress_host.name }}
+  labels: {{ include "common.labels" ( dict "root" $ "service" $.Values.tilecloudchain ) | nindent 4 }}
+  {{- with $.Values.tilecloudchain.ingress.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+spec:
+{{- if $.Values.tilecloudchain.ingress.tls }}
+  tls:
+  {{- range $.Values.tilecloudchain.ingress.tls }}
+    - hosts:
+        - {{ $ingress_host.host }}
+      secretName: {{ .secretName }}
+  {{- end }}
+{{- end }}
+  rules:
+    - host: {{ $ingress_host.host }}
+      http:
+        paths:
+        {{- range $ingress_host.paths }}
+          - path: {{ . }}
+            {{- if semverCompare ">=1.14-0" $.Capabilities.KubeVersion.GitVersion }}
+            pathType: Prefix
+            {{- end }}
+            backend:
+              {{- if semverCompare ">=1.14-0" $.Capabilities.KubeVersion.GitVersion }}
+              service:
+                name: {{ $fullName }}
+                port:
+                  number: {{ $svcPort }}
+              {{- else }}
+              serviceName: {{ $fullName }}
+              servicePort: {{ $svcPort }}
+              {{- end }}
+        {{- end }}
+{{- end }}
+{{- end }}

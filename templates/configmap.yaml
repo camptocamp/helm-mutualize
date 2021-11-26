@@ -14,9 +14,13 @@ data:
   LOGS_BROADCAST_PREFIX: broadcast_logs_{{ .Values.redis.db }}_
   SENTRY_URL: https://{{ .Values.sentry.key }}@{{ .Values.sentry.hostname }}/{{ .Values.sentry.project }}
   SQLALCHEMY_URL: "postgresql://$(DB_USERNAME):$(DB_PASSWORD)@$(DB_HOST):5432/$(DB_DATABASE)"
+{{- if .Values.ingress.enabled }}
   MUTUALIZED_PRINT_URL: {{ (index .Values.ingress.hosts 0).host }}
+{{- end }}
   SCM_URL: http://{{ $fullname }}-config:8080/scm/
+{{- if .Values.ingress.enabled }}
   SCM_URL_EXTERNAL: https://{{ (index .Values.ingress.hosts 0).host }}/scm
+{{- end }}
   CHART_NAME: {{ .Chart.Name }}
   RELEASE_NAME: {{ .Release.Name }}
   RELEASE_NAMESPACE: {{ .Release.Namespace }}
