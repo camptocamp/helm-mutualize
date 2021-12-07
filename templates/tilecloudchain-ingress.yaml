@@ -1,8 +1,7 @@
-{{- if .Values.ingress.enabled -}}
-{{- $fullName := include "common.fullname" ( dict "root" . "service" .Values ) -}}
-{{- $svcPort := .Values.print.service.port -}}
-{{- $svcLogsPort := .Values.logs.service.port -}}
-{{- range $ingress_host := .Values.ingress.hosts }}
+{{- if and .Values.tilecloudchain.enabled .Values.tilecloudchain.ingress.enabled -}}
+{{- $fullName := include "common.fullname" ( dict "root" . "service" .Values.tilecloudchain ) -}}
+{{- $svcPort := .Values.tilecloudchain.service.port -}}
+{{- range $ingress_host := .Values.tilecloudchain.ingress.hosts }}
 ---
 {{- if semverCompare ">=1.19.0" ( trimPrefix "v" $.Capabilities.KubeVersion.Version ) }}
 apiVersion: networking.k8s.io/v1
@@ -16,8 +15,8 @@ apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
   name: {{ $fullName }}-{{ $ingress_host.name }}
-  labels: {{ include "common.labels" ( dict "root" $ "service" $.Values ) | nindent 4 }}
-  {{- with $.Values.ingress.annotations }}
+  labels: {{ include "common.labels" ( dict "root" $ "service" $.Values.tilecloudchain ) | nindent 4 }}
+  {{- with $.Values.tilecloudchain.ingress.annotations }}
   annotations:
     {{- toYaml . | nindent 4 }}
   {{- end }}
@@ -32,7 +31,7 @@ spec:
     - host: {{ $ingress_host.host }}
       http:
         paths:
-        {{- range $.Values.ingress.paths }}
+        {{- range $.Values.tilecloudchain.ingress.paths }}
           - path: {{ . }}
             {{- if semverCompare ">=1.14-0" $.Capabilities.KubeVersion.GitVersion }}
             pathType: Prefix
@@ -47,20 +46,6 @@ spec:
               serviceName: {{ $fullName }}
               servicePort: {{ $svcPort }}
               {{- end }}
-          - path: {{ . }}logs
-            {{- if semverCompare ">=1.14-0" $.Capabilities.KubeVersion.GitVersion }}
-            pathType: Prefix
-            {{- end }}
-            backend:
-              {{- if semverCompare ">=1.14-0" $.Capabilities.KubeVersion.GitVersion }}
-              service:
-                name: {{ $fullName }}-logs
-                port:
-                  number: {{ $svcLogsPort }}
-              {{- else }}
-              serviceName: {{ $fullName }}-logs
-              servicePort: {{ $svcLogsPort }}
-              {{- end -}}
         {{- end }}
 {{- end }}
 {{- end }}

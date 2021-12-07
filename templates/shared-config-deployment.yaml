@@ -31,8 +31,14 @@ spec:
             - name: ssh-key
               readOnly: true
               mountPath: /var/www/.ssh2
+            - name: masterconfig
+              readOnly: true
+              mountPath: /etc/shared_config_manager
       volumes:
         - name: ssh-key
           secret:
             secretName: {{ include "common.fullname" ( dict "root" . "service" .Values ) }}
             defaultMode: 0440
+        - name: masterconfig
+          configMap:
+            name: {{ include "common.fullname" ( dict "root" . "service" .Values.config ) }}

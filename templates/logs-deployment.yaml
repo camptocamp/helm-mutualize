@@ -6,7 +6,7 @@ metadata:
   labels: {{ include "common.labels" ( dict "root" . "service" .Values.logs ) | nindent 4 }}
   annotations: {{- toYaml .Values.logs.annotations | nindent 4 }}
 spec:
-  replicas: {{ .Values.config.replicaCount }}
+  replicas: {{ .Values.logs.replicaCount }}
   strategy:
     type: RollingUpdate
   selector:
@@ -17,22 +17,6 @@ spec:
     spec:
       {{- include "common.podConfig" ( dict "root" . "service" .Values.logs ) | nindent 6 }}
       containers:
-        - name: config
-          {{- include "common.containerConfig" ( dict "root" . "container" .Values.logs.config ) | nindent 10 }}
-          args: ['shared-config-slave']
-          readinessProbe: &configProbe
-            exec:
-              command:
-                - scm-is-ready
-            initialDelaySeconds: 30
-            periodSeconds: 30
-            failureThreshold: 5
-          livenessProbe:
-            <<: *configProbe
-            failureThreshold: 50
-          volumeMounts:
-            - mountPath: /master_config
-              name: master-config
         - name: logs
           {{- include "common.containerConfig" ( dict "root" . "container" .Values.logs ) | nindent 10 }}
           volumeMounts:
@@ -47,13 +31,16 @@ spec:
               path: /logs/c2c/health_check
               port: http
             initialDelaySeconds: 15
+            periodSeconds: 30
           livenessProbe:
             httpGet:
               path: /logs/c2c/health_check?max_level=0
               port: http
             initialDelaySeconds: 20
             failureThreshold: 50
+            periodSeconds: 120
       volumes:
         - name: master-config
-          emptyDir: {}
+          configMap:
+            name: {{ include "common.fullname" ( dict "root" . "service" .Values.config ) }}
 {{- end }}

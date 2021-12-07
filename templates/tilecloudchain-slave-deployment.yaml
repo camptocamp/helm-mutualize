@@ -1,0 +1,63 @@
+{{- if .Values.tilecloudchain.enabled -}}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "common.fullname" ( dict "root" . "service" .Values.tilecloudchainSlave ) }}
+  labels: {{ include "common.labels" ( dict "root" . "service" .Values.tilecloudchainSlave ) | nindent 4 }}
+  annotations: {{- toYaml .Values.tilecloudchainSlave.annotations | nindent 4 }}
+spec:
+  replicas: {{ .Values.config.replicaCount }}
+  strategy:
+    type: RollingUpdate
+  selector:
+    matchLabels: {{ include "common.selectorLabels" ( dict "root" . "service" .Values.tilecloudchainSlave ) | nindent 6 }}
+  template:
+    metadata:
+      labels: {{ include "common.labels" ( dict "root" . "service" .Values.tilecloudchainSlave ) | nindent 8 }}
+    spec:
+      {{- include "common.podConfig" ( dict "root" . "service" .Values.tilecloudchainSlave ) | nindent 6 }}
+      containers:
+        - name: config
+          {{- include "common.containerConfig" ( dict "root" . "container" .Values.tilecloudchainSlave.config ) | nindent 10 }}
+          args: ['shared-config-slave']
+          readinessProbe: &configProbe
+            exec:
+              command:
+                - scm-is-ready
+            initialDelaySeconds: 30
+            periodSeconds: 30
+            failureThreshold: 5
+          livenessProbe:
+            <<: *configProbe
+            periodSeconds: 120
+          volumeMounts:
+            - name: configs
+              mountPath: /master_config
+        - name: tilecloudchain
+          {{- include "common.containerConfig" ( dict "root" . "container" .Values.tilecloudchainSlave ) | nindent 10 }}
+          args: ["generate_tiles", "--role=slave", "--daemon"]
+          volumeMounts:
+            - name: configs
+              mountPath: /etc/tilecloudchain-configs
+            - name: hosts
+              mountPath: /etc/tilecloudchain-hosts
+            - name: mainconfig
+              mountPath: /etc/tilecloudchain-main
+            - mountPath: /tmp
+              name: tmp-volume
+          ports:
+            - name: http
+              containerPort: 8080
+              protocol: TCP
+      volumes:
+        - name: configs
+          emptyDir: {}
+        - name: tmp-volume
+          emptyDir: {}
+        - name: hosts
+          configMap:
+            name: {{ include "common.fullname" ( dict "root" . "service" .Values.tilecloudchain ) }}-hosts
+        - name: mainconfig
+          configMap:
+            name: {{ include "common.fullname" ( dict "root" . "service" .Values.tilecloudchain ) }}-main-config
+{{- end }}

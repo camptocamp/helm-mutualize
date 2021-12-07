@@ -7,6 +7,14 @@ config-env-base: &config-env-base
     value: console
   LOG_LEVEL:
     value: DEBUG
+  MASTER_CONFIG:
+    value: |
+      type: git
+      repo: 'https://github.com/camptocamp/helm-mutualize.git'
+      branch: master
+      key: secret
+      sub_dir: tests/shared-config
+      sparse: false
   C2C_REDIS_URL:
     value: redis://test-redis-master/1
   C2C_BROADCAST_PREFIX:
@@ -20,7 +28,7 @@ config-env-base: &config-env-base
 
 config:
   image: &config-image
-    tag: master
+    tag: 3.1
   env:
     <<: *config-env-base
     MASTER_CONFIG:
@@ -34,56 +42,18 @@ config:
   configMapNameOverride: *config-map-name-override
 
 print:
-  enabled: true
-  image:
-    tag: 3.26
+  enabled: false
   configMapNameOverride: *config-map-name-override
-  annotations:
-    reloader.stakater.com/auto: 'true'
   config:
-    image: *config-image
-    env: &config-env-slave
-      <<: *config-env-base
-      API_BASE_URL:
-        type: configMap
-        name: env
-        key: SCM_URL
     configMapNameOverride: *config-map-name-override
 
 logs:
-  image:
-    tag: latest
+  enabled: false
   configMapNameOverride: *config-map-name-override
-
-  env:
-    SQLALCHEMY_URL:
-      value: postgresql://postgres:mySuperTestingPassword@test-pg-postgresql:5432/
-    C2C_REDIS_URL:
-      value: redis://test-redis-master/2
-    C2C_BROADCAST_PREFIX:
-      type: configMap
-      name: env
-      key: LOGS_BROADCAST_PREFIX
-    SOURCES_KEY:
-      value: secret
-    C2C_SECRET:
-      value: secret
-    SHARED_CONFIG_MASTER:
-      value: /master_config/master/shared_config_manager.yaml
-    ES_INDEXES:
-      value: print
-
-  config:
-    image: *config-image
-    env:
-      <<: *config-env-slave
-    configMapNameOverride: *config-map-name-override
 
 tilecloudchain: &tilecloudchain
   enabled: true
   configMapNameOverride: *config-map-name-override
-  image:
-    tag: master
 
   env:
     C2C_REDIS_URL:
@@ -98,14 +68,8 @@ tilecloudchain: &tilecloudchain
       value: /master_config/master/shared_config_manager.yaml
 
   mainConfig:
-    redis:
-      socket_timeout: 10
-      url: redis://test-redis-master:6379/2
-    server:
-      wmts_path: tiles
-      static_path: tiles/static
-      admin_path: tiles/admin
-      expires: 8 # 8 hours
+    test: 111
+    toto: 222
 
   config:
     image: *config-image
@@ -119,11 +83,25 @@ tilecloudchain: &tilecloudchain
         value: tilecloudchain
     configMapNameOverride: *config-map-name-override
 
-tilecloudchainSlave:
-  <<: *tilecloudchain
+  ingress:
+    enabled: true
+    paths:
+      - /
+      - /test-tiles/
+    hosts:
+      - name: main
+        host: mutualize-tiles.local
+        tls:
+          secretName: test-tiles-tls
+      - name: prod
+        host: mutualize-tiles.prod.local
+        tls:
+          secretName: test-tiles-prod-tls
+
+tilecloudchainSlave: *tilecloudchain
 
 dbstats:
-  enabled: false
+  enabled: true
   configMapNameOverride: *config-map-name-override
 
 securityContext:
@@ -134,6 +112,13 @@ ingress:
   enabled: true
   paths:
     - /
+    - /test/
   hosts:
     - name: main
       host: mutualize.local
+      tls:
+        secretName: test-tls
+    - name: prod
+      host: mutualize.prod.local
+      tls:
+        secretName: test-prod-tls
