@@ -83,6 +83,21 @@ tilecloudchain:
         value: tilecloudchain
     configMapNameOverride: *config-map-name-override
 
+  ingress:
+    enabled: true
+    paths:
+      - /
+      - /test-tiles/
+    hosts:
+      - name: main
+        host: mutualize-tiles.local
+        tls:
+          secretName: test-tiles-tls
+      - name: prod
+        host: mutualize-tiles.prod.local
+        tls:
+          secretName: test-tiles-prod-tls
+
 dbstats:
   enabled: true
   configMapNameOverride: *config-map-name-override
@@ -92,4 +107,16 @@ securityContext:
   runAsUser: 33 # www-data
 
 ingress:
-  enabled: false
+  enabled: true
+  paths:
+    - /
+    - /test/
+  hosts:
+    - name: main
+      host: mutualize.local
+      tls:
+        secretName: test-tls
+    - name: prod
+      host: mutualize.prod.local
+      tls:
+        secretName: test-prod-tls

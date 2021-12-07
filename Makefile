@@ -3,8 +3,8 @@ HELM != helm
 gen-expected:
 	${HELM} template --namespace=default --values=tests/values.yaml test . > tests/expected.yaml
 	sed -i 's/[[:blank:]]\+$$//g'  tests/expected.yaml
-	${HELM} template --namespace=default --values=tests/ttc-values.yaml test . > tests/ttc-expected.yaml
-	sed -i 's/[[:blank:]]\+$$//g'  tests/ttc-expected.yaml
+	${HELM} template --namespace=default --values=tests/alt-values.yaml test . > tests/alt-expected.yaml
+	sed -i 's/[[:blank:]]\+$$//g'  tests/alt-expected.yaml
 
 start-local:
 	k3d cluster delete test-cluster || true

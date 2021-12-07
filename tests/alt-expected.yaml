@@ -58,7 +58,9 @@ data:
   LOGS_BROADCAST_PREFIX: broadcast_logs_0_
   SENTRY_URL: https://@o330647.ingest.sentry.io/42
   SQLALCHEMY_URL: "postgresql://$(DB_USERNAME):$(DB_PASSWORD)@$(DB_HOST):5432/$(DB_DATABASE)"
+  MUTUALIZED_PRINT_URL: mutualize.local
   SCM_URL: http://test-mutualize-config:8080/scm/
+  SCM_URL_EXTERNAL: https://mutualize.local/scm
   CHART_NAME: mutualize
   RELEASE_NAME: test
   RELEASE_NAMESPACE: default
@@ -473,6 +475,178 @@ spec:
                     --schema=public \
                     ${TARGET}
           restartPolicy: Never
+---
+# Source: mutualize/templates/ingress.yaml
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: test-mutualize-main
+  labels:
+    helm.sh/chart: mutualize-0.1.0
+    app.kubernetes.io/version: "1.0"
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: mutualize
+    app.kubernetes.io/instance: test
+    app.kubernetes.io/component: main
+spec:
+  tls:
+    - hosts:
+        - mutualize.local
+      secretName: test-tls
+  rules:
+    - host: mutualize.local
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: test-mutualize
+                port:
+                  number: 8080
+          - path: /logs
+            pathType: Prefix
+            backend:
+              service:
+                name: test-mutualize-logs
+                port:
+                  number: 8080
+          - path: /test/
+            pathType: Prefix
+            backend:
+              service:
+                name: test-mutualize
+                port:
+                  number: 8080
+          - path: /test/logs
+            pathType: Prefix
+            backend:
+              service:
+                name: test-mutualize-logs
+                port:
+                  number: 8080
+---
+# Source: mutualize/templates/ingress.yaml
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: test-mutualize-prod
+  labels:
+    helm.sh/chart: mutualize-0.1.0
+    app.kubernetes.io/version: "1.0"
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: mutualize
+    app.kubernetes.io/instance: test
+    app.kubernetes.io/component: main
+spec:
+  tls:
+    - hosts:
+        - mutualize.prod.local
+      secretName: test-prod-tls
+  rules:
+    - host: mutualize.prod.local
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: test-mutualize
+                port:
+                  number: 8080
+          - path: /logs
+            pathType: Prefix
+            backend:
+              service:
+                name: test-mutualize-logs
+                port:
+                  number: 8080
+          - path: /test/
+            pathType: Prefix
+            backend:
+              service:
+                name: test-mutualize
+                port:
+                  number: 8080
+          - path: /test/logs
+            pathType: Prefix
+            backend:
+              service:
+                name: test-mutualize-logs
+                port:
+                  number: 8080
+---
+# Source: mutualize/templates/tilecloudchain-ingress.yaml
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: test-mutualize-tilecloud-main
+  labels:
+    helm.sh/chart: mutualize-0.1.0
+    app.kubernetes.io/version: "1.0"
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: mutualize
+    app.kubernetes.io/instance: test
+    app.kubernetes.io/component: tilecloudchain
+spec:
+  tls:
+    - hosts:
+        - mutualize-tiles.local
+      secretName: test-tiles-tls
+  rules:
+    - host: mutualize-tiles.local
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: test-mutualize-tilecloud
+                port:
+                  number: 8080
+          - path: /test-tiles/
+            pathType: Prefix
+            backend:
+              service:
+                name: test-mutualize-tilecloud
+                port:
+                  number: 8080
+---
+# Source: mutualize/templates/tilecloudchain-ingress.yaml
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: test-mutualize-tilecloud-prod
+  labels:
+    helm.sh/chart: mutualize-0.1.0
+    app.kubernetes.io/version: "1.0"
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: mutualize
+    app.kubernetes.io/instance: test
+    app.kubernetes.io/component: tilecloudchain
+spec:
+  tls:
+    - hosts:
+        - mutualize-tiles.prod.local
+      secretName: test-tiles-prod-tls
+  rules:
+    - host: mutualize-tiles.prod.local
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: test-mutualize-tilecloud
+                port:
+                  number: 8080
+          - path: /test-tiles/
+            pathType: Prefix
+            backend:
+              service:
+                name: test-mutualize-tilecloud
+                port:
+                  number: 8080
 ---
 # Source: mutualize/templates/shared-config-config.yaml
 apiVersion: camptocamp.com/v1

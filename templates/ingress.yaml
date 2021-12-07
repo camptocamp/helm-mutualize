@@ -22,19 +22,17 @@ metadata:
     {{- toYaml . | nindent 4 }}
   {{- end }}
 spec:
-{{- if $.Values.ingress.tls }}
+{{- if $ingress_host.tls }}
   tls:
-  {{- range $.Values.ingress.tls }}
     - hosts:
         - {{ $ingress_host.host }}
-      secretName: {{ .secretName }}
-  {{- end }}
+      secretName: {{ $ingress_host.tls.secretName }}
 {{- end }}
   rules:
     - host: {{ $ingress_host.host }}
       http:
         paths:
-        {{- range $ingress_host.paths }}
+        {{- range $.Values.ingress.paths }}
           - path: {{ . }}
             {{- if semverCompare ">=1.14-0" $.Capabilities.KubeVersion.GitVersion }}
             pathType: Prefix

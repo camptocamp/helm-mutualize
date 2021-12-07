@@ -129,8 +129,8 @@ securityContext:
 
 ingress:
   enabled: true
+  paths:
+    - /
   hosts:
     - name: main
       host: mutualize.local
-      paths:
-        - /
