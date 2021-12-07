@@ -2,23 +2,23 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "common.fullname" ( dict "root" . "service" .Values.tilecloudchain ) }}
-  labels: {{ include "common.labels" ( dict "root" . "service" .Values.tilecloudchain ) | nindent 4 }}
-  annotations: {{- toYaml .Values.tilecloudchain.annotations | nindent 4 }}
+  name: {{ include "common.fullname" ( dict "root" . "service" .Values.tilecloudchainSlave ) }}
+  labels: {{ include "common.labels" ( dict "root" . "service" .Values.tilecloudchainSlave ) | nindent 4 }}
+  annotations: {{- toYaml .Values.tilecloudchainSlave.annotations | nindent 4 }}
 spec:
   replicas: {{ .Values.config.replicaCount }}
   strategy:
     type: RollingUpdate
   selector:
-    matchLabels: {{ include "common.selectorLabels" ( dict "root" . "service" .Values.tilecloudchain ) | nindent 6 }}
+    matchLabels: {{ include "common.selectorLabels" ( dict "root" . "service" .Values.tilecloudchainSlave ) | nindent 6 }}
   template:
     metadata:
-      labels: {{ include "common.labels" ( dict "root" . "service" .Values.tilecloudchain ) | nindent 8 }}
+      labels: {{ include "common.labels" ( dict "root" . "service" .Values.tilecloudchainSlave ) | nindent 8 }}
     spec:
-      {{- include "common.podConfig" ( dict "root" . "service" .Values.tilecloudchain ) | nindent 6 }}
+      {{- include "common.podConfig" ( dict "root" . "service" .Values.tilecloudchainSlave ) | nindent 6 }}
       containers:
         - name: config
-          {{- include "common.containerConfig" ( dict "root" . "container" .Values.tilecloudchain.config ) | nindent 10 }}
+          {{- include "common.containerConfig" ( dict "root" . "container" .Values.tilecloudchainSlave.config ) | nindent 10 }}
           args: ['shared-config-slave']
           readinessProbe: &configProbe
             exec:
@@ -34,7 +34,8 @@ spec:
             - name: configs
               mountPath: /master_config
         - name: tilecloudchain
-          {{- include "common.containerConfig" ( dict "root" . "container" .Values.tilecloudchain ) | nindent 10 }}
+          {{- include "common.containerConfig" ( dict "root" . "container" .Values.tilecloudchainSlave ) | nindent 10 }}
+          args: ["generate_tiles", "--role=slave", "--daemon"]
           volumeMounts:
             - name: configs
               mountPath: /etc/tilecloudchain-configs
@@ -48,16 +49,6 @@ spec:
             - name: http
               containerPort: 8080
               protocol: TCP
-          readinessProbe: &configProbe
-            httpGet:
-              path: /tiles/c2c/health_check
-              port: http
-            initialDelaySeconds: 5
-            timeoutSeconds: 10
-            periodSeconds: 15
-          livenessProbe:
-            <<: *configProbe
-            periodSeconds: 60
       volumes:
         - name: configs
           emptyDir: {}

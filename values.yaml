@@ -76,9 +76,9 @@ logs:
     type: ClusterIP
     port: 8080
 
-tilecloudchain:
+tilecloudchain: &tilecloudchain
   enabled: false
-  serviceName: tilecloudchain
+  serviceName: tcc
   replicaCount: 1
   image:
     repository: camptocamp/tilecloud-chain
@@ -120,6 +120,10 @@ tilecloudchain:
     #  - secretName: chart-example-tls
     #    hosts:
     #      - chart-example.local
+
+tilecloudchainSlave:
+  <<: *tilecloudchain
+  serviceName: tcc-slave
 
 dbstats:
   enabled: true

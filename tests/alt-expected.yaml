@@ -3,21 +3,21 @@
 apiVersion: policy/v1beta1
 kind: PodDisruptionBudget
 metadata:
-  name: test-mutualize-tilecloud
+  name: test-mutualize-tcc
   labels:
     helm.sh/chart: mutualize-0.1.0
     app.kubernetes.io/version: "1.0"
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: mutualize
     app.kubernetes.io/instance: test
-    app.kubernetes.io/component: tilecloudchain
+    app.kubernetes.io/component: tcc
 spec:
   maxUnavailable: 1
   selector:
     matchLabels:
       app.kubernetes.io/name: mutualize
       app.kubernetes.io/instance: test
-      app.kubernetes.io/component: tilecloudchain
+      app.kubernetes.io/component: tcc
 ---
 # Source: mutualize/templates/secret.yaml
 apiVersion: v1
@@ -94,14 +94,14 @@ data:
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: test-mutualize-tilecloud-main-config
+  name: test-mutualize-tcc-main-config
   labels:
     helm.sh/chart: mutualize-0.1.0
     app.kubernetes.io/version: "1.0"
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: mutualize
     app.kubernetes.io/instance: test
-    app.kubernetes.io/component: tilecloudchain
+    app.kubernetes.io/component: tcc
 data:
   config.yaml: |
     test: 111
@@ -159,14 +159,14 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: test-mutualize-tilecloud
+  name: test-mutualize-tcc
   labels:
     helm.sh/chart: mutualize-0.1.0
     app.kubernetes.io/version: "1.0"
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: mutualize
     app.kubernetes.io/instance: test
-    app.kubernetes.io/component: tilecloudchain
+    app.kubernetes.io/component: tcc
 spec:
   type: ClusterIP
   ports:
@@ -177,7 +177,7 @@ spec:
   selector:
     app.kubernetes.io/name: mutualize
     app.kubernetes.io/instance: test
-    app.kubernetes.io/component: tilecloudchain
+    app.kubernetes.io/component: tcc
 ---
 # Source: mutualize/templates/shared-config-deployment.yaml
 apiVersion: apps/v1
@@ -283,14 +283,14 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: test-mutualize-tilecloud
+  name: test-mutualize-tcc
   labels:
     helm.sh/chart: mutualize-0.1.0
     app.kubernetes.io/version: "1.0"
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: mutualize
     app.kubernetes.io/instance: test
-    app.kubernetes.io/component: tilecloudchain
+    app.kubernetes.io/component: tcc
   annotations:
     {}
 spec:
@@ -301,7 +301,7 @@ spec:
     matchLabels:
       app.kubernetes.io/name: mutualize
       app.kubernetes.io/instance: test
-      app.kubernetes.io/component: tilecloudchain
+      app.kubernetes.io/component: tcc
   template:
     metadata:
       labels:
@@ -310,7 +310,7 @@ spec:
         app.kubernetes.io/managed-by: Helm
         app.kubernetes.io/name: mutualize
         app.kubernetes.io/instance: test
-        app.kubernetes.io/component: tilecloudchain
+        app.kubernetes.io/component: tcc
     spec:
 
       serviceAccountName: default
@@ -401,6 +401,8 @@ spec:
               mountPath: /etc/tilecloudchain-hosts
             - name: mainconfig
               mountPath: /etc/tilecloudchain-main
+            - mountPath: /tmp
+              name: tmp-volume
           ports:
             - name: http
               containerPort: 8080
@@ -418,12 +420,155 @@ spec:
       volumes:
         - name: configs
           emptyDir: {}
+        - name: tmp-volume
+          emptyDir: {}
         - name: hosts
           configMap:
-            name: test-mutualize-tilecloud-hosts
+            name: test-mutualize-tcc-hosts
         - name: mainconfig
           configMap:
-            name: test-mutualize-tilecloud-main-config
+            name: test-mutualize-tcc-main-config
+---
+# Source: mutualize/templates/tilecloudchain-slave-deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: test-mutualize-tcc-slave
+  labels:
+    helm.sh/chart: mutualize-0.1.0
+    app.kubernetes.io/version: "1.0"
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: mutualize
+    app.kubernetes.io/instance: test
+    app.kubernetes.io/component: tcc-slave
+  annotations:
+    {}
+spec:
+  replicas: 1
+  strategy:
+    type: RollingUpdate
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: mutualize
+      app.kubernetes.io/instance: test
+      app.kubernetes.io/component: tcc-slave
+  template:
+    metadata:
+      labels:
+        helm.sh/chart: mutualize-0.1.0
+        app.kubernetes.io/version: "1.0"
+        app.kubernetes.io/managed-by: Helm
+        app.kubernetes.io/name: mutualize
+        app.kubernetes.io/instance: test
+        app.kubernetes.io/component: tcc-slave
+    spec:
+
+      serviceAccountName: default
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 33
+      affinity:
+        {}
+      containers:
+        - name: config
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: 33
+          image: "camptocamp/shared_config_manager:3.1"
+          imagePullPolicy: IfNotPresent
+          env:
+              - name: "API_BASE_URL"
+                valueFrom:
+                  configMapKeyRef:
+                    name: "test-mutualize-env"
+                    key: "SCM_URL"
+              - name: "C2C_BROADCAST_PREFIX"
+                valueFrom:
+                  configMapKeyRef:
+                    name: "test-mutualize-env"
+                    key: "SCM_BROADCAST_PREFIX"
+              - name: "C2C_REDIS_TIMEOUT"
+                value: "30"
+              - name: "C2C_REDIS_URL"
+                value: "redis://test-redis-master/1"
+              - name: "C2C_SECRET"
+                value: "secret"
+              - name: "LOG_LEVEL"
+                value: "DEBUG"
+              - name: "LOG_TYPE"
+                value: "console"
+              - name: "MASTER_CONFIG"
+                value: "type: git\nrepo: 'https://github.com/camptocamp/helm-mutualize.git'\nbranch: master\nkey: secret\nsub_dir: tests/shared-config\nsparse: false\n"
+              - name: "TAG_FILTER"
+                value: "tilecloudchain"
+              - name: "TARGET"
+                value: "/config"
+          terminationMessagePolicy: FallbackToLogsOnError
+          resources:
+            {}
+          args: ['shared-config-slave']
+          readinessProbe: &configProbe
+            exec:
+              command:
+                - scm-is-ready
+            initialDelaySeconds: 30
+            periodSeconds: 30
+            failureThreshold: 5
+          livenessProbe:
+            <<: *configProbe
+            periodSeconds: 120
+          volumeMounts:
+            - name: configs
+              mountPath: /master_config
+        - name: tilecloudchain
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: 33
+          image: "camptocamp/tilecloud-chain:latest"
+          imagePullPolicy: IfNotPresent
+          env:
+              - name: "C2C_BROADCAST_PREFIX"
+                value: "broadcast_scm_3_"
+              - name: "C2C_REDIS_URL"
+                value: "redis://test-redis-master/2"
+              - name: "C2C_SECRET"
+                value: "secret"
+              - name: "SHARED_CONFIG_MASTER"
+                value: "/master_config/master/shared_config_manager.yaml"
+              - name: "SOURCES_KEY"
+                value: "secret"
+              - name: "TILEGENERATION_HOSTSFILE"
+                value: "/etc/tilecloudchain-hosts/hosts.yaml"
+              - name: "TILEGENERATION_MAIN_CONFIGFILE"
+                value: "/etc/tilecloudchain-main/config.yaml"
+          terminationMessagePolicy: FallbackToLogsOnError
+          resources:
+            {}
+          args: ["generate_tiles", "--role=slave", "--daemon"]
+          volumeMounts:
+            - name: configs
+              mountPath: /etc/tilecloudchain-configs
+            - name: hosts
+              mountPath: /etc/tilecloudchain-hosts
+            - name: mainconfig
+              mountPath: /etc/tilecloudchain-main
+            - mountPath: /tmp
+              name: tmp-volume
+          ports:
+            - name: http
+              containerPort: 8080
+              protocol: TCP
+      volumes:
+        - name: configs
+          emptyDir: {}
+        - name: tmp-volume
+          emptyDir: {}
+        - name: hosts
+          configMap:
+            name: test-mutualize-tcc-hosts
+        - name: mainconfig
+          configMap:
+            name: test-mutualize-tcc-main-config
 ---
 # Source: mutualize/templates/dbstats-cronjob.yaml
 apiVersion: batch/v1
@@ -584,14 +729,14 @@ spec:
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: test-mutualize-tilecloud-main
+  name: test-mutualize-tcc-main
   labels:
     helm.sh/chart: mutualize-0.1.0
     app.kubernetes.io/version: "1.0"
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: mutualize
     app.kubernetes.io/instance: test
-    app.kubernetes.io/component: tilecloudchain
+    app.kubernetes.io/component: tcc
 spec:
   tls:
     - hosts:
@@ -605,14 +750,14 @@ spec:
             pathType: Prefix
             backend:
               service:
-                name: test-mutualize-tilecloud
+                name: test-mutualize-tcc
                 port:
                   number: 8080
           - path: /test-tiles/
             pathType: Prefix
             backend:
               service:
-                name: test-mutualize-tilecloud
+                name: test-mutualize-tcc
                 port:
                   number: 8080
 ---
@@ -620,14 +765,14 @@ spec:
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: test-mutualize-tilecloud-prod
+  name: test-mutualize-tcc-prod
   labels:
     helm.sh/chart: mutualize-0.1.0
     app.kubernetes.io/version: "1.0"
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: mutualize
     app.kubernetes.io/instance: test
-    app.kubernetes.io/component: tilecloudchain
+    app.kubernetes.io/component: tcc
 spec:
   tls:
     - hosts:
@@ -641,14 +786,14 @@ spec:
             pathType: Prefix
             backend:
               service:
-                name: test-mutualize-tilecloud
+                name: test-mutualize-tcc
                 port:
                   number: 8080
           - path: /test-tiles/
             pathType: Prefix
             backend:
               service:
-                name: test-mutualize-tilecloud
+                name: test-mutualize-tcc
                 port:
                   number: 8080
 ---
@@ -674,14 +819,14 @@ spec:
 apiVersion: camptocamp.com/v1
 kind: SharedConfigConfig
 metadata:
-  name: test-mutualize-tilecloud-hosts
+  name: test-mutualize-tcc-hosts
   labels:
     helm.sh/chart: mutualize-0.1.0
     app.kubernetes.io/version: "1.0"
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: mutualize
     app.kubernetes.io/instance: test
-    app.kubernetes.io/component: tilecloudchain
+    app.kubernetes.io/component: tcc
 spec:
   matchLabels:
     mutualize-tilecloudchain-hosts: 'true'

@@ -51,7 +51,7 @@ logs:
   enabled: false
   configMapNameOverride: *config-map-name-override
 
-tilecloudchain:
+tilecloudchain: &tilecloudchain
   enabled: true
   configMapNameOverride: *config-map-name-override
 
@@ -97,6 +97,8 @@ tilecloudchain:
         host: mutualize-tiles.prod.local
         tls:
           secretName: test-tiles-prod-tls
+
+tilecloudchainSlave: *tilecloudchain
 
 dbstats:
   enabled: true

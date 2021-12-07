@@ -79,7 +79,7 @@ logs:
       <<: *config-env-slave
     configMapNameOverride: *config-map-name-override
 
-tilecloudchain:
+tilecloudchain: &tilecloudchain
   enabled: true
   configMapNameOverride: *config-map-name-override
   image:
@@ -118,6 +118,9 @@ tilecloudchain:
       TAG_FILTER:
         value: tilecloudchain
     configMapNameOverride: *config-map-name-override
+
+tilecloudchainSlave:
+  <<: *tilecloudchain
 
 dbstats:
   enabled: false
