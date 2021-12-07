@@ -41,7 +41,7 @@ spec:
             failureThreshold: 5
           livenessProbe:
             <<: *configProbe
-            failureThreshold: 50
+            periodSeconds: 120
         - name: print
           {{- include "common.containerConfig" ( dict "root" . "container" .Values.print ) | nindent 10 }}
           volumeMounts:
@@ -56,6 +56,7 @@ spec:
               path: /metrics/ping?health_check=true
               port: http
             initialDelaySeconds: 15
+            periodSeconds: 30
           livenessProbe:
             exec:
               # Be sure that the EPSG 2056 exists, see: https://jira.camptocamp.com/browse/GSGMF-1606
@@ -66,6 +67,7 @@ spec:
                 - spec=%7B%0D%0A++++%22layout%22%3A+%22A4+portrait%22%2C%0D%0A++++%22attributes%22%3A+%7B%22map%22%3A+%7B%0D%0A++++++++%22center%22%3A+%5B%0D%0A++++++++++++1200000%2C%0D%0A++++++++++++2600000%0D%0A++++++++%5D%2C%0D%0A++++++++%22rotation%22%3A+0%2C%0D%0A++++++++%22longitudeFirst%22%3A+true%2C%0D%0A++++++++%22layers%22%3A+%5B%5D%2C%0D%0A++++++++%22scale%22%3A+100000000%2C%0D%0A++++++++%22projection%22%3A+%22EPSG%3A2056%22%2C%0D%0A++++++++%22dpi%22%3A+72%0D%0A++++%7D%7D%0D%0A%7D
             initialDelaySeconds: 15
             failureThreshold: 50
+            periodSeconds: 120
           lifecycle:
             preStop:
               exec:

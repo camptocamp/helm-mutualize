@@ -31,12 +31,14 @@ spec:
               path: /logs/c2c/health_check
               port: http
             initialDelaySeconds: 15
+            periodSeconds: 30
           livenessProbe:
             httpGet:
               path: /logs/c2c/health_check?max_level=0
               port: http
             initialDelaySeconds: 20
             failureThreshold: 50
+            periodSeconds: 120
       volumes:
         - name: master-config
           configMap:
