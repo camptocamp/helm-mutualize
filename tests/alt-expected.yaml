@@ -5,7 +5,7 @@ kind: PodDisruptionBudget
 metadata:
   name: test-mutualize-tcc
   labels:
-    helm.sh/chart: mutualize-0.1.0
+    helm.sh/chart: mutualize-0.1.1
     app.kubernetes.io/version: "1.0"
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: mutualize
@@ -26,7 +26,7 @@ type: Generic
 metadata:
   name: test-mutualize
   labels:
-    helm.sh/chart: mutualize-0.1.0
+    helm.sh/chart: mutualize-0.1.1
     app.kubernetes.io/version: "1.0"
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: mutualize
@@ -41,7 +41,7 @@ kind: ConfigMap
 metadata:
   name: test-mutualize-env
   labels:
-    helm.sh/chart: mutualize-0.1.0
+    helm.sh/chart: mutualize-0.1.1
     app.kubernetes.io/version: "1.0"
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: mutualize
@@ -96,7 +96,7 @@ kind: ConfigMap
 metadata:
   name: test-mutualize-tcc-main-config
   labels:
-    helm.sh/chart: mutualize-0.1.0
+    helm.sh/chart: mutualize-0.1.1
     app.kubernetes.io/version: "1.0"
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: mutualize
@@ -113,7 +113,7 @@ kind: Service
 metadata:
   name: test-mutualize-logs
   labels:
-    helm.sh/chart: mutualize-0.1.0
+    helm.sh/chart: mutualize-0.1.1
     app.kubernetes.io/version: "1.0"
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: mutualize
@@ -137,7 +137,7 @@ kind: Service
 metadata:
   name: test-mutualize-config
   labels:
-    helm.sh/chart: mutualize-0.1.0
+    helm.sh/chart: mutualize-0.1.1
     app.kubernetes.io/version: "1.0"
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: mutualize
@@ -161,7 +161,7 @@ kind: Service
 metadata:
   name: test-mutualize-tcc
   labels:
-    helm.sh/chart: mutualize-0.1.0
+    helm.sh/chart: mutualize-0.1.1
     app.kubernetes.io/version: "1.0"
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: mutualize
@@ -185,7 +185,7 @@ kind: Deployment
 metadata:
   name: test-mutualize-config
   labels:
-    helm.sh/chart: mutualize-0.1.0
+    helm.sh/chart: mutualize-0.1.1
     app.kubernetes.io/version: "1.0"
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: mutualize
@@ -205,7 +205,7 @@ spec:
   template:
     metadata:
       labels:
-        helm.sh/chart: mutualize-0.1.0
+        helm.sh/chart: mutualize-0.1.1
         app.kubernetes.io/version: "1.0"
         app.kubernetes.io/managed-by: Helm
         app.kubernetes.io/name: mutualize
@@ -285,7 +285,7 @@ kind: Deployment
 metadata:
   name: test-mutualize-tcc
   labels:
-    helm.sh/chart: mutualize-0.1.0
+    helm.sh/chart: mutualize-0.1.1
     app.kubernetes.io/version: "1.0"
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: mutualize
@@ -305,7 +305,7 @@ spec:
   template:
     metadata:
       labels:
-        helm.sh/chart: mutualize-0.1.0
+        helm.sh/chart: mutualize-0.1.1
         app.kubernetes.io/version: "1.0"
         app.kubernetes.io/managed-by: Helm
         app.kubernetes.io/name: mutualize
@@ -435,7 +435,7 @@ kind: Deployment
 metadata:
   name: test-mutualize-tcc-slave
   labels:
-    helm.sh/chart: mutualize-0.1.0
+    helm.sh/chart: mutualize-0.1.1
     app.kubernetes.io/version: "1.0"
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: mutualize
@@ -455,7 +455,7 @@ spec:
   template:
     metadata:
       labels:
-        helm.sh/chart: mutualize-0.1.0
+        helm.sh/chart: mutualize-0.1.1
         app.kubernetes.io/version: "1.0"
         app.kubernetes.io/managed-by: Helm
         app.kubernetes.io/name: mutualize
@@ -576,7 +576,7 @@ kind: CronJob
 metadata:
   name: test-mutualize-dbstats
   labels:
-    helm.sh/chart: mutualize-0.1.0
+    helm.sh/chart: mutualize-0.1.1
     app.kubernetes.io/version: "1.0"
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: mutualize
@@ -595,7 +595,7 @@ spec:
       template:  # POD level
         metadata:
           labels:
-            helm.sh/chart: mutualize-0.1.0
+            helm.sh/chart: mutualize-0.1.1
             app.kubernetes.io/version: "1.0"
             app.kubernetes.io/managed-by: Helm
             app.kubernetes.io/name: mutualize
@@ -631,7 +631,7 @@ kind: Ingress
 metadata:
   name: test-mutualize-main
   labels:
-    helm.sh/chart: mutualize-0.1.0
+    helm.sh/chart: mutualize-0.1.1
     app.kubernetes.io/version: "1.0"
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: mutualize
@@ -681,7 +681,7 @@ kind: Ingress
 metadata:
   name: test-mutualize-prod
   labels:
-    helm.sh/chart: mutualize-0.1.0
+    helm.sh/chart: mutualize-0.1.1
     app.kubernetes.io/version: "1.0"
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: mutualize
@@ -731,7 +731,7 @@ kind: Ingress
 metadata:
   name: test-mutualize-tcc-main
   labels:
-    helm.sh/chart: mutualize-0.1.0
+    helm.sh/chart: mutualize-0.1.1
     app.kubernetes.io/version: "1.0"
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: mutualize
@@ -767,7 +767,7 @@ kind: Ingress
 metadata:
   name: test-mutualize-tcc-prod
   labels:
-    helm.sh/chart: mutualize-0.1.0
+    helm.sh/chart: mutualize-0.1.1
     app.kubernetes.io/version: "1.0"
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: mutualize
@@ -803,7 +803,7 @@ kind: SharedConfigConfig
 metadata:
   name: test-mutualize-config
   labels:
-    helm.sh/chart: mutualize-0.1.0
+    helm.sh/chart: mutualize-0.1.1
     app.kubernetes.io/version: "1.0"
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: mutualize
@@ -821,7 +821,7 @@ kind: SharedConfigConfig
 metadata:
   name: test-mutualize-tcc-hosts
   labels:
-    helm.sh/chart: mutualize-0.1.0
+    helm.sh/chart: mutualize-0.1.1
     app.kubernetes.io/version: "1.0"
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: mutualize
