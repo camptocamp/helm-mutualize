@@ -2,7 +2,7 @@ apiVersion: v2
 appVersion: '1.0'
 description: A Helm chart for deploying mutualize services on Kubernetes
 name: mutualize
-version: 0.1.0
+version: 0.1.1
 sources:
   - https://github.com/mapfish/mapfish-print
   - https://github.com/camptocamp/tilecloud-chain
