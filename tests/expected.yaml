@@ -105,10 +105,8 @@ data:
   RELEASE_NAME: test
   RELEASE_NAMESPACE: default
   ES_FILTERS: kubernetes.labels.release=test,kubernetes.labels.service=print
-  ES_AUTH: "Basic Og=="
   CONFIG_IMAGE_TAG: "master"
   LOGS_IMAGE_TAG: "latest"
-  DBSTATS_IMAGE_TAG: "latest"
   STATSD_PREFIX: mutualize.test.%h
   CATALINA_OPTS: >-
     -Dmapfish.maxContentLength=6291456
