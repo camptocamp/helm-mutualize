@@ -1,4 +1,4 @@
-configMapNameOverride: &config-map-name-override
+configMapNameOverride:
   env: test-mutualize-env
   scm-master-config: test-mutualize-env
 
@@ -31,13 +31,11 @@ config:
       key: SCM_URL
     SCM_ENV_PREFIXES:
       value: TEST_
-  configMapNameOverride: *config-map-name-override
 
 print:
   enabled: true
   image:
     tag: 3.26
-  configMapNameOverride: *config-map-name-override
   annotations:
     reloader.stakater.com/auto: 'true'
   config:
@@ -48,12 +46,10 @@ print:
         type: configMap
         name: env
         key: SCM_URL
-    configMapNameOverride: *config-map-name-override
 
 logs:
   image:
     tag: latest
-  configMapNameOverride: *config-map-name-override
 
   env:
     SQLALCHEMY_URL:
@@ -77,11 +73,9 @@ logs:
     image: *config-image
     env:
       <<: *config-env-slave
-    configMapNameOverride: *config-map-name-override
 
 tilecloudchain: &tilecloudchain
   enabled: true
-  configMapNameOverride: *config-map-name-override
   image:
     tag: master
 
@@ -117,14 +111,9 @@ tilecloudchain: &tilecloudchain
         key: SCM_URL
       TAG_FILTER:
         value: tilecloudchain
-    configMapNameOverride: *config-map-name-override
 
 tilecloudchainSlave:
   <<: *tilecloudchain
-
-dbstats:
-  enabled: false
-  configMapNameOverride: *config-map-name-override
 
 securityContext:
   runAsNonRoot: true

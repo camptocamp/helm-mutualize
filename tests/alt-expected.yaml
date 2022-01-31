@@ -65,10 +65,8 @@ data:
   RELEASE_NAME: test
   RELEASE_NAMESPACE: default
   ES_FILTERS: kubernetes.labels.release=test,kubernetes.labels.service=print
-  ES_AUTH: "Basic Og=="
   CONFIG_IMAGE_TAG: "3.1"
   LOGS_IMAGE_TAG: "latest"
-  DBSTATS_IMAGE_TAG: "latest"
   STATSD_PREFIX: mutualize.test.%h
   CATALINA_OPTS: >-
     -Dmapfish.maxContentLength=6291456
@@ -569,61 +567,6 @@ spec:
         - name: mainconfig
           configMap:
             name: test-mutualize-tcc-main-config
----
-# Source: mutualize/templates/dbstats-cronjob.yaml
-apiVersion: batch/v1
-kind: CronJob
-metadata:
-  name: test-mutualize-dbstats
-  labels:
-    helm.sh/chart: mutualize-0.1.1
-    app.kubernetes.io/version: "1.0"
-    app.kubernetes.io/managed-by: Helm
-    app.kubernetes.io/name: mutualize
-    app.kubernetes.io/instance: test
-    app.kubernetes.io/component: dbstats
-  annotations:
-    {}
-spec:
-  schedule: "32 * * * *"
-  successfulJobsHistoryLimit: 0
-  failedJobsHistoryLimit: 1
-  concurrencyPolicy: Forbid
-  jobTemplate:
-    spec:
-      backoffLimit: 0
-      template:  # POD level
-        metadata:
-          labels:
-            helm.sh/chart: mutualize-0.1.1
-            app.kubernetes.io/version: "1.0"
-            app.kubernetes.io/managed-by: Helm
-            app.kubernetes.io/name: mutualize
-            app.kubernetes.io/instance: test
-            app.kubernetes.io/component: dbstats
-        spec:
-          containers:
-            - name: dbstats
-              securityContext:
-                runAsNonRoot: true
-                runAsUser: 33
-              image: "camptocamp/c2cwsgiutils:latest"
-              imagePullPolicy: IfNotPresent
-              terminationMessagePolicy: FallbackToLogsOnError
-              resources:
-                {}
-              args:
-                - bash
-                - -cxe
-                - |
-                  TARGET="--prometheus_instance=default-test-mutualize --prometheus_url=http://prometheus-pushgateway.gs-metrics.svc:9091/"
-                  export STATSD_TAG_DB=$(PGDATABASE)
-                  c2cwsgiutils-stats-db \
-                    --db=postgresql://$(PGUSER):$(PGPASSWORD)@$(PGHOST):5432/$(PGDATABASE) \
-                    --verbosity WARNING \
-                    --schema=public \
-                    ${TARGET}
-          restartPolicy: Never
 ---
 # Source: mutualize/templates/ingress.yaml
 apiVersion: networking.k8s.io/v1

@@ -123,27 +123,6 @@ tilecloudchainSlave:
   <<: *tilecloudchain
   serviceName: tcc-slave
 
-dbstats:
-  enabled: true
-  serviceName: dbstats
-  image:
-    repository: camptocamp/c2cwsgiutils
-    tag: latest
-    sha:
-  env: {}
-  annotations: {}
-  resources: {}
-  prometheus: http://prometheus-pushgateway.gs-metrics.svc:9091/
-
-elasticsearch:
-  auth:
-    user: ''
-    password: ''
-
-statsd:
-  enabled: true
-  url: monitoring-statsd:9125
-
 redis:
   host: rfs-redis-redisfailover
   port: 26379

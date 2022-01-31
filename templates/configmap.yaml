@@ -25,10 +25,8 @@ data:
   RELEASE_NAME: {{ .Release.Name }}
   RELEASE_NAMESPACE: {{ .Release.Namespace }}
   ES_FILTERS: kubernetes.labels.release={{ .Release.Name }},kubernetes.labels.service=print
-  ES_AUTH: "Basic {{ (printf "%s:%s" .Values.elasticsearch.auth.user .Values.elasticsearch.auth.password) | b64enc }}"
   CONFIG_IMAGE_TAG: {{ .Values.config.image.tag | quote }}
   LOGS_IMAGE_TAG: {{ .Values.logs.image.tag | quote }}
-  DBSTATS_IMAGE_TAG: {{ .Values.dbstats.image.tag | quote }}
   STATSD_PREFIX: {{ .Chart.Name }}.{{ .Release.Name }}.%h
   CATALINA_OPTS: >-
     -Dmapfish.maxContentLength={{ .Values.print.maxContentLength }}
