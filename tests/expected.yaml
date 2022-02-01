@@ -1,6 +1,6 @@
 ---
 # Source: mutualize/templates/logs-pdb.yaml
-apiVersion: policy/v1beta1
+apiVersion: policy/v1
 kind: PodDisruptionBudget
 metadata:
   name: test-mutualize-logs
@@ -20,7 +20,7 @@ spec:
       app.kubernetes.io/component: logs
 ---
 # Source: mutualize/templates/print-pdb.yaml
-apiVersion: policy/v1beta1
+apiVersion: policy/v1
 kind: PodDisruptionBudget
 metadata:
   name: test-mutualize-print
@@ -40,7 +40,7 @@ spec:
       app.kubernetes.io/component: print
 ---
 # Source: mutualize/templates/tilecloudchain-pdb.yaml
-apiVersion: policy/v1beta1
+apiVersion: policy/v1
 kind: PodDisruptionBudget
 metadata:
   name: test-mutualize-tcc
