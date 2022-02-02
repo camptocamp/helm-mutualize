@@ -189,8 +189,6 @@ metadata:
     app.kubernetes.io/name: mutualize
     app.kubernetes.io/instance: test
     app.kubernetes.io/component: config
-  annotations:
-    {}
 spec:
   replicas: 1
   strategy:
@@ -203,9 +201,6 @@ spec:
   template:
     metadata:
       labels:
-        helm.sh/chart: mutualize-0.1.1
-        app.kubernetes.io/version: "1.0"
-        app.kubernetes.io/managed-by: Helm
         app.kubernetes.io/name: mutualize
         app.kubernetes.io/instance: test
         app.kubernetes.io/component: config
@@ -289,8 +284,6 @@ metadata:
     app.kubernetes.io/name: mutualize
     app.kubernetes.io/instance: test
     app.kubernetes.io/component: tcc
-  annotations:
-    {}
 spec:
   replicas: 1
   strategy:
@@ -303,9 +296,6 @@ spec:
   template:
     metadata:
       labels:
-        helm.sh/chart: mutualize-0.1.1
-        app.kubernetes.io/version: "1.0"
-        app.kubernetes.io/managed-by: Helm
         app.kubernetes.io/name: mutualize
         app.kubernetes.io/instance: test
         app.kubernetes.io/component: tcc
@@ -439,8 +429,6 @@ metadata:
     app.kubernetes.io/name: mutualize
     app.kubernetes.io/instance: test
     app.kubernetes.io/component: tcc-slave
-  annotations:
-    {}
 spec:
   replicas: 1
   strategy:
@@ -453,9 +441,6 @@ spec:
   template:
     metadata:
       labels:
-        helm.sh/chart: mutualize-0.1.1
-        app.kubernetes.io/version: "1.0"
-        app.kubernetes.io/managed-by: Helm
         app.kubernetes.io/name: mutualize
         app.kubernetes.io/instance: test
         app.kubernetes.io/component: tcc-slave

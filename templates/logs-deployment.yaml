@@ -4,7 +4,10 @@ kind: Deployment
 metadata:
   name: {{ include "common.fullname" ( dict "root" . "service" .Values.logs ) }}
   labels: {{ include "common.labels" ( dict "root" . "service" .Values.logs ) | nindent 4 }}
-  annotations: {{- toYaml .Values.logs.annotations | nindent 4 }}
+  {{- with .Values.logs.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
 spec:
   replicas: {{ .Values.logs.replicaCount }}
   strategy:
@@ -13,7 +16,11 @@ spec:
     matchLabels: {{ include "common.selectorLabels" ( dict "root" . "service" .Values.logs ) | nindent 6 }}
   template:
     metadata:
-      labels: {{ include "common.labels" ( dict "root" . "service" .Values.logs ) | nindent 8 }}
+      labels: {{ include "common.selectorLabels" ( dict "root" . "service" .Values.logs ) | nindent 8 }}
+      {{- with .Values.logs.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
     spec:
       {{- include "common.podConfig" ( dict "root" . "service" .Values.logs ) | nindent 6 }}
       containers:

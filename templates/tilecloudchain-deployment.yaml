@@ -4,7 +4,10 @@ kind: Deployment
 metadata:
   name: {{ include "common.fullname" ( dict "root" . "service" .Values.tilecloudchain ) }}
   labels: {{ include "common.labels" ( dict "root" . "service" .Values.tilecloudchain ) | nindent 4 }}
-  annotations: {{- toYaml .Values.tilecloudchain.annotations | nindent 4 }}
+  {{- with .Values.tilecloudchain.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
 spec:
   replicas: {{ .Values.config.replicaCount }}
   strategy:
@@ -13,7 +16,11 @@ spec:
     matchLabels: {{ include "common.selectorLabels" ( dict "root" . "service" .Values.tilecloudchain ) | nindent 6 }}
   template:
     metadata:
-      labels: {{ include "common.labels" ( dict "root" . "service" .Values.tilecloudchain ) | nindent 8 }}
+      labels: {{ include "common.selectorLabels" ( dict "root" . "service" .Values.tilecloudchain ) | nindent 8 }}
+      {{- with .Values.tilecloudchain.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
     spec:
       {{- include "common.podConfig" ( dict "root" . "service" .Values.tilecloudchain ) | nindent 6 }}
       containers:
