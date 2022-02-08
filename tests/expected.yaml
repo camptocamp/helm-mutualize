@@ -305,6 +305,8 @@ spec:
                 value: "/master_config/master/shared_config_manager.yaml"
               - name: "SOURCES_KEY"
                 value: "secret"
+              - name: "SQLALCHEMY_SLAVE_URL"
+                value: "postgresql://postgres:mySuperTestingPassword@test-pg-postgresql:5432/"
               - name: "SQLALCHEMY_URL"
                 value: "postgresql://postgres:mySuperTestingPassword@test-pg-postgresql:5432/"
           terminationMessagePolicy: FallbackToLogsOnError

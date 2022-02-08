@@ -54,6 +54,8 @@ logs:
   env:
     SQLALCHEMY_URL:
       value: postgresql://postgres:mySuperTestingPassword@test-pg-postgresql:5432/
+    SQLALCHEMY_SLAVE_URL:
+      value: postgresql://postgres:mySuperTestingPassword@test-pg-postgresql:5432/
     C2C_REDIS_URL:
       value: redis://test-redis-master/2
     C2C_BROADCAST_PREFIX:
