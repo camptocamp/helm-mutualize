@@ -191,6 +191,7 @@ metadata:
     app.kubernetes.io/component: config
 spec:
   replicas: 1
+  revisionHistoryLimit: 3
   strategy:
     type: RollingUpdate
   selector:
@@ -286,6 +287,7 @@ metadata:
     app.kubernetes.io/component: tcc
 spec:
   replicas: 1
+  revisionHistoryLimit: 3
   strategy:
     type: RollingUpdate
   selector:
@@ -431,6 +433,7 @@ metadata:
     app.kubernetes.io/component: tcc-slave
 spec:
   replicas: 1
+  revisionHistoryLimit: 3
   strategy:
     type: RollingUpdate
   selector:
