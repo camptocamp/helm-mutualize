@@ -862,7 +862,7 @@ spec:
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: test-mutualize-main
+  name: test-mutualize-main-print
   labels:
     helm.sh/chart: mutualize-0.1.1
     app.kubernetes.io/version: "1.0"
@@ -870,6 +870,7 @@ metadata:
     app.kubernetes.io/name: mutualize
     app.kubernetes.io/instance: test
     app.kubernetes.io/component: main
+    prefix: print
 spec:
   rules:
     - host: mutualize.local
@@ -887,6 +888,32 @@ spec:
             backend:
               service:
                 name: test-mutualize-logs
+                port:
+                  number: 8080
+---
+# Source: mutualize/templates/ingress.yaml
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: test-mutualize-main-config
+  labels:
+    helm.sh/chart: mutualize-0.1.1
+    app.kubernetes.io/version: "1.0"
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: mutualize
+    app.kubernetes.io/instance: test
+    app.kubernetes.io/component: main
+    prefix: config
+spec:
+  rules:
+    - host: mutualize.local
+      http:
+        paths:
+          - path: /config
+            pathType: Prefix
+            backend:
+              service:
+                name: test-mutualize-config
                 port:
                   number: 8080
 ---

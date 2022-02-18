@@ -560,7 +560,7 @@ spec:
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: test-mutualize-main
+  name: test-mutualize-main-print
   labels:
     helm.sh/chart: mutualize-0.1.1
     app.kubernetes.io/version: "1.0"
@@ -568,11 +568,12 @@ metadata:
     app.kubernetes.io/name: mutualize
     app.kubernetes.io/instance: test
     app.kubernetes.io/component: main
+    prefix: print
 spec:
   tls:
     - hosts:
-        - mutualize.local
-      secretName: test-tls
+        - print.mutualize.local
+      secretName: test-tls-print
   rules:
     - host: mutualize.local
       http:
@@ -610,7 +611,7 @@ spec:
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: test-mutualize-prod
+  name: test-mutualize-main-config
   labels:
     helm.sh/chart: mutualize-0.1.1
     app.kubernetes.io/version: "1.0"
@@ -618,11 +619,49 @@ metadata:
     app.kubernetes.io/name: mutualize
     app.kubernetes.io/instance: test
     app.kubernetes.io/component: main
+    prefix: config
 spec:
   tls:
     - hosts:
-        - mutualize.prod.local
-      secretName: test-prod-tls
+        - config.mutualize.local
+      secretName: test-tls-config
+  rules:
+    - host: mutualize.local
+      http:
+        paths:
+          - path: /config
+            pathType: Prefix
+            backend:
+              service:
+                name: test-mutualize-config
+                port:
+                  number: 8080
+          - path: /test/config
+            pathType: Prefix
+            backend:
+              service:
+                name: test-mutualize-config
+                port:
+                  number: 8080
+---
+# Source: mutualize/templates/ingress.yaml
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: test-mutualize-prod-print
+  labels:
+    helm.sh/chart: mutualize-0.1.1
+    app.kubernetes.io/version: "1.0"
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: mutualize
+    app.kubernetes.io/instance: test
+    app.kubernetes.io/component: main
+    prefix: print
+spec:
+  tls:
+    - hosts:
+        - print.mutualize.prod.local
+      secretName: test-prod-tls-print
   rules:
     - host: mutualize.prod.local
       http:
@@ -653,6 +692,43 @@ spec:
             backend:
               service:
                 name: test-mutualize-logs
+                port:
+                  number: 8080
+---
+# Source: mutualize/templates/ingress.yaml
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: test-mutualize-prod-config
+  labels:
+    helm.sh/chart: mutualize-0.1.1
+    app.kubernetes.io/version: "1.0"
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: mutualize
+    app.kubernetes.io/instance: test
+    app.kubernetes.io/component: main
+    prefix: config
+spec:
+  tls:
+    - hosts:
+        - config.mutualize.prod.local
+      secretName: test-prod-tls-config
+  rules:
+    - host: mutualize.prod.local
+      http:
+        paths:
+          - path: /config
+            pathType: Prefix
+            backend:
+              service:
+                name: test-mutualize-config
+                port:
+                  number: 8080
+          - path: /test/config
+            pathType: Prefix
+            backend:
+              service:
+                name: test-mutualize-config
                 port:
                   number: 8080
 ---
