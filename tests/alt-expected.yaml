@@ -59,8 +59,8 @@ data:
   SENTRY_URL: https://@o330647.ingest.sentry.io/42
   SQLALCHEMY_URL: "postgresql://$(DB_USERNAME):$(DB_PASSWORD)@$(DB_HOST):5432/$(DB_DATABASE)"
   MUTUALIZED_PRINT_URL: mutualize.local
-  SCM_URL: http://test-mutualize-config:8080/scm/
-  SCM_URL_EXTERNAL: https://mutualize.local/scm
+  SCM_URL: http://test-mutualize-config:8080/
+  SCM_URL_EXTERNAL: https://mutualize.local
   CHART_NAME: mutualize
   RELEASE_NAME: test
   RELEASE_NAMESPACE: default
@@ -254,7 +254,7 @@ spec:
               protocol: TCP
           readinessProbe:
             httpGet:
-              path: /scm/c2c/health_check
+              path: /c2c/health_check
               port: http
             initialDelaySeconds: 10
           volumeMounts:

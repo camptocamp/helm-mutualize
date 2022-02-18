@@ -33,6 +33,8 @@ config:
       key: SCM_URL
     SCM_ENV_PREFIXES:
       value: TEST_
+    ROUTE_PREFIX:
+      value: '/'
 
 print:
   enabled: true

@@ -32,7 +32,7 @@ spec:
               protocol: TCP
           readinessProbe:
             httpGet:
-              path: /scm/c2c/health_check
+              path: /c2c/health_check
               port: http
             initialDelaySeconds: 10
           volumeMounts:

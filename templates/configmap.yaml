@@ -17,9 +17,9 @@ data:
 {{- if .Values.ingress.enabled }}
   MUTUALIZED_PRINT_URL: {{ (index .Values.ingress.hosts 0).host }}
 {{- end }}
-  SCM_URL: http://{{ $fullname }}-config:8080/scm/
+  SCM_URL: http://{{ $fullname }}-config:8080/
 {{- if .Values.ingress.enabled }}
-  SCM_URL_EXTERNAL: https://{{ (index .Values.ingress.hosts 0).host }}/scm
+  SCM_URL_EXTERNAL: https://{{ (index .Values.ingress.hosts 0).host }}
 {{- end }}
   CHART_NAME: {{ .Chart.Name }}
   RELEASE_NAME: {{ .Release.Name }}
