@@ -2,7 +2,9 @@
 {{- $fullName := include "common.fullname" ( dict "root" . "service" .Values ) -}}
 {{- $svcPort := .Values.print.service.port -}}
 {{- $svcLogsPort := .Values.logs.service.port -}}
+{{- $svcConfigPort := .Values.config.service.port -}}
 {{- range $ingress_host := .Values.ingress.hosts }}
+{{- range $prefix := list "print" "config" }}
 ---
 {{- if semverCompare ">=1.19.0" ( trimPrefix "v" $.Capabilities.KubeVersion.Version ) }}
 apiVersion: networking.k8s.io/v1
@@ -15,8 +17,9 @@ apiVersion: extensions/v1beta1
 {{- end }}
 kind: Ingress
 metadata:
-  name: {{ $fullName }}-{{ $ingress_host.name }}
+  name: {{ $fullName }}-{{ $ingress_host.name }}-{{ $prefix }}
   labels: {{ include "common.labels" ( dict "root" $ "service" $.Values ) | nindent 4 }}
+    prefix: {{ $prefix }}
   {{- with $.Values.ingress.annotations }}
   annotations:
     {{- toYaml . | nindent 4 }}
@@ -25,14 +28,15 @@ spec:
 {{- if $ingress_host.tls }}
   tls:
     - hosts:
-        - {{ $ingress_host.host }}
-      secretName: {{ $ingress_host.tls.secretName }}
+        - {{ $prefix }}.{{ $ingress_host.host }}
+      secretName: {{ $ingress_host.tls.secretName }}-{{ $prefix }}
 {{- end }}
   rules:
     - host: {{ $ingress_host.host }}
       http:
         paths:
         {{- range $.Values.ingress.paths }}
+        {{- if eq $prefix "print" }}
           - path: {{ . }}
             {{- if semverCompare ">=1.14-0" $.Capabilities.KubeVersion.GitVersion }}
             pathType: Prefix
@@ -61,6 +65,23 @@ spec:
               serviceName: {{ $fullName }}-logs
               servicePort: {{ $svcLogsPort }}
               {{- end -}}
+        {{- else }}
+          - path: {{ . }}config
+            {{- if semverCompare ">=1.14-0" $.Capabilities.KubeVersion.GitVersion }}
+            pathType: Prefix
+            {{- end }}
+            backend:
+              {{- if semverCompare ">=1.14-0" $.Capabilities.KubeVersion.GitVersion }}
+              service:
+                name: {{ $fullName }}-config
+                port:
+                  number: {{ $svcConfigPort }}
+              {{- else }}
+              serviceName: {{ $fullName }}-config
+              servicePort: {{ $svcConfigPort }}
+              {{- end -}}
         {{- end }}
+        {{- end }}
+{{- end }}
 {{- end }}
 {{- end }}

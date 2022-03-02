@@ -124,7 +124,8 @@ The TileCloud also need the hosts config:
     labels: ...
   spec:
     repository: camptocamp/test
-    url: /scm/1/refresh/test-print-print/
+    # Should be something like https://config.mutualize(-int)?.camptocamp.com/1/refresh/test-print/
+    url: See above
     contentType: json
   ---
   apiVersion: camptocamp.com/v1
@@ -134,7 +135,8 @@ The TileCloud also need the hosts config:
     labels: ...
   spec:
     repository: camptocamp/test
-    url: /scm/1/refresh/test-tilecloudchain-print/
+    # Should be something like https://config.mutualize.camptocamp.com/1/refresh/test-tilecloudchain/
+    url: See above
     contentType: json
   ```
 - Will create a GitHub webhook to trigger the shared config manager updates.

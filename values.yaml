@@ -90,7 +90,7 @@ tilecloudchain: &tilecloudchain
       value: /etc/tilecloudchain-main/config.yaml
     TILEGENERATION_HOSTSFILE:
       value: /etc/tilecloudchain-hosts/hosts.yaml
-  mainConfig: ''
+  mainConfig: {}
   annotations: {}
   resources: {}
   service:
