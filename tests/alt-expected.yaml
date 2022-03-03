@@ -33,7 +33,7 @@ metadata:
     app.kubernetes.io/instance: test
     app.kubernetes.io/component: main
 data:
-  is_rsa: dG8gYmUgZGVmaW5lZA==
+  id_rsa: dG8gYmUgZGVmaW5lZA==
 ---
 # Source: mutualize/templates/configmap.yaml
 apiVersion: v1
