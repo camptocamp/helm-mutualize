@@ -40,7 +40,10 @@ spec:
             periodSeconds: 120
           volumeMounts:
             - name: configs
-              mountPath: /master_config
+              mountPath: /config
+            - name: masterconfig
+              readOnly: true
+              mountPath: /etc/shared_config_manager
         - name: tilecloudchain
           {{- include "common.containerConfig" ( dict "root" . "container" .Values.tilecloudchain ) | nindent 10 }}
           volumeMounts:
@@ -77,4 +80,7 @@ spec:
         - name: mainconfig
           configMap:
             name: {{ include "common.fullname" ( dict "root" . "service" .Values.tilecloudchain ) }}-main-config
+        - name: masterconfig
+          configMap:
+            name: {{ include "common.fullname" ( dict "root" . "service" .Values.config ) }}
 {{- end }}

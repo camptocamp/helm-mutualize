@@ -409,8 +409,6 @@ spec:
                 value: "DEBUG"
               - name: "LOG_TYPE"
                 value: "console"
-              - name: "MASTER_CONFIG"
-                value: "{\"sources\": {}}"
               - name: "TAG_FILTER"
                 value: "print"
               - name: "TARGET"
@@ -422,6 +420,9 @@ spec:
           volumeMounts:
             - mountPath: /config
               name: configs
+            - name: masterconfig
+              readOnly: true
+              mountPath: /etc/shared_config_manager
           readinessProbe: &configProbe
             exec:
               command:
@@ -472,6 +473,9 @@ spec:
       volumes:
         - name: configs
           emptyDir: {}
+        - name: masterconfig
+          configMap:
+            name: test-mutualize-config
 ---
 # Source: mutualize/templates/shared-config-deployment.yaml
 apiVersion: apps/v1
@@ -639,8 +643,6 @@ spec:
                 value: "DEBUG"
               - name: "LOG_TYPE"
                 value: "console"
-              - name: "MASTER_CONFIG"
-                value: "{\"sources\": {}}"
               - name: "TAG_FILTER"
                 value: "tilecloudchain"
               - name: "TARGET"
@@ -661,7 +663,10 @@ spec:
             periodSeconds: 120
           volumeMounts:
             - name: configs
-              mountPath: /master_config
+              mountPath: /config
+            - name: masterconfig
+              readOnly: true
+              mountPath: /etc/shared_config_manager
         - name: tilecloudchain
           securityContext:
             runAsNonRoot: true
@@ -720,6 +725,9 @@ spec:
         - name: mainconfig
           configMap:
             name: test-mutualize-tcc-main-config
+        - name: masterconfig
+          configMap:
+            name: test-mutualize-config
 ---
 # Source: mutualize/templates/tilecloudchain-slave-deployment.yaml
 apiVersion: apps/v1
@@ -787,8 +795,6 @@ spec:
                 value: "DEBUG"
               - name: "LOG_TYPE"
                 value: "console"
-              - name: "MASTER_CONFIG"
-                value: "{\"sources\": {}}"
               - name: "TAG_FILTER"
                 value: "tilecloudchain"
               - name: "TARGET"
@@ -809,7 +815,10 @@ spec:
             periodSeconds: 120
           volumeMounts:
             - name: configs
-              mountPath: /master_config
+              mountPath: /config
+            - name: masterconfig
+              readOnly: true
+              mountPath: /etc/shared_config_manager
         - name: tilecloudchain
           securityContext:
             runAsNonRoot: true
@@ -859,6 +868,9 @@ spec:
         - name: mainconfig
           configMap:
             name: test-mutualize-tcc-main-config
+        - name: masterconfig
+          configMap:
+            name: test-mutualize-config
 ---
 # Source: mutualize/templates/ingress.yaml
 apiVersion: networking.k8s.io/v1
