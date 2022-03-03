@@ -54,8 +54,6 @@ print:
   config:
     image: *config-image
     env:
-      MASTER_CONFIG:
-        value: '{"sources": {}}'
       TAG_FILTER:
         value: print
       TARGET:
@@ -99,8 +97,6 @@ tilecloudchain: &tilecloudchain
   config:
     image: *config-image
     env:
-      MASTER_CONFIG:
-        value: '{"sources": {}}'
       TAG_FILTER:
         value: tilecloudchain
       TARGET:

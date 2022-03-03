@@ -359,7 +359,10 @@ spec:
             periodSeconds: 120
           volumeMounts:
             - name: configs
-              mountPath: /master_config
+              mountPath: /config
+            - name: masterconfig
+              readOnly: true
+              mountPath: /etc/shared_config_manager
         - name: tilecloudchain
           securityContext:
             runAsNonRoot: true
@@ -418,6 +421,9 @@ spec:
         - name: mainconfig
           configMap:
             name: test-mutualize-tcc-main-config
+        - name: masterconfig
+          configMap:
+            name: test-mutualize-config
 ---
 # Source: mutualize/templates/tilecloudchain-slave-deployment.yaml
 apiVersion: apps/v1
@@ -505,7 +511,10 @@ spec:
             periodSeconds: 120
           volumeMounts:
             - name: configs
-              mountPath: /master_config
+              mountPath: /config
+            - name: masterconfig
+              readOnly: true
+              mountPath: /etc/shared_config_manager
         - name: tilecloudchain
           securityContext:
             runAsNonRoot: true
@@ -555,6 +564,9 @@ spec:
         - name: mainconfig
           configMap:
             name: test-mutualize-tcc-main-config
+        - name: masterconfig
+          configMap:
+            name: test-mutualize-config
 ---
 # Source: mutualize/templates/ingress.yaml
 apiVersion: networking.k8s.io/v1
