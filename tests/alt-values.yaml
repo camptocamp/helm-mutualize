@@ -51,6 +51,22 @@ config:
       value: TEST_
   configMapNameOverride: *config-map-name-override
 
+additionalConfigs:
+  examples:
+    repository: mapfish/mapfish-print
+    key: super-secret
+  examples2:
+    labels:
+      mutualize-sharedconfig: 'true'
+    repository: mapfish/mapfish-print
+    branch: master
+    key: super-secret
+    dir: examples/src/test/resources/examples
+    tags:
+      - print
+    env:
+      TOTO: toto
+
 print:
   enabled: false
   configMapNameOverride: *config-map-name-override

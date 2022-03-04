@@ -705,3 +705,55 @@ spec:
   matchLabels:
     mutualize-tilecloudchain-hosts: 'true'
   configmapName: hosts.yaml
+---
+# Source: mutualize/templates/sharedconfig.yaml
+apiVersion: camptocamp.com/v1
+kind: SharedConfigSource
+metadata:
+  name: test-mutualize-examples
+  labels:
+    helm.sh/chart: mutualize-0.1.1
+    app.kubernetes.io/version: "1.0"
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: mutualize
+    app.kubernetes.io/instance: test
+    app.kubernetes.io/component: main
+spec:
+  name: examples
+  content:
+      type: git
+      repo: git@github.com:mapfish/mapfish-print.git
+      key: super-secret
+      template_engines:
+        - type: shell
+          environment_variables: true
+---
+# Source: mutualize/templates/sharedconfig.yaml
+apiVersion: camptocamp.com/v1
+kind: SharedConfigSource
+metadata:
+  name: test-mutualize-examples2
+  labels:
+    helm.sh/chart: mutualize-0.1.1
+    app.kubernetes.io/version: "1.0"
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: mutualize
+    app.kubernetes.io/instance: test
+    app.kubernetes.io/component: main
+    mutualize-sharedconfig: "true"
+spec:
+  name: examples2
+  content:
+      type: git
+      repo: git@github.com:mapfish/mapfish-print.git
+      branch: master
+      key: super-secret
+      sub_dir: examples/src/test/resources/examples
+      tags:
+        - print
+      template_engines:
+        - type: shell
+          environment_variables: true
+          data:
+            - name: "TOTO"
+              value: "toto"

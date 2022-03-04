@@ -1,0 +1,37 @@
+{{- range $name, $value := .Values.additionalConfigs }}
+---
+apiVersion: camptocamp.com/v1
+kind: SharedConfigSource
+metadata:
+  name: {{ include "common.fullname" ( dict "root" $ "service" $.Values ) }}-{{ $name }}
+  labels: {{ include "common.labels" ( dict "root" $ "service" $.Values ) | nindent 4 }}
+  {{- range $name, $value := .labels }}
+    {{ $name }}: {{ . | quote }}
+  {{- end }}
+spec:
+  name: {{ $name }}
+  content:
+      type: git
+      repo: git@github.com:{{ $value.repository }}.git
+      {{- if .branch }}
+      branch: {{ .branch }}
+      {{- end }}
+      key: {{ .key }}
+      {{- if .dir }}
+      sub_dir: {{ .dir }}
+      {{- end }}
+      {{- with .tags }}
+      tags:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      template_engines:
+        - type: shell
+          environment_variables: true
+          {{- with .env }}
+          data:
+            {{- range $name, $value := . }}
+            - name: {{ $name | quote }}
+              value: {{ . | quote }}
+            {{- end }}
+          {{- end }}
+{{- end }}
