@@ -6,47 +6,18 @@ metadata:
   labels: {{ include "common.labels" ( dict "root" . "service" .Values ) | nindent 4 }}
   annotations: {{- toYaml .Values.envConfigMap.annotations | nindent 4 }}
 data:
-  REDIS_SENTINELS: "{{ .Values.redis.host }}:{{ .Values.redis.port }}"
-  REDIS_DB: {{ .Values.redis.db | quote }}
-  REDIS_SERVICENAME: {{ .Values.redis.servicename }}
-  REDIS_TIMEOUT: {{ .Values.redis.timeout | quote }}
-  SCM_BROADCAST_PREFIX: broadcast_scm_{{ .Values.redis.db }}_
-  LOGS_BROADCAST_PREFIX: broadcast_logs_{{ .Values.redis.db }}_
-  SENTRY_URL: https://{{ .Values.sentry.key }}@{{ .Values.sentry.hostname }}/{{ .Values.sentry.project }}
-  SQLALCHEMY_URL: "postgresql://$(DB_USERNAME):$(DB_PASSWORD)@$(DB_HOST):5432/$(DB_DATABASE)"
-{{- if .Values.ingress.enabled }}
-  MUTUALIZED_PRINT_URL: {{ (index .Values.ingress.hosts 0).host }}
-{{- end }}
-  SCM_URL: http://{{ $fullname }}-config:8080/
-{{- if .Values.ingress.enabled }}
-  SCM_URL_EXTERNAL: https://{{ (index .Values.ingress.hosts 0).host }}
-{{- end }}
   CHART_NAME: {{ .Chart.Name }}
   RELEASE_NAME: {{ .Release.Name }}
   RELEASE_NAMESPACE: {{ .Release.Namespace }}
-  ES_FILTERS: kubernetes.labels.release={{ .Release.Name }},kubernetes.labels.service=print
+{{- if .Values.ingress.enabled }}
+  INGRESS_HOST: {{ (index .Values.ingress.hosts 0).host }}
+{{- end }}
+  CONFIG_PATH: {{.Values.config.path | quote }}
   CONFIG_IMAGE_TAG: {{ .Values.config.image.tag | quote }}
-  LOGS_IMAGE_TAG: {{ .Values.logs.image.tag | quote }}
-  STATSD_PREFIX: {{ .Chart.Name }}.{{ .Release.Name }}.%h
-  CATALINA_OPTS: >-
-    -Dmapfish.maxContentLength={{ .Values.print.maxContentLength }}
-    -DmaxNumberOfRunningPrintJobs={{ .Values.print.maxNumberOfRunningPrintJobs }}
-    {{- if .Values.sentry.enabled }}
-    -Dsentry.dsn=https://{{ .Values.sentry.key }}:{{ .Values.sentry.secret }}@{{ .Values.sentry.hostname }}/{{ .Values.sentry.project }}
-    -Dsentry.release={{ .Values.print.image.tag }}
-    -Dsentry.environment={{ .Release.Name }}
-    -Dsentry.tags=service:print
-    {{- end }}
-    -Ddb.username=$(DB_USERNAME)
-    -Ddb.password=$(DB_PASSWORD)
-    -Ddb.host=$(DB_HOST)
-    -Ddb.name=$(DB_DATABASE)
-    -Ddb.schema={{ .Values.print.dbSchema }}
-    -DcacheDuration={{ .Values.print.cacheDurationSeconds }}
-    -Dsun.net.inetaddr.ttl=30
-    -Xmx{{ .Values.print.maxMemory }}M
-    -Xms{{ .Values.print.maxMemory }}M
-    -XX:GCTimeLimit=70
-    -XX:GCHeapFreeLimit=10
-    -XX:+ExitOnOutOfMemoryError
-    {{ .Values.print.catalinaOpts }}
+  PRINT_IMAGE_TAG: {{ .Values.print.image.tag | quote }}
+  PRINT_LOGS_IMAGE_TAG: {{ .Values.logs.image.tag | quote }}
+  TILECLOUDCHAIN_IMAGE_TAG: {{ .Values.tilecloudchain.image.tag | quote }}
+  CONFIG_SERVICE_NAME: {{ include "common.fullname" ( dict "root" . "service" .Values.config ) }}
+  PRINT_SERVICE_NAME: {{ include "common.fullname" ( dict "root" . "service" .Values.print ) }}
+  PRINT_LOGS_SERVICE_NAME: {{ include "common.fullname" ( dict "root" . "service" .Values.logs ) }}
+  TILECLOUDCHAIN_SERVICE_NAME: {{ include "common.fullname" ( dict "root" . "service" .Values.tilecloudchain ) }}

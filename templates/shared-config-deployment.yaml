@@ -32,7 +32,7 @@ spec:
               protocol: TCP
           readinessProbe:
             httpGet:
-              path: /c2c/health_check
+              path: {{ .Values.config.path }}c2c/health_check
               port: http
             initialDelaySeconds: 10
           volumeMounts:

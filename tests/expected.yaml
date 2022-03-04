@@ -90,43 +90,19 @@ metadata:
   annotations:
     {}
 data:
-  REDIS_SENTINELS: "rfs-redis-redisfailover:26379"
-  REDIS_DB: "0"
-  REDIS_SERVICENAME: mymaster
-  REDIS_TIMEOUT: "30"
-  SCM_BROADCAST_PREFIX: broadcast_scm_0_
-  LOGS_BROADCAST_PREFIX: broadcast_logs_0_
-  SENTRY_URL: https://@o330647.ingest.sentry.io/42
-  SQLALCHEMY_URL: "postgresql://$(DB_USERNAME):$(DB_PASSWORD)@$(DB_HOST):5432/$(DB_DATABASE)"
-  MUTUALIZED_PRINT_URL: mutualize.local
-  SCM_URL: http://test-mutualize-config:8080/
-  SCM_URL_EXTERNAL: https://mutualize.local
   CHART_NAME: mutualize
   RELEASE_NAME: test
   RELEASE_NAMESPACE: default
-  ES_FILTERS: kubernetes.labels.release=test,kubernetes.labels.service=print
+  INGRESS_HOST: mutualize.local
+  CONFIG_PATH: "/"
   CONFIG_IMAGE_TAG: "master"
-  LOGS_IMAGE_TAG: "latest"
-  STATSD_PREFIX: mutualize.test.%h
-  CATALINA_OPTS: >-
-    -Dmapfish.maxContentLength=6291456
-    -DmaxNumberOfRunningPrintJobs=2
-    -Dsentry.dsn=https://:@o330647.ingest.sentry.io/42
-    -Dsentry.release=3.26
-    -Dsentry.environment=test
-    -Dsentry.tags=service:print
-    -Ddb.username=$(DB_USERNAME)
-    -Ddb.password=$(DB_PASSWORD)
-    -Ddb.host=$(DB_HOST)
-    -Ddb.name=$(DB_DATABASE)
-    -Ddb.schema=public
-    -DcacheDuration=60
-    -Dsun.net.inetaddr.ttl=30
-    -Xmx3072M
-    -Xms3072M
-    -XX:GCTimeLimit=70
-    -XX:GCHeapFreeLimit=10
-    -XX:+ExitOnOutOfMemoryError
+  PRINT_IMAGE_TAG: "3.26"
+  PRINT_LOGS_IMAGE_TAG: "latest"
+  TILECLOUDCHAIN_IMAGE_TAG: "master"
+  CONFIG_SERVICE_NAME: test-mutualize-config
+  PRINT_SERVICE_NAME: test-mutualize-print
+  PRINT_LOGS_SERVICE_NAME: test-mutualize-logs
+  TILECLOUDCHAIN_SERVICE_NAME: test-mutualize-tcc
 ---
 # Source: mutualize/templates/tilecloudchain-configmap-mainconfig.yaml
 apiVersion: v1
@@ -291,17 +267,12 @@ spec:
           image: "camptocamp/mapfish-print-logs:latest"
           imagePullPolicy: IfNotPresent
           env:
-              - name: "C2C_BROADCAST_PREFIX"
-                valueFrom:
-                  configMapKeyRef:
-                    name: "test-mutualize-env"
-                    key: "LOGS_BROADCAST_PREFIX"
-              - name: "C2C_REDIS_URL"
-                value: "redis://test-redis-master/2"
               - name: "C2C_SECRET"
                 value: "secret"
               - name: "ES_INDEXES"
                 value: "print"
+              - name: "REDIS_DB"
+                value: "2"
               - name: "SHARED_CONFIG_MASTER"
                 value: "/master_config/master/shared_config_manager.yaml"
               - name: "SOURCES_KEY"
@@ -310,6 +281,10 @@ spec:
                 value: "postgresql://postgres:mySuperTestingPassword@test-pg-postgresql:5432/"
               - name: "SQLALCHEMY_URL"
                 value: "postgresql://postgres:mySuperTestingPassword@test-pg-postgresql:5432/"
+              - name: "C2C_BROADCAST_PREFIX"
+                value: "broadcast_logs_$(REDIS_DB)_"
+              - name: "C2C_REDIS_URL"
+                value: "redis://test-redis-master/$(REDIS_DB)"
           terminationMessagePolicy: FallbackToLogsOnError
           resources:
             {}
@@ -387,32 +362,33 @@ spec:
           image: "camptocamp/shared_config_manager:master"
           imagePullPolicy: IfNotPresent
           env:
-              - name: "API_BASE_URL"
-                valueFrom:
-                  configMapKeyRef:
-                    name: "test-mutualize-env"
-                    key: "SCM_URL"
               - name: "C2C_BROADCAST_PREFIX"
-                valueFrom:
-                  configMapKeyRef:
-                    name: "test-mutualize-env"
-                    key: "SCM_BROADCAST_PREFIX"
+                value: "broadcast_scm_$(REDIS_DB)_"
               - name: "C2C_REDIS_TIMEOUT"
                 value: "30"
-              - name: "C2C_REDIS_URL"
-                value: "redis://test-redis-master/1"
               - name: "C2C_SECRET"
                 value: "secret"
+              - name: "CONFIG_SERVICE_NAME"
+                valueFrom:
+                  configMapKeyRef:
+                    name: "test-mutualize-env"
+                    key: "CONFIG_SERVICE_NAME"
               - name: "DEVELOPMENT"
                 value: "0"
               - name: "LOG_LEVEL"
                 value: "DEBUG"
               - name: "LOG_TYPE"
                 value: "console"
+              - name: "REDIS_DB"
+                value: "1"
               - name: "TAG_FILTER"
                 value: "print"
               - name: "TARGET"
                 value: "/config"
+              - name: "API_BASE_URL"
+                value: "http://$(CONFIG_SERVICE_NAME):8080/"
+              - name: "C2C_REDIS_URL"
+                value: "redis://test-redis-master/$(REDIS_DB)"
           terminationMessagePolicy: FallbackToLogsOnError
           resources:
             {}
@@ -439,6 +415,9 @@ spec:
             runAsUser: 33
           image: "camptocamp/mapfish_print:3.26"
           imagePullPolicy: IfNotPresent
+          env:
+              - name: "PRINT_TERMINATION_GRACE_PERIOD_SECONDS"
+                value: "120"
           terminationMessagePolicy: FallbackToLogsOnError
           resources:
             {}
@@ -469,7 +448,7 @@ spec:
           lifecycle:
             preStop:
               exec:
-                command: ['/bin/bash', '-c', '/usr/local/tomcat/bin/docker_pre_stop_print.sh 120 || true']
+                command: ['/bin/bash', '-c', '/usr/local/tomcat/bin/docker_pre_stop_print.sh $(PRINT_TERMINATION_GRACE_PERIOD_SECONDS) || true']
       volumes:
         - name: configs
           emptyDir: {}
@@ -521,22 +500,17 @@ spec:
           image: "camptocamp/shared_config_manager:master"
           imagePullPolicy: IfNotPresent
           env:
-              - name: "API_BASE_URL"
-                valueFrom:
-                  configMapKeyRef:
-                    name: "test-mutualize-env"
-                    key: "SCM_URL"
               - name: "C2C_BROADCAST_PREFIX"
-                valueFrom:
-                  configMapKeyRef:
-                    name: "test-mutualize-env"
-                    key: "SCM_BROADCAST_PREFIX"
+                value: "broadcast_scm_$(REDIS_DB)_"
               - name: "C2C_REDIS_TIMEOUT"
                 value: "30"
-              - name: "C2C_REDIS_URL"
-                value: "redis://test-redis-master/1"
               - name: "C2C_SECRET"
                 value: "secret"
+              - name: "CONFIG_SERVICE_NAME"
+                valueFrom:
+                  configMapKeyRef:
+                    name: "test-mutualize-env"
+                    key: "CONFIG_SERVICE_NAME"
               - name: "DEVELOPMENT"
                 value: "0"
               - name: "LOG_LEVEL"
@@ -545,10 +519,19 @@ spec:
                 value: "console"
               - name: "MASTER_CONFIG"
                 value: ""
+              - name: "REDIS_DB"
+                value: "1"
               - name: "ROUTE_PREFIX"
-                value: "/"
+                valueFrom:
+                  configMapKeyRef:
+                    name: "test-mutualize-env"
+                    key: "CONFIG_PATH"
               - name: "SCM_ENV_PREFIXES"
                 value: "TEST_"
+              - name: "API_BASE_URL"
+                value: "http://$(CONFIG_SERVICE_NAME):8080/"
+              - name: "C2C_REDIS_URL"
+                value: "redis://test-redis-master/$(REDIS_DB)"
           terminationMessagePolicy: FallbackToLogsOnError
           resources:
             {}
@@ -621,32 +604,33 @@ spec:
           image: "camptocamp/shared_config_manager:master"
           imagePullPolicy: IfNotPresent
           env:
-              - name: "API_BASE_URL"
-                valueFrom:
-                  configMapKeyRef:
-                    name: "test-mutualize-env"
-                    key: "SCM_URL"
               - name: "C2C_BROADCAST_PREFIX"
-                valueFrom:
-                  configMapKeyRef:
-                    name: "test-mutualize-env"
-                    key: "SCM_BROADCAST_PREFIX"
+                value: "broadcast_scm_$(REDIS_DB)_"
               - name: "C2C_REDIS_TIMEOUT"
                 value: "30"
-              - name: "C2C_REDIS_URL"
-                value: "redis://test-redis-master/1"
               - name: "C2C_SECRET"
                 value: "secret"
+              - name: "CONFIG_SERVICE_NAME"
+                valueFrom:
+                  configMapKeyRef:
+                    name: "test-mutualize-env"
+                    key: "CONFIG_SERVICE_NAME"
               - name: "DEVELOPMENT"
                 value: "0"
               - name: "LOG_LEVEL"
                 value: "DEBUG"
               - name: "LOG_TYPE"
                 value: "console"
+              - name: "REDIS_DB"
+                value: "1"
               - name: "TAG_FILTER"
                 value: "tilecloudchain"
               - name: "TARGET"
                 value: "/config"
+              - name: "API_BASE_URL"
+                value: "http://$(CONFIG_SERVICE_NAME):8080/"
+              - name: "C2C_REDIS_URL"
+                value: "redis://test-redis-master/$(REDIS_DB)"
           terminationMessagePolicy: FallbackToLogsOnError
           resources:
             {}
@@ -674,12 +658,10 @@ spec:
           image: "camptocamp/tilecloud-chain:master"
           imagePullPolicy: IfNotPresent
           env:
-              - name: "C2C_BROADCAST_PREFIX"
-                value: "broadcast_scm_3_"
-              - name: "C2C_REDIS_URL"
-                value: "redis://test-redis-master/2"
               - name: "C2C_SECRET"
                 value: "secret"
+              - name: "REDIS_DB"
+                value: "2"
               - name: "SHARED_CONFIG_MASTER"
                 value: "/master_config/master/shared_config_manager.yaml"
               - name: "SOURCES_KEY"
@@ -688,6 +670,10 @@ spec:
                 value: "/etc/tilecloudchain-hosts/hosts.yaml"
               - name: "TILEGENERATION_MAIN_CONFIGFILE"
                 value: "/etc/tilecloudchain-main/config.yaml"
+              - name: "C2C_BROADCAST_PREFIX"
+                value: "broadcast_scm_$(REDIS_DB)_"
+              - name: "C2C_REDIS_URL"
+                value: "redis://test-redis-master/$(REDIS_DB)"
           terminationMessagePolicy: FallbackToLogsOnError
           resources:
             {}
@@ -773,32 +759,33 @@ spec:
           image: "camptocamp/shared_config_manager:master"
           imagePullPolicy: IfNotPresent
           env:
-              - name: "API_BASE_URL"
-                valueFrom:
-                  configMapKeyRef:
-                    name: "test-mutualize-env"
-                    key: "SCM_URL"
               - name: "C2C_BROADCAST_PREFIX"
-                valueFrom:
-                  configMapKeyRef:
-                    name: "test-mutualize-env"
-                    key: "SCM_BROADCAST_PREFIX"
+                value: "broadcast_scm_$(REDIS_DB)_"
               - name: "C2C_REDIS_TIMEOUT"
                 value: "30"
-              - name: "C2C_REDIS_URL"
-                value: "redis://test-redis-master/1"
               - name: "C2C_SECRET"
                 value: "secret"
+              - name: "CONFIG_SERVICE_NAME"
+                valueFrom:
+                  configMapKeyRef:
+                    name: "test-mutualize-env"
+                    key: "CONFIG_SERVICE_NAME"
               - name: "DEVELOPMENT"
                 value: "0"
               - name: "LOG_LEVEL"
                 value: "DEBUG"
               - name: "LOG_TYPE"
                 value: "console"
+              - name: "REDIS_DB"
+                value: "1"
               - name: "TAG_FILTER"
                 value: "tilecloudchain"
               - name: "TARGET"
                 value: "/config"
+              - name: "API_BASE_URL"
+                value: "http://$(CONFIG_SERVICE_NAME):8080/"
+              - name: "C2C_REDIS_URL"
+                value: "redis://test-redis-master/$(REDIS_DB)"
           terminationMessagePolicy: FallbackToLogsOnError
           resources:
             {}
@@ -826,12 +813,10 @@ spec:
           image: "camptocamp/tilecloud-chain:master"
           imagePullPolicy: IfNotPresent
           env:
-              - name: "C2C_BROADCAST_PREFIX"
-                value: "broadcast_scm_3_"
-              - name: "C2C_REDIS_URL"
-                value: "redis://test-redis-master/2"
               - name: "C2C_SECRET"
                 value: "secret"
+              - name: "REDIS_DB"
+                value: "2"
               - name: "SHARED_CONFIG_MASTER"
                 value: "/master_config/master/shared_config_manager.yaml"
               - name: "SOURCES_KEY"
@@ -840,6 +825,10 @@ spec:
                 value: "/etc/tilecloudchain-hosts/hosts.yaml"
               - name: "TILEGENERATION_MAIN_CONFIGFILE"
                 value: "/etc/tilecloudchain-main/config.yaml"
+              - name: "C2C_BROADCAST_PREFIX"
+                value: "broadcast_scm_$(REDIS_DB)_"
+              - name: "C2C_REDIS_URL"
+                value: "redis://test-redis-master/$(REDIS_DB)"
           terminationMessagePolicy: FallbackToLogsOnError
           resources:
             {}
@@ -876,7 +865,7 @@ spec:
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: test-mutualize-main-print
+  name: test-mutualize-main
   labels:
     helm.sh/chart: mutualize-0.1.1
     app.kubernetes.io/version: "1.0"
@@ -884,7 +873,6 @@ metadata:
     app.kubernetes.io/name: mutualize
     app.kubernetes.io/instance: test
     app.kubernetes.io/component: main
-    prefix: print
 spec:
   rules:
     - host: mutualize.local
@@ -897,32 +885,13 @@ spec:
                 name: test-mutualize
                 port:
                   number: 8080
-          - path: /logs
+          - path: /print/logs
             pathType: Prefix
             backend:
               service:
                 name: test-mutualize-logs
                 port:
                   number: 8080
----
-# Source: mutualize/templates/ingress.yaml
-apiVersion: networking.k8s.io/v1
-kind: Ingress
-metadata:
-  name: test-mutualize-main-config
-  labels:
-    helm.sh/chart: mutualize-0.1.1
-    app.kubernetes.io/version: "1.0"
-    app.kubernetes.io/managed-by: Helm
-    app.kubernetes.io/name: mutualize
-    app.kubernetes.io/instance: test
-    app.kubernetes.io/component: main
-    prefix: config
-spec:
-  rules:
-    - host: mutualize.local
-      http:
-        paths:
           - path: /config
             pathType: Prefix
             backend:

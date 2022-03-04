@@ -82,7 +82,7 @@ spec:
           lifecycle:
             preStop:
               exec:
-                command: ['/bin/bash', '-c', '/usr/local/tomcat/bin/docker_pre_stop_print.sh {{ .Values.print.terminationGracePeriodSeconds }} || true']
+                command: ['/bin/bash', '-c', '/usr/local/tomcat/bin/docker_pre_stop_print.sh $(PRINT_TERMINATION_GRACE_PERIOD_SECONDS) || true']
       volumes:
         - name: configs
           emptyDir: {}

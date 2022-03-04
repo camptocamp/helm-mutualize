@@ -1,3 +1,8 @@
+# Redis DB:
+# config: 1
+# print logs: 2
+# tilecloud-chain: 3
+
 configMapNameOverride: &config-map-name-override
   env: test-mutualize-env
   scm-master-config: test-mutualize-env
@@ -15,12 +20,14 @@ config-env-base: &config-env-base
       key: secret
       sub_dir: tests/shared-config
       sparse: false
+  REDIS_DB:
+    value: '1'
   C2C_REDIS_URL:
-    value: redis://test-redis-master/1
+    value: redis://test-redis-master/$(REDIS_DB)
+    order: 1
   C2C_BROADCAST_PREFIX:
-    type: configMap
-    name: env
-    key: SCM_BROADCAST_PREFIX
+    value: broadcast_config_$(REDIS_DB)_
+    order: 1
   C2C_SECRET:
     value: secret
   C2C_REDIS_TIMEOUT:
@@ -33,10 +40,13 @@ config:
     <<: *config-env-base
     MASTER_CONFIG:
       value: ''
-    API_BASE_URL:
+    CONFIG_SERVICE_NAME:
       type: configMap
       name: env
-      key: SCM_URL
+      key: CONFIG_SERVICE_NAME
+    API_BASE_URL:
+      value: http://$(CONFIG_SERVICE_NAME):8080/
+      order: 1
     SCM_ENV_PREFIXES:
       value: TEST_
   configMapNameOverride: *config-map-name-override
@@ -51,21 +61,31 @@ logs:
   enabled: false
   configMapNameOverride: *config-map-name-override
 
+  env:
+    REDIS_DB:
+      value: '2'
+    C2C_REDIS_URL:
+      value: redis://test-redis-master/$(REDIS_DB)
+      order: 1
+    C2C_BROADCAST_PREFIX:
+      value: broadcast_scm_$(REDIS_DB)_
+      order: 1
+
 tilecloudchain: &tilecloudchain
   enabled: true
   configMapNameOverride: *config-map-name-override
 
   env:
+    REDIS_DB:
+      value: '3'
     C2C_REDIS_URL:
-      value: redis://test-redis-master/2
+      value: redis://test-redis-master/$(REDIS_DB)
+      order: 1
     C2C_BROADCAST_PREFIX:
-      value: broadcast_scm_3_
-    SOURCES_KEY:
-      value: secret
+      value: broadcast_scm_$(REDIS_DB)_
+      order: 1
     C2C_SECRET:
       value: secret
-    SHARED_CONFIG_MASTER:
-      value: /master_config/master/shared_config_manager.yaml
 
   mainConfig:
     test: 111
@@ -75,10 +95,13 @@ tilecloudchain: &tilecloudchain
     image: *config-image
     env:
       <<: *config-env-base
-      API_BASE_URL:
+      CONFIG_SERVICE_NAME:
         type: configMap
         name: env
-        key: SCM_URL
+        key: CONFIG_SERVICE_NAME
+      API_BASE_URL:
+        value: http://$(CONFIG_SERVICE_NAME):8080/
+        order: 1
       TAG_FILTER:
         value: tilecloudchain
     configMapNameOverride: *config-map-name-override

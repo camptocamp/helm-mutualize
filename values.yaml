@@ -23,6 +23,8 @@ config:
     repository: camptocamp/shared_config_manager
     tag: latest
     sha:
+  # Path where the application is available
+  path: /
   env: {}
   annotations: {}
   resources: {}
@@ -41,12 +43,6 @@ print:
     hash:
   env: {}
   annotations: {}
-  maxContentLength: '6291456'
-  maxNumberOfRunningPrintJobs: 2
-  cacheDurationSeconds: 60
-  dbSchema: public
-  catalinaOpts: ''
-  maxMemory: 3072
   resources: {}
   service:
     type: ClusterIP
@@ -120,25 +116,11 @@ tilecloudchainSlave:
   <<: *tilecloudchain
   serviceName: tcc-slave
 
-redis:
-  host: rfs-redis-redisfailover
-  port: 26379
-  db: 0
-  servicename: mymaster
-  timeout: 30
-
-sentry:
-  enabled: true
-  hostname: o330647.ingest.sentry.io
-  key: ''
-  secret: ''
-  project: 42
-
 serviceAccount:
   # Specifies whether a service account should be created
   create: false
   # The name of the service account to use.
-  # If not set and create is true, a name is generated using the fullname template
+  # If not set and create is true, a name is generated using the full name template
   name: default
 
 podSecurityContext:
