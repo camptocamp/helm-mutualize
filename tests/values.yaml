@@ -7,12 +7,13 @@ config-env-base: &config-env-base
     value: console
   LOG_LEVEL:
     value: DEBUG
+  REDIS_DB:
+    value: '1'
   C2C_REDIS_URL:
-    value: redis://test-redis-master/1
+    value: redis://test-redis-master/$(REDIS_DB)
+    order: 1
   C2C_BROADCAST_PREFIX:
-    type: configMap
-    name: env
-    key: SCM_BROADCAST_PREFIX
+    value: broadcast_scm_$(REDIS_DB)_
   C2C_SECRET:
     value: secret
   C2C_REDIS_TIMEOUT:
@@ -27,14 +28,19 @@ config:
     <<: *config-env-base
     MASTER_CONFIG:
       value: ''
-    API_BASE_URL:
+    CONFIG_SERVICE_NAME:
       type: configMap
       name: env
-      key: SCM_URL
+      key: CONFIG_SERVICE_NAME
+    API_BASE_URL:
+      value: http://$(CONFIG_SERVICE_NAME):8080/
+      order: 1
     SCM_ENV_PREFIXES:
       value: TEST_
     ROUTE_PREFIX:
-      value: '/'
+      type: configMap
+      name: env
+      key: CONFIG_PATH
 
 print:
   enabled: true
@@ -42,14 +48,20 @@ print:
     tag: 3.26
   annotations:
     reloader.stakater.com/auto: 'true'
+  env:
+    PRINT_TERMINATION_GRACE_PERIOD_SECONDS:
+      value: '120'
   config:
     image: *config-image
     env: &config-env-slave
       <<: *config-env-base
-      API_BASE_URL:
+      CONFIG_SERVICE_NAME:
         type: configMap
         name: env
-        key: SCM_URL
+        key: CONFIG_SERVICE_NAME
+      API_BASE_URL:
+        value: http://$(CONFIG_SERVICE_NAME):8080/
+        order: 1
 
 logs:
   image:
@@ -60,12 +72,14 @@ logs:
       value: postgresql://postgres:mySuperTestingPassword@test-pg-postgresql:5432/
     SQLALCHEMY_SLAVE_URL:
       value: postgresql://postgres:mySuperTestingPassword@test-pg-postgresql:5432/
+    REDIS_DB:
+      value: '2'
     C2C_REDIS_URL:
-      value: redis://test-redis-master/2
+      value: redis://test-redis-master/$(REDIS_DB)
+      order: 1
     C2C_BROADCAST_PREFIX:
-      type: configMap
-      name: env
-      key: LOGS_BROADCAST_PREFIX
+      value: broadcast_logs_$(REDIS_DB)_
+      order: 1
     SOURCES_KEY:
       value: secret
     C2C_SECRET:
@@ -86,10 +100,14 @@ tilecloudchain: &tilecloudchain
     tag: master
 
   env:
+    REDIS_DB:
+      value: '2'
     C2C_REDIS_URL:
-      value: redis://test-redis-master/2
+      value: redis://test-redis-master/$(REDIS_DB)
+      order: 1
     C2C_BROADCAST_PREFIX:
-      value: broadcast_scm_3_
+      value: broadcast_scm_$(REDIS_DB)_
+      order: 1
     SOURCES_KEY:
       value: secret
     C2C_SECRET:
@@ -110,11 +128,7 @@ tilecloudchain: &tilecloudchain
   config:
     image: *config-image
     env:
-      <<: *config-env-base
-      API_BASE_URL:
-        type: configMap
-        name: env
-        key: SCM_URL
+      <<: *config-env-slave
       TAG_FILTER:
         value: tilecloudchain
 
