@@ -56,15 +56,18 @@ spec:
         - name: print
           {{- include "common.containerConfig" ( dict "root" . "container" .Values.print ) | nindent 10 }}
           volumeMounts:
-            - mountPath: /usr/local/tomcat/webapps/ROOT/print-apps
-              name: configs
+            - name: configs
+              mountPath: /usr/local/tomcat/webapps/ROOT/print-apps
+            - name: web-xml
+              mountPath: /usr/local/tomcat/webapps/ROOT/WEB-INF/web.xml
+              subPath: web.xml
           ports:
             - name: http
               containerPort: 8080
               protocol: TCP
           readinessProbe:
             httpGet:
-              path: /metrics/ping?health_check=true
+              path: /print/metrics/ping?health_check=true
               port: http
             initialDelaySeconds: 15
             periodSeconds: 30
@@ -89,4 +92,10 @@ spec:
         - name: masterconfig
           configMap:
             name: {{ include "common.fullname" ( dict "root" . "service" .Values.config ) }}
+        - name: web-xml
+          configMap:
+            name: {{ include "common.fullname" ( dict "root" . "service" .Values.print ) }}
+            items:
+              - key: web.xml
+                path: web.xml
 {{- end }}

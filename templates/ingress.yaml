@@ -34,7 +34,7 @@ spec:
       http:
         paths:
         {{- range $.Values.ingress.paths }}
-          - path: {{ . }}
+          - path: {{ . }}print
             {{- if semverCompare ">=1.14-0" $.Capabilities.KubeVersion.GitVersion }}
             pathType: Prefix
             {{- end }}
@@ -45,7 +45,7 @@ spec:
                 port:
                   number: {{ $svcPrintPort }}
               {{- else }}
-              serviceName: {{ $fullName }}
+              serviceName: {{ $fullName }}-print
               servicePort: {{ $svcPrintPort }}
               {{- end }}
           - path: {{ . }}print/logs

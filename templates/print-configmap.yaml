@@ -1,0 +1,9 @@
+{{ $fullname := include "common.fullname" ( dict "root" . "service" .Values ) }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "common.fullname" ( dict "root" . "service" .Values.print ) }}
+  labels: {{ include "common.labels" ( dict "root" . "service" .Values.print ) | nindent 4 }}
+data:
+  web.xml: |
+    {{- .Values.print.webXml | nindent 4 }}
