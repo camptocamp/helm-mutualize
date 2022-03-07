@@ -104,6 +104,155 @@ data:
   PRINT_LOGS_SERVICE_NAME: test-mutualize-logs
   TILECLOUDCHAIN_SERVICE_NAME: test-mutualize-tcc
 ---
+# Source: mutualize/templates/print-configmap.yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: test-mutualize-print
+  labels:
+    helm.sh/chart: mutualize-0.1.1
+    app.kubernetes.io/version: "1.0"
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: mutualize
+    app.kubernetes.io/instance: test
+    app.kubernetes.io/component: print
+data:
+  web.xml: |
+    <?xml version="1.0" encoding="UTF-8"?>
+
+    <web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+            version="3.0"
+            xmlns="http://java.sun.com/xml/ns/javaee"
+            xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd"
+            metadata-complete="true">
+
+        <absolute-ordering/>
+
+        <context-param>
+            <param-name>contextConfigLocation</param-name>
+            <param-value>
+                classpath*:mapfish-spring-application-context.xml,classpath:mapfish-spring-security.xml,/WEB-INF/mapfish-print-printer-factory.xml,classpath*:mapfish-spring-application-context-override.xml
+            </param-value>
+        </context-param>
+
+        <listener>
+            <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+        </listener>
+
+        <listener>
+            <listener-class>org.mapfish.print.metrics.MetricsRegistryContextListener</listener-class>
+        </listener>
+
+        <listener>
+            <listener-class>org.mapfish.print.metrics.HealthCheckRegistryContextListener</listener-class>
+        </listener>
+
+        <listener>
+            <listener-class>org.mapfish.print.metrics.MapfishPrintInstrumentedFilterContextListener
+            </listener-class>
+        </listener>
+
+        <filter>
+            <filter-name>requestSizeFilter</filter-name>
+            <filter-class>org.mapfish.print.servlet.RequestSizeFilter</filter-class>
+            <init-param>
+                <!-- The maximum request size in bytes (default: 1 MB). -->
+                <param-name>maxContentLength</param-name>
+                <param-value>1048576</param-value>
+            </init-param>
+        </filter>
+        <filter-mapping>
+            <filter-name>requestSizeFilter</filter-name>
+            <url-pattern>/print/*</url-pattern>
+        </filter-mapping>
+
+        <filter>
+            <filter-name>characterEncodingFilter</filter-name>
+            <filter-class>org.springframework.web.filter.CharacterEncodingFilter</filter-class>
+            <init-param>
+                <param-name>encoding</param-name>
+                <param-value>UTF-8</param-value>
+            </init-param>
+        </filter>
+        <filter-mapping>
+            <filter-name>characterEncodingFilter</filter-name>
+            <url-pattern>/print/*</url-pattern>
+        </filter-mapping>
+
+        <filter>
+            <filter-name>springSecurityFilterChain</filter-name>
+            <filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
+        </filter>
+
+        <filter-mapping>
+            <filter-name>springSecurityFilterChain</filter-name>
+            <url-pattern>/print/*</url-pattern>
+        </filter-mapping>
+
+        <filter>
+            <filter-name>instrumentedFilter</filter-name>
+            <filter-class>com.codahale.metrics.servlet.InstrumentedFilter</filter-class>
+        </filter>
+        <filter-mapping>
+            <filter-name>instrumentedFilter</filter-name>
+            <url-pattern>/print/*</url-pattern>
+        </filter-mapping>
+
+        <filter>
+            <filter-name>CORS</filter-name>
+            <filter-class>com.thetransactioncompany.cors.CORSFilter</filter-class>
+            <init-param>
+                <param-name>cors.supportedMethods</param-name>
+                <param-value>GET, POST, DELETE, HEAD, OPTIONS</param-value>
+            </init-param>
+            <init-param>
+                <param-name>cors.maxAge</param-name>
+                <param-value>86400</param-value>
+            </init-param>
+            <init-param>
+                <param-name>cors.supportsCredentials</param-name>
+                <param-value>false</param-value>
+            </init-param>
+        </filter>
+        <filter-mapping>
+            <filter-name>CORS</filter-name>
+            <url-pattern>/print/*</url-pattern>
+        </filter-mapping>
+
+        <servlet>
+            <servlet-name>metrics-servlet</servlet-name>
+            <servlet-class>com.codahale.metrics.servlets.AdminServlet</servlet-class>
+        </servlet>
+
+        <!-- single mapping to spring, this only works properly if the advanced dispatch filter is
+            active -->
+        <servlet-mapping>
+            <servlet-name>metrics-servlet</servlet-name>
+            <url-pattern>/print/metrics</url-pattern>
+        </servlet-mapping>
+        <servlet-mapping>
+            <servlet-name>metrics-servlet</servlet-name>
+            <url-pattern>/print/metrics/*</url-pattern>
+        </servlet-mapping>
+
+        <servlet>
+            <servlet-name>mapfish-print</servlet-name>
+            <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+            <load-on-startup>1</load-on-startup>
+        </servlet>
+
+        <servlet-mapping>
+            <servlet-name>mapfish-print</servlet-name>
+            <url-pattern>/print/print/*</url-pattern>
+        </servlet-mapping>
+
+        <servlet-mapping>
+            <servlet-name>mapfish-print</servlet-name>
+            <url-pattern>/print/sec/print/*</url-pattern>
+        </servlet-mapping>
+
+    </web-app>
+---
 # Source: mutualize/templates/tilecloudchain-configmap-mainconfig.yaml
 apiVersion: v1
 kind: ConfigMap
@@ -422,15 +571,18 @@ spec:
           resources:
             {}
           volumeMounts:
-            - mountPath: /usr/local/tomcat/webapps/ROOT/print-apps
-              name: configs
+            - name: configs
+              mountPath: /usr/local/tomcat/webapps/ROOT/print-apps
+            - name: web-xml
+              mountPath: /usr/local/tomcat/webapps/ROOT/WEB-INF/web.xml
+              subPath: web.xml
           ports:
             - name: http
               containerPort: 8080
               protocol: TCP
           readinessProbe:
             httpGet:
-              path: /metrics/ping?health_check=true
+              path: /print/metrics/ping?health_check=true
               port: http
             initialDelaySeconds: 15
             periodSeconds: 30
@@ -455,6 +607,12 @@ spec:
         - name: masterconfig
           configMap:
             name: test-mutualize-config
+        - name: web-xml
+          configMap:
+            name: test-mutualize-print
+            items:
+              - key: web.xml
+                path: web.xml
 ---
 # Source: mutualize/templates/shared-config-deployment.yaml
 apiVersion: apps/v1
@@ -878,7 +1036,7 @@ spec:
     - host: mutualize.local
       http:
         paths:
-          - path: /
+          - path: /print
             pathType: Prefix
             backend:
               service:
