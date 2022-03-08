@@ -59,16 +59,14 @@ spec:
             - name: http
               containerPort: 8080
               protocol: TCP
-          readinessProbe: &configProbe
-            httpGet:
-              path: /tiles/c2c/health_check
-              port: http
-            initialDelaySeconds: 5
-            timeoutSeconds: 10
+          {{- with .Values.tilecloudchain.probes }}
+          readinessProbe:
+            {{- toYaml . | nindent 12 }}
             periodSeconds: 15
           livenessProbe:
-            <<: *configProbe
+            {{- toYaml . | nindent 12 }}
             periodSeconds: 60
+          {{- end }}
       volumes:
         - name: configs
           emptyDir: {}

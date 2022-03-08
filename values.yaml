@@ -223,6 +223,12 @@ tilecloudchain: &tilecloudchain
   mainConfig: {}
   annotations: {}
   resources: {}
+  probes:
+    httpGet:
+      path: /tiles/c2c/health_check
+      port: http
+    initialDelaySeconds: 5
+    timeoutSeconds: 10
   service:
     type: ClusterIP
     port: 8080
