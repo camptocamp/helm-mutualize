@@ -245,7 +245,7 @@ metadata:
 spec:
   type: ClusterIP
   ports:
-    - port: 8080
+    - port: 80
       targetPort: http
       protocol: TCP
       name: http
@@ -269,7 +269,7 @@ metadata:
 spec:
   type: ClusterIP
   ports:
-    - port: 8080
+    - port: 80
       targetPort: http
       protocol: TCP
       name: http
@@ -293,7 +293,7 @@ metadata:
 spec:
   type: ClusterIP
   ports:
-    - port: 8080
+    - port: 80
       targetPort: http
       protocol: TCP
       name: http
@@ -723,42 +723,42 @@ spec:
               service:
                 name: test-mutualize-print
                 port:
-                  number: 8080
+                  number: 80
           - path: /print/logs
             pathType: Prefix
             backend:
               service:
                 name: test-mutualize-logs
                 port:
-                  number: 8080
+                  number: 80
           - path: /config
             pathType: Prefix
             backend:
               service:
                 name: test-mutualize-config
                 port:
-                  number: 8080
+                  number: 80
           - path: /test/print
             pathType: Prefix
             backend:
               service:
                 name: test-mutualize-print
                 port:
-                  number: 8080
+                  number: 80
           - path: /test/print/logs
             pathType: Prefix
             backend:
               service:
                 name: test-mutualize-logs
                 port:
-                  number: 8080
+                  number: 80
           - path: /test/config
             pathType: Prefix
             backend:
               service:
                 name: test-mutualize-config
                 port:
-                  number: 8080
+                  number: 80
 ---
 # Source: mutualize/templates/ingress.yaml
 apiVersion: networking.k8s.io/v1
@@ -787,42 +787,42 @@ spec:
               service:
                 name: test-mutualize-print
                 port:
-                  number: 8080
+                  number: 80
           - path: /print/logs
             pathType: Prefix
             backend:
               service:
                 name: test-mutualize-logs
                 port:
-                  number: 8080
+                  number: 80
           - path: /config
             pathType: Prefix
             backend:
               service:
                 name: test-mutualize-config
                 port:
-                  number: 8080
+                  number: 80
           - path: /test/print
             pathType: Prefix
             backend:
               service:
                 name: test-mutualize-print
                 port:
-                  number: 8080
+                  number: 80
           - path: /test/print/logs
             pathType: Prefix
             backend:
               service:
                 name: test-mutualize-logs
                 port:
-                  number: 8080
+                  number: 80
           - path: /test/config
             pathType: Prefix
             backend:
               service:
                 name: test-mutualize-config
                 port:
-                  number: 8080
+                  number: 80
 ---
 # Source: mutualize/templates/shared-config-config.yaml
 apiVersion: camptocamp.com/v1

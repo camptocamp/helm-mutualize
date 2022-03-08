@@ -30,7 +30,7 @@ config:
   resources: {}
   service:
     type: ClusterIP
-    port: 8080
+    port: 80
 
 print:
   enabled: true
@@ -46,7 +46,7 @@ print:
   resources: {}
   service:
     type: ClusterIP
-    port: 8080
+    port: 80
   config:
     image: *config-image
     env:
@@ -205,7 +205,20 @@ logs:
   resources: {}
   service:
     type: ClusterIP
-    port: 8080
+    port: 80
+  readinessProbe:
+    httpGet:
+      path: /logs/c2c/health_check
+      port: http
+    initialDelaySeconds: 15
+    periodSeconds: 30
+  livenessProbe:
+    httpGet:
+      path: /logs/c2c/health_check?max_level=0
+      port: http
+    initialDelaySeconds: 20
+    failureThreshold: 50
+    periodSeconds: 120
 
 tilecloudchain: &tilecloudchain
   enabled: false
@@ -231,7 +244,7 @@ tilecloudchain: &tilecloudchain
     timeoutSeconds: 10
   service:
     type: ClusterIP
-    port: 8080
+    port: 80
   config:
     image: *config-image
     env:
