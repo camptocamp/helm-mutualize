@@ -115,6 +115,8 @@ tilecloudchain: &tilecloudchain
     SHARED_CONFIG_MASTER:
       value: /master_config/master/shared_config_manager.yaml
 
+  probes:
+
   mainConfig:
     redis:
       socket_timeout: 10

@@ -848,20 +848,6 @@ spec:
             - name: http
               containerPort: 8080
               protocol: TCP
-          readinessProbe:
-            httpGet:
-              path: /tiles/c2c/health_check
-              port: http
-            initialDelaySeconds: 5
-            timeoutSeconds: 10
-            periodSeconds: 15
-          livenessProbe:
-            httpGet:
-              path: /tiles/c2c/health_check
-              port: http
-            initialDelaySeconds: 5
-            timeoutSeconds: 10
-            periodSeconds: 60
       volumes:
         - name: configs
           emptyDir: {}
