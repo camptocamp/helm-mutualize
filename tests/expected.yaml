@@ -291,7 +291,7 @@ metadata:
 spec:
   type: ClusterIP
   ports:
-    - port: 8080
+    - port: 80
       targetPort: http
       protocol: TCP
       name: http
@@ -315,7 +315,7 @@ metadata:
 spec:
   type: ClusterIP
   ports:
-    - port: 8080
+    - port: 80
       targetPort: http
       protocol: TCP
       name: http
@@ -339,7 +339,7 @@ metadata:
 spec:
   type: ClusterIP
   ports:
-    - port: 8080
+    - port: 80
       targetPort: http
       protocol: TCP
       name: http
@@ -363,7 +363,7 @@ metadata:
 spec:
   type: ClusterIP
   ports:
-    - port: 8080
+    - port: 80
       targetPort: http
       protocol: TCP
       name: http
@@ -451,11 +451,11 @@ spec:
             initialDelaySeconds: 15
             periodSeconds: 30
           livenessProbe:
+            failureThreshold: 50
             httpGet:
               path: /logs/c2c/health_check?max_level=0
               port: http
             initialDelaySeconds: 20
-            failureThreshold: 50
             periodSeconds: 120
       volumes:
         - name: master-config
@@ -1046,21 +1046,21 @@ spec:
               service:
                 name: test-mutualize-print
                 port:
-                  number: 8080
+                  number: 80
           - path: /print/logs
             pathType: Prefix
             backend:
               service:
                 name: test-mutualize-logs
                 port:
-                  number: 8080
+                  number: 80
           - path: /config
             pathType: Prefix
             backend:
               service:
                 name: test-mutualize-config
                 port:
-                  number: 8080
+                  number: 80
 ---
 # Source: mutualize/templates/shared-config-config.yaml
 apiVersion: camptocamp.com/v1
