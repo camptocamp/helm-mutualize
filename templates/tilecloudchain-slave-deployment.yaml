@@ -18,6 +18,9 @@ spec:
   template:
     metadata:
       labels: {{ include "common.selectorLabels" ( dict "root" . "service" .Values.tilecloudchainSlave ) | nindent 8 }}
+      {{- range $key, $value := .Values.tilecloudchainSlave.podLabels }}
+        {{ $key }}: {{ $value }}
+      {{- end }}
       {{- with .Values.tilecloudchainSlave.podAnnotations }}
       annotations:
         {{- toYaml . | nindent 8 }}

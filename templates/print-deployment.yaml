@@ -27,6 +27,9 @@ spec:
   template:
     metadata:
       labels: {{ include "common.selectorLabels" ( dict "root" . "service" .Values.print ) | nindent 8 }}
+      {{- range $key, $value := .Values.print.podLabels }}
+        {{ $key }}: {{ $value }}
+      {{- end }}
       {{- with .Values.print.podAnnotations }}
       annotations:
         {{- toYaml . | nindent 8 }}

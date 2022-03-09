@@ -90,6 +90,8 @@ logs:
 tilecloudchain: &tilecloudchain
   enabled: true
   configMapNameOverride: *config-map-name-override
+  podLabels:
+    foo: bar
 
   env:
     REDIS_DB:

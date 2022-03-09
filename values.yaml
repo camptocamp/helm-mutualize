@@ -27,6 +27,8 @@ config:
   path: /
   env: {}
   annotations: {}
+  podLabels: {}
+  podAnnotations: {}
   resources: {}
   service:
     type: ClusterIP
@@ -43,6 +45,8 @@ print:
     hash:
   env: {}
   annotations: {}
+  podLabels: {}
+  podAnnotations: {}
   resources: {}
   service:
     type: ClusterIP
@@ -202,6 +206,8 @@ logs:
     sha:
   env: {}
   annotations: {}
+  podLabels: {}
+  podAnnotations: {}
   resources: {}
   service:
     type: ClusterIP
@@ -235,6 +241,8 @@ tilecloudchain: &tilecloudchain
       value: /etc/tilecloudchain-hosts/hosts.yaml
   mainConfig: {}
   annotations: {}
+  podLabels: {}
+  podAnnotations: {}
   resources: {}
   probes:
     httpGet:
