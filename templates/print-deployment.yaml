@@ -58,6 +58,12 @@ spec:
             periodSeconds: 120
         - name: print
           {{- include "common.containerConfig" ( dict "root" . "container" .Values.print ) | nindent 10 }}
+          {{- with .Values.print.command }}
+          command: {{ toYaml . | nindent 12 }}
+          {{- end }}
+          {{- with .Values.print.args }}
+          args: {{ toYaml . | nindent 12 }}
+          {{- end }}
           volumeMounts:
             - name: configs
               mountPath: /usr/local/tomcat/webapps/ROOT/print-apps
