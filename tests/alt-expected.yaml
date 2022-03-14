@@ -1,4 +1,24 @@
 ---
+# Source: mutualize/templates/print-pdb.yaml
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: test-mutualize-print
+  labels:
+    helm.sh/chart: mutualize-0.1.1
+    app.kubernetes.io/version: "1.0"
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: mutualize
+    app.kubernetes.io/instance: test
+    app.kubernetes.io/component: print
+spec:
+  maxUnavailable: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: mutualize
+      app.kubernetes.io/instance: test
+      app.kubernetes.io/component: print
+---
 # Source: mutualize/templates/tilecloudchain-pdb.yaml
 apiVersion: policy/v1
 kind: PodDisruptionBudget
@@ -254,6 +274,30 @@ spec:
     app.kubernetes.io/instance: test
     app.kubernetes.io/component: logs
 ---
+# Source: mutualize/templates/print-service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: test-mutualize-print
+  labels:
+    helm.sh/chart: mutualize-0.1.1
+    app.kubernetes.io/version: "1.0"
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: mutualize
+    app.kubernetes.io/instance: test
+    app.kubernetes.io/component: print
+spec:
+  type: ClusterIP
+  ports:
+    - port: 80
+      targetPort: http
+      protocol: TCP
+      name: http
+  selector:
+    app.kubernetes.io/name: mutualize
+    app.kubernetes.io/instance: test
+    app.kubernetes.io/component: print
+---
 # Source: mutualize/templates/shared-config-service.yaml
 apiVersion: v1
 kind: Service
@@ -301,6 +345,135 @@ spec:
     app.kubernetes.io/name: mutualize
     app.kubernetes.io/instance: test
     app.kubernetes.io/component: tcc
+---
+# Source: mutualize/templates/print-deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: test-mutualize-print
+  labels:
+    helm.sh/chart: mutualize-0.1.1
+    app.kubernetes.io/version: "1.0"
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: mutualize
+    app.kubernetes.io/instance: test
+    app.kubernetes.io/component: print
+spec:
+  replicas:
+  revisionHistoryLimit: 3
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 25%
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: mutualize
+      app.kubernetes.io/instance: test
+      app.kubernetes.io/component: print
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: mutualize
+        app.kubernetes.io/instance: test
+        app.kubernetes.io/component: print
+    spec:
+
+      serviceAccountName: default
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 33
+      affinity:
+        {}
+      containers:
+        - name: config
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: 33
+          image: "camptocamp/shared_config_manager:latest"
+          imagePullPolicy: IfNotPresent
+          env:
+              - name: "TAG_FILTER"
+                value: "print"
+              - name: "TARGET"
+                value: "/config"
+          terminationMessagePolicy: FallbackToLogsOnError
+          resources:
+            {}
+          args: ['shared-config-slave']
+          volumeMounts:
+            - mountPath: /config
+              name: configs
+            - name: masterconfig
+              readOnly: true
+              mountPath: /etc/shared_config_manager
+          readinessProbe: &configProbe
+            exec:
+              command:
+                - scm-is-ready
+            initialDelaySeconds: 30
+            periodSeconds: 30
+            failureThreshold: 5
+          livenessProbe:
+            <<: *configProbe
+            periodSeconds: 120
+        - name: print
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: 33
+          image: "camptocamp/mapfish_print:latest"
+          imagePullPolicy: IfNotPresent
+          terminationMessagePolicy: FallbackToLogsOnError
+          resources:
+            {}
+          command:
+            - aaa
+          args:
+            - bbb
+            - ccc
+          volumeMounts:
+            - name: configs
+              mountPath: /usr/local/tomcat/webapps/ROOT/print-apps
+            - name: web-xml
+              mountPath: /usr/local/tomcat/webapps/ROOT/WEB-INF/web.xml
+              subPath: web.xml
+          ports:
+            - name: http
+              containerPort: 8080
+              protocol: TCP
+          readinessProbe:
+            httpGet:
+              path: /print/metrics/ping?health_check=true
+              port: http
+            initialDelaySeconds: 15
+            periodSeconds: 30
+          livenessProbe:
+            exec:
+              # Be sure that the EPSG 2056 exists, see: https://jira.camptocamp.com/browse/GSGMF-1606
+              command:
+                - curl
+                - http://localhost:8080/print/examples:simple/buildreport.pdf
+                - --data-raw
+                - spec=%7B%0D%0A++++%22layout%22%3A+%22A4+portrait%22%2C%0D%0A++++%22attributes%22%3A+%7B%22map%22%3A+%7B%0D%0A++++++++%22center%22%3A+%5B%0D%0A++++++++++++1200000%2C%0D%0A++++++++++++2600000%0D%0A++++++++%5D%2C%0D%0A++++++++%22rotation%22%3A+0%2C%0D%0A++++++++%22longitudeFirst%22%3A+true%2C%0D%0A++++++++%22layers%22%3A+%5B%5D%2C%0D%0A++++++++%22scale%22%3A+100000000%2C%0D%0A++++++++%22projection%22%3A+%22EPSG%3A2056%22%2C%0D%0A++++++++%22dpi%22%3A+72%0D%0A++++%7D%7D%0D%0A%7D
+            initialDelaySeconds: 15
+            failureThreshold: 50
+            periodSeconds: 120
+          lifecycle:
+            preStop:
+              exec:
+                command: ['/bin/bash', '-c', '/usr/local/tomcat/bin/docker_pre_stop_print.sh $(PRINT_TERMINATION_GRACE_PERIOD_SECONDS) || true']
+      volumes:
+        - name: configs
+          emptyDir: {}
+        - name: masterconfig
+          configMap:
+            name: test-mutualize-config
+        - name: web-xml
+          configMap:
+            name: test-mutualize-print
+            items:
+              - key: web.xml
+                path: web.xml
 ---
 # Source: mutualize/templates/shared-config-deployment.yaml
 apiVersion: apps/v1

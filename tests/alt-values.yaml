@@ -68,8 +68,13 @@ additionalConfigs:
       TOTO: toto
 
 print:
-  enabled: false
+  enabled: true
   configMapNameOverride: *config-map-name-override
+  command:
+    - aaa
+  args:
+    - bbb
+    - ccc
   config:
     configMapNameOverride: *config-map-name-override
 

@@ -44,6 +44,8 @@ print:
     tag: latest
     hash:
   env: {}
+  command: []
+  args: []
   annotations: {}
   podLabels: {}
   podAnnotations: {}
