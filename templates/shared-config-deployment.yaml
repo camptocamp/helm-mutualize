@@ -2,11 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ include "common.fullname" ( dict "root" . "service" .Values.config ) }}
-  labels: {{ include "common.labels" ( dict "root" . "service" .Values.config ) | nindent 4 }}
-  {{- with .Values.config.annotations }}
-  annotations:
-    {{- toYaml . | nindent 4 }}
-  {{- end }}
+  {{- include "common.metadata" ( dict "root" . "service" .Values.config ) | nindent 2 }}
 spec:
   replicas: {{ .Values.config.replicaCount }}
   revisionHistoryLimit: {{ .Values.revisionHistoryLimit | default 3 }}
@@ -15,15 +11,7 @@ spec:
   selector:
     matchLabels: {{ include "common.selectorLabels" ( dict "root" . "service" .Values.config ) | nindent 6 }}
   template:
-    metadata:
-      labels: {{ include "common.selectorLabels" ( dict "root" . "service" .Values.config ) | nindent 8 }}
-      {{- range $key, $value := .Values.config.podLabels }}
-        {{ $key }}: {{ $value }}
-      {{- end }}
-      {{- with .Values.config.podAnnotations }}
-      annotations:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
+    metadata: {{- include "common.podMetadata" ( dict "root" . "service" .Values.config ) | nindent 6 }}
     spec:
       {{- include "common.podConfig" ( dict "root" . "service" .Values.config ) | nindent 6 }}
       containers:
