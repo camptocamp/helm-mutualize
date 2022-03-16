@@ -6,12 +6,11 @@ global:
   image:
     pullSecrets: []
     pullPolicy: IfNotPresent
-    configMapNameOverride: {}
+  configMapNameOverride: {}
+  revisionHistoryLimit: 3
 
 nameOverride: ''
 fullnameOverride: ''
-
-revisionHistoryLimit: 3
 
 sshKey: to be defined
 
