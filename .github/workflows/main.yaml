@@ -50,10 +50,12 @@ jobs:
         run: c2cciutils-k8s-db
 
       # Install operator
-      - run: helm repo add operator-shared-config-manager https://camptocamp.github.io/operator-shared-config-manager
-      - run: helm install operator-shared-config-manager --set=image.tag=${VERSION} --version=${VERSION} operator-shared-config-manager/operator-shared-config-manager
+      - id: scm-operator
+        run: ci/get-version https://camptocamp.github.io/operator-shared-config-manager
+      - run: helm repo add operator-shared-config-manager ${{steps.scm-operator.outputs.app}}
+      - run: helm install operator-shared-config-manager --set=image.tag=${VERSION} --set=environment=int --version=${VERSION} operator-shared-config-manager/operator-shared-config-manager
         env:
-          VERSION: 0.1.1
+          VERSION: ${{steps.scm-operator.outputs.version}}
 
       # Install Redis
       - run: helm repo add bitnami https://charts.bitnami.com/bitnami

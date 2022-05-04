@@ -3,6 +3,8 @@ global:
     env: test-mutualize-env
     scm-master-config: test-mutualize-env
 
+environment: int
+
 config-env-base: &config-env-base
   LOG_TYPE:
     value: console

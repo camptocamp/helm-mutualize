@@ -1,6 +1,6 @@
 {{- range $name, $value := .Values.additionalConfigs }}
 ---
-apiVersion: camptocamp.com/v1
+apiVersion: camptocamp.com/v2
 kind: SharedConfigSource
 metadata:
   name: {{ include "common.fullname" ( dict "root" $ "service" $.Values ) }}-{{ $name }}
@@ -9,6 +9,7 @@ metadata:
     {{ $name }}: {{ . | quote }}
   {{- end }}
 spec:
+  environment: {{ $.Values.environment }}
   name: {{ $name }}
   content:
       type: git
