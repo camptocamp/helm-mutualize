@@ -996,7 +996,7 @@ spec:
                   number: 80
 ---
 # Source: mutualize/templates/shared-config-config.yaml
-apiVersion: camptocamp.com/v1
+apiVersion: camptocamp.com/v2
 kind: SharedConfigConfig
 metadata:
   name: test-mutualize-config
@@ -1008,13 +1008,14 @@ metadata:
     app.kubernetes.io/instance: test
     app.kubernetes.io/component: config
 spec:
+  environment: prod
   matchLabels:
     mutualize-sharedconfig: 'true'
   property: sources
   configmapName: config.yaml
 ---
 # Source: mutualize/templates/tilecloudchain-config-hosts.yaml
-apiVersion: camptocamp.com/v1
+apiVersion: camptocamp.com/v2
 kind: SharedConfigConfig
 metadata:
   name: test-mutualize-tcc-hosts
@@ -1026,12 +1027,14 @@ metadata:
     app.kubernetes.io/instance: test
     app.kubernetes.io/component: tcc
 spec:
+  environment: prod
   matchLabels:
     mutualize-tilecloudchain-hosts: 'true'
   configmapName: hosts.yaml
+  property: hosts
 ---
 # Source: mutualize/templates/sharedconfig.yaml
-apiVersion: camptocamp.com/v1
+apiVersion: camptocamp.com/v2
 kind: SharedConfigSource
 metadata:
   name: test-mutualize-examples
@@ -1043,6 +1046,7 @@ metadata:
     app.kubernetes.io/instance: test
     app.kubernetes.io/component: main
 spec:
+  environment: prod
   name: examples
   content:
       type: git
@@ -1053,7 +1057,7 @@ spec:
           environment_variables: true
 ---
 # Source: mutualize/templates/sharedconfig.yaml
-apiVersion: camptocamp.com/v1
+apiVersion: camptocamp.com/v2
 kind: SharedConfigSource
 metadata:
   name: test-mutualize-examples2
@@ -1066,6 +1070,7 @@ metadata:
     app.kubernetes.io/component: main
     mutualize-sharedconfig: "true"
 spec:
+  environment: prod
   name: examples2
   content:
       type: git

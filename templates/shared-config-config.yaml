@@ -1,9 +1,10 @@
-apiVersion: camptocamp.com/v1
+apiVersion: camptocamp.com/v2
 kind: SharedConfigConfig
 metadata:
   name: {{ include "common.fullname" ( dict "root" . "service" .Values.config ) }}
   labels: {{ include "common.labels" ( dict "root" . "service" .Values.config ) | nindent 4 }}
 spec:
+  environment: {{ $.Values.environment }}
   matchLabels:
     mutualize-sharedconfig: 'true'
   property: sources

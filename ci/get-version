@@ -1,0 +1,21 @@
+#!/usr/bin/env python3
+
+import argparse
+
+import yaml
+
+
+def _main() -> None:
+    parser = argparse.ArgumentParser("Get the version")
+    parser.add_argument("--config", default="versions.yaml", help="The versions file to use")
+    parser.add_argument("version_name", help="The version name")
+    args = parser.parse_args()
+
+    with open(args.config, encoding="utf-8") as f:
+        versions = yaml.load(f, Loader=yaml.SafeLoader)
+    print(f"::set-output name=app::{args.version_name}")
+    print(f"::set-output name=version::{versions[args.version_name]}")
+
+
+if __name__ == "__main__":
+    _main()

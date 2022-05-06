@@ -12,6 +12,7 @@ global:
 nameOverride: ''
 fullnameOverride: ''
 
+environment: to be defined
 sshKey: to be defined
 
 envConfigMap:
