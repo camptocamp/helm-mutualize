@@ -1031,7 +1031,7 @@ spec:
   matchLabels:
     mutualize-tilecloudchain-hosts: 'true'
   configmapName: hosts.yaml
-  property: hosts
+  property: sources
 ---
 # Source: mutualize/templates/sharedconfig.yaml
 apiVersion: camptocamp.com/v2
