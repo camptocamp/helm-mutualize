@@ -1079,4 +1079,4 @@ spec:
   matchLabels:
     mutualize-tilecloudchain-hosts: 'true'
   configmapName: hosts.yaml
-  property: hosts
+  property: sources
