@@ -18,7 +18,7 @@ Main data workflow is:
 
 - The following source objects (one for the print and one for TileCloud-chain):
   ```yaml
-  apiVersion: camptocamp.com/v1
+  apiVersion: camptocamp.com/v2
   kind: SharedConfigSource
   metadata:
     name: test-geomapfish-test-print
@@ -26,6 +26,7 @@ Main data workflow is:
       mutualize-sharedconfig: 'true'
   spec:
     name: test-print
+    environment: (int|prod)
     content: |
       type: git
       repo: git@github.com:camptocamp/test.git
@@ -41,7 +42,7 @@ Main data workflow is:
             - name: "TEST"
               value: "test"
   ---
-  apiVersion: camptocamp.com/v1
+  apiVersion: camptocamp.com/v2
   kind: SharedConfigSource
   metadata:
     name: test-geomapfish-test-tilecloudchain
@@ -49,6 +50,7 @@ Main data workflow is:
       mutualize-sharedconfig: 'true'
   spec:
     name: test-tilecloudchain
+    environment: (int|prod)
     content: |
       type: git
       repo: git@github.com:camptocamp/test.git
@@ -66,12 +68,13 @@ Main data workflow is:
   ```
 - And the receptor object:
   ```yaml
-  apiVersion: camptocamp.com/v1
+  apiVersion: camptocamp.com/v2
   kind: SharedConfigConfig
   metadata:
     name: test-mutualize-config
     labels: ...
   spec:
+    environment: (int|prod)
     matchLabels:
       mutualize-sharedconfig: 'true'
     property: sources
@@ -85,7 +88,7 @@ The TileCloud also need the hosts config:
 
 - The following object:
   ```yaml
-  apiVersion: camptocamp.com/v1
+  apiVersion: camptocamp.com/v2
   kind: SharedConfigSource
   metadata:
     name: test-geomapfish-test-tilecloudchain-hosts-main
@@ -93,18 +96,20 @@ The TileCloud also need the hosts config:
       mutualize-tilecloudchain-hosts: 'true'
   spec:
     name: test-tilecloudchain
+    environment: (int|prod)
     content:
       demo.camptocamp.com: /etc/mutualize-configs/test-tilecloudchain/config.yaml
   ```
 - And the receptor object:
 
   ```yaml
-  apiVersion: camptocamp.com/v1
+  apiVersion: camptocamp.com/v2
   kind: SharedConfigConfig
   metadata:
     name: test-mutualize-tilecloud-hosts
     labels: ...
   spec:
+    environment: (int|prod)
     matchLabels:
       mutualize-tilecloudchain-hosts: 'true'
     configmap_name: hosts.yaml
@@ -117,23 +122,25 @@ The TileCloud also need the hosts config:
 
 - The following objects:
   ```yaml
-  apiVersion: camptocamp.com/v1
+  apiVersion: camptocamp.com/v2
   kind: GitHubWebhook
   metadata:
     name: test-geomapfish-test-print
     labels: ...
   spec:
+    environment: (int|prod)
     repository: camptocamp/test
     # Should be something like https://config.mutualize(-int)?.camptocamp.com/1/refresh/test-print/
     url: See above
     contentType: json
   ---
-  apiVersion: camptocamp.com/v1
+  apiVersion: camptocamp.com/v2
   kind: GitHubWebhook
   metadata:
     name: test-geomapfish-test-tilecloudchain
     labels: ...
   spec:
+    environment: (int|prod)
     repository: camptocamp/test
     # Should be something like https://config.mutualize.camptocamp.com/1/refresh/test-tilecloudchain/
     url: See above
