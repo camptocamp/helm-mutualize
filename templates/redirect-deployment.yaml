@@ -1,0 +1,44 @@
+{{- if .Values.redirect.enabled -}}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "common.fullname" ( dict "root" . "service" .Values.redirect ) }}
+  {{- include "common.metadata" ( dict "root" . "service" .Values.redirect ) | nindent 2 }}
+spec:
+  replicas: {{ .Values.config.replicaCount }}
+  revisionHistoryLimit: {{ .Values.global.revisionHistoryLimit | default 3 }}
+  strategy:
+    type: RollingUpdate
+  selector:
+    matchLabels: {{ include "common.selectorLabels" ( dict "root" . "service" .Values.redirect ) | nindent 6 }}
+  template:
+    metadata: {{- include "common.podMetadata" ( dict "root" . "service" .Values.redirect ) | nindent 6 }}
+    spec:
+      {{- include "common.podConfig" ( dict "root" . "service" .Values.redirect ) | nindent 6 }}
+      containers:
+        - name: redirect
+          {{- include "common.containerConfig" ( dict "root" . "container" .Values.redirect ) | nindent 10 }}
+          volumeMounts:
+            - name: hosts
+              mountPath: /etc/redirect
+            - mountPath: /tmp
+              name: tmp-volume
+          ports:
+            - name: http
+              containerPort: 8080
+              protocol: TCP
+          {{- with .Values.redirect.probes }}
+          readinessProbe:
+            {{- toYaml . | nindent 12 }}
+            periodSeconds: 15
+          livenessProbe:
+            {{- toYaml . | nindent 12 }}
+            periodSeconds: 60
+          {{- end }}
+      volumes:
+        - name: tmp-volume
+          emptyDir: {}
+        - name: hosts
+          configMap:
+            name: {{ include "common.fullname" ( dict "root" . "service" .Values.redirect ) }}-hosts
+{{- end }}

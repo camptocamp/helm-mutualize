@@ -142,6 +142,9 @@ tilecloudchain: &tilecloudchain
 
 tilecloudchainSlave: *tilecloudchain
 
+redirect:
+  enabled: true
+
 dbstats:
   enabled: true
 
