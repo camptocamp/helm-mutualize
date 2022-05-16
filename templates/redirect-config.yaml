@@ -1,0 +1,13 @@
+{{- if .Values.redirect.enabled -}}
+apiVersion: camptocamp.com/v2
+kind: SharedConfigConfig
+metadata:
+  name: {{ include "common.fullname" ( dict "root" . "service" .Values.redirect ) }}-hosts
+  labels: {{ include "common.labels" ( dict "root" . "service" .Values.redirect ) | nindent 4 }}
+spec:
+  environment: {{ $.Values.environment }}
+  matchLabels:
+    mutualize-redirect-hosts: 'true'
+  configmapName: hosts.yaml
+  property: sources
+{{- end }}

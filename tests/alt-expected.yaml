@@ -19,6 +19,26 @@ spec:
       app.kubernetes.io/instance: test
       app.kubernetes.io/component: print
 ---
+# Source: mutualize/templates/redirect-pdb.yaml
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: test-mutualize-redirect
+  labels:
+    helm.sh/chart: mutualize
+    app.kubernetes.io/version: "1.0"
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: mutualize
+    app.kubernetes.io/instance: test
+    app.kubernetes.io/component: redirect
+spec:
+  maxUnavailable: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: mutualize
+      app.kubernetes.io/instance: test
+      app.kubernetes.io/component: redirect
+---
 # Source: mutualize/templates/tilecloudchain-pdb.yaml
 apiVersion: policy/v1
 kind: PodDisruptionBudget
@@ -298,6 +318,30 @@ spec:
     app.kubernetes.io/instance: test
     app.kubernetes.io/component: print
 ---
+# Source: mutualize/templates/redirect-service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: test-mutualize-redirect
+  labels:
+    helm.sh/chart: mutualize
+    app.kubernetes.io/version: "1.0"
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: mutualize
+    app.kubernetes.io/instance: test
+    app.kubernetes.io/component: redirect
+spec:
+  type: ClusterIP
+  ports:
+    - port: 80
+      targetPort: http
+      protocol: TCP
+      name: http
+  selector:
+    app.kubernetes.io/name: mutualize
+    app.kubernetes.io/instance: test
+    app.kubernetes.io/component: redirect
+---
 # Source: mutualize/templates/shared-config-service.yaml
 apiVersion: v1
 kind: Service
@@ -473,6 +517,81 @@ spec:
             items:
               - key: web.xml
                 path: web.xml
+---
+# Source: mutualize/templates/redirect-deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: test-mutualize-redirect
+  labels:
+    helm.sh/chart: mutualize
+    app.kubernetes.io/version: "1.0"
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: mutualize
+    app.kubernetes.io/instance: test
+    app.kubernetes.io/component: redirect
+spec:
+  replicas: 1
+  revisionHistoryLimit: 3
+  strategy:
+    type: RollingUpdate
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: mutualize
+      app.kubernetes.io/instance: test
+      app.kubernetes.io/component: redirect
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: mutualize
+        app.kubernetes.io/instance: test
+        app.kubernetes.io/component: redirect
+    spec:
+      serviceAccountName: default
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 33
+      affinity:
+        {}
+      containers:
+        - name: redirect
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: 33
+          image: "camptocamp/redirect:latest"
+          imagePullPolicy: IfNotPresent
+          terminationMessagePolicy: FallbackToLogsOnError
+          resources:
+            {}
+          volumeMounts:
+            - name: hosts
+              mountPath: /etc/redirect
+            - mountPath: /tmp
+              name: tmp-volume
+          ports:
+            - name: http
+              containerPort: 8080
+              protocol: TCP
+          readinessProbe:
+            httpGet:
+              path: /tiles/c2c/health_check
+              port: http
+            initialDelaySeconds: 5
+            timeoutSeconds: 10
+            periodSeconds: 15
+          livenessProbe:
+            httpGet:
+              path: /tiles/c2c/health_check
+              port: http
+            initialDelaySeconds: 5
+            timeoutSeconds: 10
+            periodSeconds: 60
+      volumes:
+        - name: tmp-volume
+          emptyDir: {}
+        - name: hosts
+          configMap:
+            name: test-mutualize-redirect-hosts
 ---
 # Source: mutualize/templates/shared-config-deployment.yaml
 apiVersion: apps/v1
@@ -994,6 +1113,25 @@ spec:
                 name: test-mutualize-config
                 port:
                   number: 80
+---
+# Source: mutualize/templates/redirect-config.yaml
+apiVersion: camptocamp.com/v2
+kind: SharedConfigConfig
+metadata:
+  name: test-mutualize-redirect-hosts
+  labels:
+    helm.sh/chart: mutualize
+    app.kubernetes.io/version: "1.0"
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: mutualize
+    app.kubernetes.io/instance: test
+    app.kubernetes.io/component: redirect
+spec:
+  environment: prod
+  matchLabels:
+    mutualize-redirect-hosts: 'true'
+  configmapName: hosts.yaml
+  property: sources
 ---
 # Source: mutualize/templates/shared-config-config.yaml
 apiVersion: camptocamp.com/v2

@@ -283,6 +283,29 @@ tilecloudchainSlave:
   <<: *tilecloudchain
   serviceName: tcc-slave
 
+# Redirect for OAuth2 from GitHub
+redirect:
+  enabled: false
+  serviceName: redirect
+  replicaCount: 1
+  image:
+    repository: camptocamp/redirect
+    tag: latest
+    sha:
+  annotations: {}
+  podLabels: {}
+  podAnnotations: {}
+  resources: {}
+  probes:
+    httpGet:
+      path: /tiles/c2c/health_check
+      port: http
+    initialDelaySeconds: 5
+    timeoutSeconds: 10
+  service:
+    type: ClusterIP
+    port: 80
+
 serviceAccount:
   # Specifies whether a service account should be created
   create: false
