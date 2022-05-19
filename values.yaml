@@ -298,7 +298,7 @@ redirect:
   resources: {}
   probes:
     httpGet:
-      path: /tiles/c2c/health_check
+      path: /redirect/c2c/health_check
       port: http
     initialDelaySeconds: 5
     timeoutSeconds: 10
