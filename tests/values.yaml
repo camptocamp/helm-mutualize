@@ -54,6 +54,8 @@ print:
   env:
     PRINT_TERMINATION_GRACE_PERIOD_SECONDS:
       value: '120'
+  volumes:
+    entrypoint: /usr/local/tomcat/webapps/ROOT/print
   config:
     image: *config-image
     env: &config-env-slave

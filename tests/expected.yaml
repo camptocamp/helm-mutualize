@@ -574,6 +574,8 @@ spec:
             - name: web-xml
               mountPath: /usr/local/tomcat/webapps/ROOT/WEB-INF/web.xml
               subPath: web.xml
+            - name: entrypoint
+              mountPath: /usr/local/tomcat/webapps/ROOT/print
           ports:
             - name: http
               containerPort: 8080
@@ -611,6 +613,8 @@ spec:
             items:
               - key: web.xml
                 path: web.xml
+        - name: entrypoint
+          emptyDir: {}
 ---
 # Source: mutualize/templates/shared-config-deployment.yaml
 apiVersion: apps/v1

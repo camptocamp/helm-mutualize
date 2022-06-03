@@ -58,6 +58,10 @@ spec:
             - name: web-xml
               mountPath: /usr/local/tomcat/webapps/ROOT/WEB-INF/web.xml
               subPath: web.xml
+            {{- range $name, $path := .Values.print.volumes }}
+            - name: {{ $name }}
+              mountPath: {{ $path }}
+            {{- end }}
           ports:
             - name: http
               containerPort: 8080
@@ -95,4 +99,8 @@ spec:
             items:
               - key: web.xml
                 path: web.xml
+        {{- range $name, $path := .Values.print.volumes }}
+        - name: {{ $name }}
+          emptyDir: {}
+        {{- end }}
 {{- end }}
