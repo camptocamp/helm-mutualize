@@ -119,6 +119,10 @@ tilecloudchain: &tilecloudchain
       value: secret
     SHARED_CONFIG_MASTER:
       value: /master_config/master/shared_config_manager.yaml
+    TILECLOUD_CHAIN_SESSION_SECRET:
+      value: secret
+    TILECLOUD_CHAIN_SESSION_SALT:
+      value: secret
 
   probes:
 
