@@ -987,7 +987,7 @@ spec:
           terminationMessagePolicy: FallbackToLogsOnError
           resources:
             {}
-          args: ["generate_tiles", "--role=slave", "--daemon"]
+          args: ["generate-tiles", "--role=slave", "--daemon"]
           volumeMounts:
             - name: configs
               mountPath: /etc/tilecloudchain-configs

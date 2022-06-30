@@ -37,7 +37,7 @@ spec:
               mountPath: /etc/shared_config_manager
         - name: tilecloudchain
           {{- include "common.containerConfig" ( dict "root" . "container" .Values.tilecloudchainSlave ) | nindent 10 }}
-          args: ["generate_tiles", "--role=slave", "--daemon"]
+          args: ["generate-tiles", "--role=slave", "--daemon"]
           volumeMounts:
             - name: configs
               mountPath: /etc/tilecloudchain-configs
