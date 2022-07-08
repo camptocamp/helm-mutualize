@@ -36,6 +36,16 @@ config:
     type: ClusterIP
     port: 80
 
+home:
+  enabled: true
+  serviceName: home
+  replicaCount: 1
+  serviceUrl: https://example.com
+  image:
+    repository: nginxinc/nginx-unprivileged
+    tag: latest
+    sha:
+
 print:
   enabled: true
   serviceName: print
