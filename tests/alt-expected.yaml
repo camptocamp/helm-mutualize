@@ -104,6 +104,144 @@ data:
   PRINT_LOGS_SERVICE_NAME: test-mutualize-logs
   TILECLOUDCHAIN_SERVICE_NAME: test-mutualize-tcc
 ---
+# Source: mutualize/templates/home-configmap.yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: test-mutualize-home-html
+  labels:
+    helm.sh/chart: mutualize
+    app.kubernetes.io/version: "1.0"
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: mutualize
+    app.kubernetes.io/instance: test
+    app.kubernetes.io/component: home
+  annotations:
+    {}
+data:
+  index.html: |
+    <!DOCTYPE html>
+    <html lang="en">
+      <head>
+        <title>Geospatial mutualize services</title>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <link
+          href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css"
+          rel="stylesheet"
+          integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor"
+          crossorigin="anonymous"
+        />
+        <link
+          rel="icon"
+          type="image/png"
+          sizes="32x32"
+          href="https://www.camptocamp.com/favicon/favicon-32x32.png"
+        />
+        <link
+          rel="icon"
+          type="image/png"
+          sizes="16x16"
+          href="https://www.camptocamp.com/favicon/favicon-16x16.png"
+        />
+        <style>
+          h1 {
+            margin-bottom: 2.5rem;
+          }
+          a {
+            text-decoration: none;
+            color: #7f8c8d;
+          }
+          a:hover {
+            text-decoration: underline;
+            color: #6a7478;
+          }
+        </style>
+      </head>
+      <body class="px-5 py-4">
+        <h1>
+          Geospatial mutualize services provide by
+          <a href="https://www.camptocamp.com/fr/geospatial_solutions">Camptocamp</a>
+        </h1>
+
+        <p>This will provide the following services:</p>
+        <ul>
+          <li>
+            <a href="https://example.com/print">Print maps</a>
+            based on <a href="http://mapfish.github.io/mapfish-print-doc/">MapFish Print</a>.
+          </li>
+          <li>
+            <a href="https://example.com/print/logs">Access to the logs</a>
+            of the previous service.
+          </li>
+          <li>
+            Generate and publish WMTS tiles, based on
+            <a href="https://github.com/camptocamp/tilecloud-chain/#tilecloud-chain">TileCloud Chain</a>, it will
+            be available on your domain,
+            <a href="https://geomapfish-demo-2-7.camptocamp.com/tiles/admin/">example</a>.
+          </li>
+        </ul>
+        <br />
+        <p>
+          If you are interested, contact us at
+          <a href="mailto:info@camptocamp.com">info@camptocamp.com</a>.
+        </p>
+      </body>
+    </html>
+---
+# Source: mutualize/templates/home-configmap.yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: test-mutualize-home-config
+  labels:
+    helm.sh/chart: mutualize
+    app.kubernetes.io/version: "1.0"
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: mutualize
+    app.kubernetes.io/instance: test
+    app.kubernetes.io/component: home
+  annotations:
+    {}
+data:
+  nginx.conf: |
+    worker_processes  auto;
+
+    error_log  /var/log/nginx/error.log notice;
+    pid        /tmp/nginx.pid;
+
+
+    events {
+        worker_connections  1024;
+    }
+
+
+    http {
+        proxy_temp_path /tmp/proxy_temp;
+        client_body_temp_path /tmp/client_temp;
+        fastcgi_temp_path /tmp/fastcgi_temp;
+        uwsgi_temp_path /tmp/uwsgi_temp;
+        scgi_temp_path /tmp/scgi_temp;
+
+        include       /etc/nginx/mime.types;
+        default_type  application/octet-stream;
+
+        log_format  main  '$remote_addr - $remote_user [$time_local] "$request" '
+                          '$status $body_bytes_sent "$http_referer" '
+                          '"$http_user_agent" "$http_x_forwarded_for"';
+
+        access_log  /var/log/nginx/access.log  main;
+
+        sendfile        on;
+        #tcp_nopush     on;
+
+        keepalive_timeout  65;
+
+        #gzip  on;
+
+        include /etc/nginx/conf.d/*.conf;
+    }
+---
 # Source: mutualize/templates/print-configmap.yaml
 apiVersion: v1
 kind: ConfigMap
@@ -389,6 +527,87 @@ spec:
     app.kubernetes.io/name: mutualize
     app.kubernetes.io/instance: test
     app.kubernetes.io/component: tcc
+---
+# Source: mutualize/templates/home-deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: test-mutualize-home
+  labels:
+    helm.sh/chart: mutualize
+    app.kubernetes.io/version: "1.0"
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: mutualize
+    app.kubernetes.io/instance: test
+    app.kubernetes.io/component: home
+spec:
+  replicas: 1
+  revisionHistoryLimit: 3
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 25%
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: mutualize
+      app.kubernetes.io/instance: test
+      app.kubernetes.io/component: home
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: mutualize
+        app.kubernetes.io/instance: test
+        app.kubernetes.io/component: home
+    spec:
+      serviceAccountName: default
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 33
+      affinity:
+        {}
+      containers:
+        - name: nginx
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: 33
+          image: "nginxinc/nginx-unprivileged:latest"
+          imagePullPolicy: IfNotPresent
+          terminationMessagePolicy: FallbackToLogsOnError
+          resources:
+            null
+          volumeMounts:
+            - name: html
+              readOnly: true
+              mountPath: /usr/share/nginx/html
+            - name: config
+              mountPath: /etc/nginx/nginx.conf
+              subPath: nginx.conf
+            - name: tmp
+              mountPath: /tmp
+          ports:
+            - name: http
+              containerPort: 8080
+              protocol: TCP
+          readinessProbe: &probe
+            httpGet:
+              path: /
+              port: http
+            initialDelaySeconds: 30
+            periodSeconds: 30
+            failureThreshold: 5
+          livenessProbe:
+            <<: *probe
+            periodSeconds: 120
+      volumes:
+        - name: html
+          configMap:
+            name: test-mutualize-home-html
+        - name: config
+          configMap:
+            name: test-mutualize-home-config
+        - name: tmp
+          emptyDir: {}
 ---
 # Source: mutualize/templates/print-deployment.yaml
 apiVersion: apps/v1
