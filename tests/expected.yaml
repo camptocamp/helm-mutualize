@@ -1,4 +1,24 @@
 ---
+# Source: mutualize/templates/home-pdb.yaml
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: test-mutualize-home
+  labels:
+    helm.sh/chart: mutualize
+    app.kubernetes.io/version: "1.0"
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: mutualize
+    app.kubernetes.io/instance: test
+    app.kubernetes.io/component: home
+spec:
+  maxUnavailable: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: mutualize
+      app.kubernetes.io/instance: test
+      app.kubernetes.io/component: home
+---
 # Source: mutualize/templates/logs-pdb.yaml
 apiVersion: policy/v1
 kind: PodDisruptionBudget
@@ -413,6 +433,30 @@ data:
       expires: 8
       static_path: tiles/static
       wmts_path: tiles
+---
+# Source: mutualize/templates/home-service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: test-mutualize-home
+  labels:
+    helm.sh/chart: mutualize
+    app.kubernetes.io/version: "1.0"
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: mutualize
+    app.kubernetes.io/instance: test
+    app.kubernetes.io/component: home
+spec:
+  type: ClusterIP
+  ports:
+    - port: 80
+      targetPort: http
+      protocol: TCP
+      name: http
+  selector:
+    app.kubernetes.io/name: mutualize
+    app.kubernetes.io/instance: test
+    app.kubernetes.io/component: home
 ---
 # Source: mutualize/templates/logs-service.yaml
 apiVersion: v1
