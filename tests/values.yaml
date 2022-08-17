@@ -24,6 +24,13 @@ config-env-base: &config-env-base
   DEVELOPMENT:
     value: '0'
 
+home:
+  requests:
+    memory: 12Mi
+    cpu: .01m
+  limits:
+    memory: 25Mi
+
 config:
   image: &config-image
     tag: master
