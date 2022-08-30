@@ -127,10 +127,18 @@ data:
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link
-          href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css"
           rel="stylesheet"
-          integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor"
+          href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.2.0/css/bootstrap.min.css"
+          integrity="sha512-XWTTruHZEYJsxV3W/lSXG1n3Q39YIWOstqvmFsdNEEQfHoZ6vm6E9GK2OrF6DSJSpIbRbi+Nn0WDPID9O7xB2Q=="
           crossorigin="anonymous"
+          referrerpolicy="no-referrer"
+        />
+        <link
+          rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.2/css/all.min.css"
+          integrity="sha512-1sCRPdkRXhBV2PBLUdRb4tMg1w2YPf37qatUFeS7zlBy7jJI8Lf4VHwWfZZfpXtYSLy85pkm9GaYVYMfw5BC1A=="
+          crossorigin="anonymous"
+          referrerpolicy="no-referrer"
         />
         <link
           rel="icon"
@@ -156,32 +164,52 @@ data:
             text-decoration: underline;
             color: #6a7478;
           }
+          .content {
+            display: flex;
+            margin-top: 1.5rem;
+            margin-bottom: 1.5rem;
+          }
+          .icon {
+            font-size: 4rem;
+            margin-right: 1rem;
+          }
+          .text {
+            flex: 1;
+          }
         </style>
       </head>
       <body class="px-5 py-4">
         <h1>
-          Geospatial mutualize services provide by
+          Geospatial mutualize services provided by
           <a href="https://www.camptocamp.com/fr/geospatial_solutions">Camptocamp</a>
         </h1>
 
         <p>This will provide the following services:</p>
-        <ul>
-          <li>
-            <a href="https://example.com/print">Print maps</a>
-            based on <a href="http://mapfish.github.io/mapfish-print-doc/">MapFish Print</a>.
-          </li>
-          <li>
-            <a href="https://example.com/print/logs">Access to the logs</a>
-            of the previous service.
-          </li>
-          <li>
-            Generate and publish WMTS tiles, based on
-            <a href="https://github.com/camptocamp/tilecloud-chain/#tilecloud-chain">TileCloud Chain</a>, it will
-            be available on your domain,
+        <div class="content">
+          <div class="icon fa-solid fa-print"></div>
+          <div style="text">
+            <a href="https://example.com/print">Print maps</a><br />
+            based on <a href="http://mapfish.github.io/mapfish-print-doc/">MapFish Print</a>.<br />
+            <a href="https://example.com/print/logs">Access to the logs</a>.
+          </div>
+        </div>
+        <div class="content">
+          <div class="icon fa-solid fa-layer-group"></div>
+          <div style="text">
+            Generate and publish WMTS tiles<br />
+            based on
+            <a href="https://github.com/camptocamp/tilecloud-chain/#tilecloud-chain">TileCloud Chain</a><br />
+            It will be available on your domain,
             <a href="https://geomapfish-demo-2-7.camptocamp.com/tiles/admin/">example</a>.
-          </li>
-        </ul>
-        <br />
+          </div>
+        </div>
+        <div class="content">
+          <div class="icon fa-solid fa-share-nodes"></div>
+          <div style="text">
+            <a href="https://example.com/config/">Config Manager</a><br />
+            based on <a href="https://github.com/camptocamp/shared_config_manager/">Shared Config Manager</a>.
+          </div>
+        </div>
         <p>
           If you are interested, contact us at
           <a href="mailto:info@camptocamp.com">info@camptocamp.com</a>.
