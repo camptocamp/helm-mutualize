@@ -320,6 +320,13 @@ redirect:
     type: ClusterIP
     port: 80
 
+additionalConfigs:
+  {}
+  # <config_name>:
+  #   labels: {}
+  #   content: {}
+  #   env: {} # facility to create the template engine configuration
+
 serviceAccount:
   # Specifies whether a service account should be created
   create: false

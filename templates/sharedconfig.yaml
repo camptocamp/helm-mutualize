@@ -6,33 +6,23 @@ metadata:
   name: {{ include "common.fullname" ( dict "root" $ "service" $.Values ) }}-{{ $name }}
   labels: {{ include "common.labels" ( dict "root" $ "service" $.Values ) | nindent 4 }}
   {{- range $name, $value := .labels }}
-    {{ $name }}: {{ . | quote }}
+    {{ $name }}: {{ $value | quote }}
   {{- end }}
 spec:
   environment: {{ $.Values.environment }}
   name: {{ $name }}
   content:
-      type: git
-      repo: git@github.com:{{ $value.repository }}.git
-      {{- if .branch }}
-      branch: {{ .branch }}
-      {{- end }}
-      key: {{ .key }}
-      {{- if .dir }}
-      sub_dir: {{ .dir }}
-      {{- end }}
-      {{- with .tags }}
-      tags:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
-      template_engines:
-        - type: shell
-          environment_variables: true
-          {{- with .env }}
-          data:
-            {{- range $name, $value := . }}
-            - name: {{ $name | quote }}
-              value: {{ . | quote }}
-            {{- end }}
+    {{- toYaml .content | nindent 4 }}
+    {{- if hasKey . "env" }}
+    template_engines:
+      - type: shell
+        environment_variables: true
+        {{- with .env }}
+        data:
+          {{- range $name, $value := . }}
+          - name: {{ $name | quote }}
+            value: {{ . | quote }}
           {{- end }}
+        {{- end }}
+    {{- end }}
 {{- end }}

@@ -55,19 +55,24 @@ config:
 
 additionalConfigs:
   examples:
-    repository: mapfish/mapfish-print
-    key: super-secret
+    content:
+      type: git
+      repo: git@github.com:mapfish/mapfish-print.git
+    env: {}
   examples2:
     labels:
       mutualize-sharedconfig: 'true'
-    repository: mapfish/mapfish-print
-    branch: master
-    key: super-secret
-    dir: examples/src/test/resources/examples
-    tags:
-      - print
+    content:
+      type: git
+      repo: git@github.com:mapfish/mapfish-print.git
+      branch: master
+      sub_dir: examples/src/test/resources/examples
+      tags:
+        - print
     env:
       TOTO: toto
+  no-env:
+    content: {}
 
 print:
   enabled: true

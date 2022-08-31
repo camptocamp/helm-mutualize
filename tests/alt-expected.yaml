@@ -1430,12 +1430,11 @@ spec:
   environment: prod
   name: examples
   content:
-      type: git
-      repo: git@github.com:mapfish/mapfish-print.git
-      key: super-secret
-      template_engines:
-        - type: shell
-          environment_variables: true
+    repo: git@github.com:mapfish/mapfish-print.git
+    type: git
+    template_engines:
+      - type: shell
+        environment_variables: true
 ---
 # Source: mutualize/templates/sharedconfig.yaml
 apiVersion: camptocamp.com/v2
@@ -1454,16 +1453,33 @@ spec:
   environment: prod
   name: examples2
   content:
-      type: git
-      repo: git@github.com:mapfish/mapfish-print.git
-      branch: master
-      key: super-secret
-      sub_dir: examples/src/test/resources/examples
-      tags:
-        - print
-      template_engines:
-        - type: shell
-          environment_variables: true
-          data:
-            - name: "TOTO"
-              value: "toto"
+    branch: master
+    repo: git@github.com:mapfish/mapfish-print.git
+    sub_dir: examples/src/test/resources/examples
+    tags:
+    - print
+    type: git
+    template_engines:
+      - type: shell
+        environment_variables: true
+        data:
+          - name: "TOTO"
+            value: "toto"
+---
+# Source: mutualize/templates/sharedconfig.yaml
+apiVersion: camptocamp.com/v2
+kind: SharedConfigSource
+metadata:
+  name: test-mutualize-no-env
+  labels:
+    helm.sh/chart: mutualize
+    app.kubernetes.io/version: "1.0"
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: mutualize
+    app.kubernetes.io/instance: test
+    app.kubernetes.io/component: main
+spec:
+  environment: prod
+  name: no-env
+  content:
+    {}
