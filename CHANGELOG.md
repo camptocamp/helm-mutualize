@@ -1,12 +1,25 @@
 # Changelog
 
-## [Unreleased](https://github.com/camptocamp/helm-mutualize/tree/HEAD)
+## [0.2.10](https://github.com/camptocamp/helm-mutualize/tree/0.2.10) (2022-08-31)
 
-[Full Changelog](https://github.com/camptocamp/helm-mutualize/compare/0.2.9...HEAD)
+[Full Changelog](https://github.com/camptocamp/helm-mutualize/compare/0.2.9...0.2.10)
+
+#### :sparkles: Enhancements
+
+- Add Shared Config Manager, icones [\#95](https://github.com/camptocamp/helm-mutualize/pull/95) ([sbrunner](https://github.com/sbrunner))
+
+#### :hammer: Refactor
+
+- Be more generic in additionalConfigs [\#96](https://github.com/camptocamp/helm-mutualize/pull/96) ([sbrunner](https://github.com/sbrunner))
 
 #### :wrench: Build, CI, Tests, Code style
 
+- Update the changelog [\#92](https://github.com/camptocamp/helm-mutualize/pull/92) ([github-actions[bot]](https://github.com/apps/github-actions))
 - Update the changelog [\#90](https://github.com/camptocamp/helm-mutualize/pull/90) ([github-actions[bot]](https://github.com/apps/github-actions))
+
+#### :package: Dependencies update
+
+- Update dependency c2cciutils to v1.2.1 [\#94](https://github.com/camptocamp/helm-mutualize/pull/94) ([renovate[bot]](https://github.com/apps/renovate))
 
 ## [0.2.9](https://github.com/camptocamp/helm-mutualize/tree/0.2.9) (2022-08-17)
 
