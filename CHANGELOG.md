@@ -1,5 +1,17 @@
 # Changelog
 
+## [Unreleased](https://github.com/camptocamp/helm-mutualize/tree/HEAD)
+
+[Full Changelog](https://github.com/camptocamp/helm-mutualize/compare/0.2.10...HEAD)
+
+#### :wrench: Build, CI, Tests, Code style
+
+- Update the changelog [\#93](https://github.com/camptocamp/helm-mutualize/pull/93) ([github-actions[bot]](https://github.com/apps/github-actions))
+
+#### :package: Dependencies update
+
+- Update dependency font-awesome to v6.2.0 [\#98](https://github.com/camptocamp/helm-mutualize/pull/98) ([renovate[bot]](https://github.com/apps/renovate))
+
 ## [0.2.10](https://github.com/camptocamp/helm-mutualize/tree/0.2.10) (2022-08-31)
 
 [Full Changelog](https://github.com/camptocamp/helm-mutualize/compare/0.2.9...0.2.10)
