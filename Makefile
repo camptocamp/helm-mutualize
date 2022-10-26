@@ -1,4 +1,4 @@
-HELM != helm
+HELM ?= helm
 
 gen-expected:
 	${HELM} template --namespace=default --values=tests/values.yaml test . > tests/expected.yaml || \

@@ -164,3 +164,9 @@ ingress:
   hosts:
     - name: main
       host: mutualize.local
+
+networkPolicy:
+  redis:
+    enabled: true
+    labels:
+      app.kubernetes.io/instance: test-redis

@@ -1,0 +1,228 @@
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: {{ include "common.fullname" ( dict "root" . "service" .Values.config ) }}
+  labels: {{ include "common.labels" ( dict "root" . "service" .Values.config ) | nindent 4 }}
+spec:
+  podSelector:
+    matchLabels: {{- include "common.selectorLabels" ( dict "root" . "service" .Values.config ) | nindent 6 }}
+  policyTypes:
+    - Egress
+  egress:
+    # DNS
+    - ports:
+        - port: 53
+          protocol: UDP
+    # Redis
+    - to:
+        - namespaceSelector: {}
+          podSelector:
+            matchLabels:
+            {{- range $key, $value := .Values.networkPolicy.redis.labels }}
+              {{ $key }}: {{ $value }}
+            {{- end }}
+      ports:
+        - protocol: TCP
+          port: 6379
+    # Public IP
+    - to:
+        - ipBlock:
+            cidr: 0.0.0.0/0
+            except:
+            - 10.0.0.0/8
+            - 172.16.0.0/12
+            - 192.168.0.0/16
+{{- if .Values.print.enabled }}
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: {{ include "common.fullname" ( dict "root" . "service" .Values.print ) }}
+  labels: {{ include "common.labels" ( dict "root" . "service" .Values.print ) | nindent 4 }}
+spec:
+  podSelector:
+    matchLabels: {{- include "common.selectorLabels" ( dict "root" . "service" .Values.print ) | nindent 6 }}
+  policyTypes:
+    - Egress
+  egress:
+    # Config
+    - to:
+        - podSelector:
+            matchLabels: {{- include "common.selectorLabels" ( dict "root" . "service" .Values.config ) | nindent 14 }}
+      ports:
+        - protocol: TCP
+          port: http
+    # DB ?
+    # DNS
+    - ports:
+        - port: 53
+          protocol: UDP
+    # Redis (for shared config manager)
+    - to:
+        - podSelector:
+            matchLabels:
+            {{- range $key, $value := .Values.networkPolicy.redis.labels }}
+              {{ $key }}: {{ $value }}
+            {{- end }}
+      ports:
+        - protocol: TCP
+          port: 6379
+    # Public IP
+    - to:
+        - ipBlock:
+            cidr: 0.0.0.0/0
+            except:
+            - 10.0.0.0/8
+            - 172.16.0.0/12
+            - 192.168.0.0/16
+{{- end }}
+{{- if .Values.logs.enabled }}
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: {{ include "common.fullname" ( dict "root" . "service" .Values.logs ) }}
+  labels: {{ include "common.labels" ( dict "root" . "service" .Values.logs ) | nindent 4 }}
+spec:
+  podSelector:
+    matchLabels: {{- include "common.selectorLabels" ( dict "root" . "service" .Values.logs ) | nindent 6 }}
+  policyTypes:
+    - Egress
+  egress:
+    # Config
+    - to:
+        - podSelector:
+            matchLabels: {{- include "common.selectorLabels" ( dict "root" . "service" .Values.config ) | nindent 14 }}
+      ports:
+        - protocol: TCP
+          port: http
+    # DNS
+    - ports:
+        - port: 53
+          protocol: UDP
+    # Redis (for shared config manager)
+    - to:
+        - podSelector:
+            matchLabels:
+            {{- range $key, $value := .Values.networkPolicy.redis.labels }}
+              {{ $key }}: {{ $value }}
+            {{- end }}
+      ports:
+        - protocol: TCP
+          port: 6379
+{{- end }}
+{{- if .Values.tilecloudchain.enabled }}
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: {{ include "common.fullname" ( dict "root" . "service" .Values.tilecloudchain ) }}
+  labels: {{ include "common.labels" ( dict "root" . "service" .Values.tilecloudchain ) | nindent 4 }}
+spec:
+  podSelector:
+    matchLabels: {{- include "common.selectorLabels" ( dict "root" . "service" .Values.tilecloudchain ) | nindent 6 }}
+  policyTypes:
+    - Egress
+  egress:
+    # Config
+    - to:
+        - podSelector:
+            matchLabels: {{- include "common.selectorLabels" ( dict "root" . "service" .Values.config ) | nindent 14 }}
+      ports:
+        - protocol: TCP
+          port: http
+    # DB ?
+    # DNS
+    - ports:
+        - port: 53
+          protocol: UDP
+    # Redis
+    - to:
+        - podSelector:
+            matchLabels:
+            {{- range $key, $value := .Values.networkPolicy.redis.labels }}
+              {{ $key }}: {{ $value }}
+            {{- end }}
+      ports:
+        - protocol: TCP
+          port: 6379
+    # Public IP
+    - to:
+        - ipBlock:
+            cidr: 0.0.0.0/0
+            except:
+            - 10.0.0.0/8
+            - 172.16.0.0/12
+            - 192.168.0.0/16
+{{- end }}
+{{- if .Values.tilecloudchainSlave.enabled }}
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: {{ include "common.fullname" ( dict "root" . "service" .Values.tilecloudchainSlave ) }}
+  labels: {{ include "common.labels" ( dict "root" . "service" .Values.tilecloudchainSlave ) | nindent 4 }}
+spec:
+  podSelector:
+    matchLabels: {{- include "common.selectorLabels" ( dict "root" . "service" .Values.tilecloudchainSlave ) | nindent 6 }}
+  policyTypes:
+    - Egress
+    - Ingress
+  egress:
+    # Config
+    - to:
+        - podSelector:
+            matchLabels: {{- include "common.selectorLabels" ( dict "root" . "service" .Values.config ) | nindent 14 }}
+      ports:
+        - protocol: TCP
+          port: http
+    # DB ?
+    # DNS
+    - ports:
+        - port: 53
+          protocol: UDP
+    # Redis
+    - to:
+        - podSelector:
+            matchLabels:
+            {{- range $key, $value := .Values.networkPolicy.redis.labels }}
+              {{ $key }}: {{ $value }}
+            {{- end }}
+      ports:
+        - protocol: TCP
+          port: 6379
+    # Public IP
+    - to:
+        - ipBlock:
+            cidr: 0.0.0.0/0
+            except:
+            - 10.0.0.0/8
+            - 172.16.0.0/12
+            - 192.168.0.0/16
+{{- end }}
+{{- if .Values.home.enabled }}
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: {{ include "common.fullname" ( dict "root" . "service" .Values.home ) }}
+  labels: {{ include "common.labels" ( dict "root" . "service" .Values.home ) | nindent 4 }}
+spec:
+  podSelector:
+    matchLabels: {{- include "common.selectorLabels" ( dict "root" . "service" .Values.home ) | nindent 6 }}
+  policyTypes:
+    - Egress
+{{- end }}
+{{- if .Values.redirect.enabled }}
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: {{ include "common.fullname" ( dict "root" . "service" .Values.redirect ) }}
+  labels: {{ include "common.labels" ( dict "root" . "service" .Values.redirect ) | nindent 4 }}
+spec:
+  podSelector:
+    matchLabels: {{- include "common.selectorLabels" ( dict "root" . "service" .Values.redirect ) | nindent 6 }}
+  policyTypes:
+    - Egress
+{{- end }}

@@ -1,4 +1,272 @@
 ---
+# Source: mutualize/templates/networkpolicy.yaml
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: test-mutualize-config
+  labels:
+    helm.sh/chart: mutualize
+    app.kubernetes.io/version: "1.0"
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: mutualize
+    app.kubernetes.io/instance: test
+    app.kubernetes.io/component: config
+spec:
+  podSelector:
+    matchLabels:
+      app.kubernetes.io/name: mutualize
+      app.kubernetes.io/instance: test
+      app.kubernetes.io/component: config
+  policyTypes:
+    - Egress
+  egress:
+    # DNS
+    - ports:
+        - port: 53
+          protocol: UDP
+    # Redis
+    - to:
+        - namespaceSelector: {}
+          podSelector:
+            matchLabels:
+              app.kubernetes.io/instance: test-redis
+      ports:
+        - protocol: TCP
+          port: 6379
+    # Public IP
+    - to:
+        - ipBlock:
+            cidr: 0.0.0.0/0
+            except:
+            - 10.0.0.0/8
+            - 172.16.0.0/12
+            - 192.168.0.0/16
+---
+# Source: mutualize/templates/networkpolicy.yaml
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: test-mutualize-print
+  labels:
+    helm.sh/chart: mutualize
+    app.kubernetes.io/version: "1.0"
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: mutualize
+    app.kubernetes.io/instance: test
+    app.kubernetes.io/component: print
+spec:
+  podSelector:
+    matchLabels:
+      app.kubernetes.io/name: mutualize
+      app.kubernetes.io/instance: test
+      app.kubernetes.io/component: print
+  policyTypes:
+    - Egress
+  egress:
+    # Config
+    - to:
+        - podSelector:
+            matchLabels:
+              app.kubernetes.io/name: mutualize
+              app.kubernetes.io/instance: test
+              app.kubernetes.io/component: config
+      ports:
+        - protocol: TCP
+          port: http
+    # DB ?
+    # DNS
+    - ports:
+        - port: 53
+          protocol: UDP
+    # Redis (for shared config manager)
+    - to:
+        - podSelector:
+            matchLabels:
+              app.kubernetes.io/instance: test-redis
+      ports:
+        - protocol: TCP
+          port: 6379
+    # Public IP
+    - to:
+        - ipBlock:
+            cidr: 0.0.0.0/0
+            except:
+            - 10.0.0.0/8
+            - 172.16.0.0/12
+            - 192.168.0.0/16
+---
+# Source: mutualize/templates/networkpolicy.yaml
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: test-mutualize-logs
+  labels:
+    helm.sh/chart: mutualize
+    app.kubernetes.io/version: "1.0"
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: mutualize
+    app.kubernetes.io/instance: test
+    app.kubernetes.io/component: logs
+spec:
+  podSelector:
+    matchLabels:
+      app.kubernetes.io/name: mutualize
+      app.kubernetes.io/instance: test
+      app.kubernetes.io/component: logs
+  policyTypes:
+    - Egress
+  egress:
+    # Config
+    - to:
+        - podSelector:
+            matchLabels:
+              app.kubernetes.io/name: mutualize
+              app.kubernetes.io/instance: test
+              app.kubernetes.io/component: config
+      ports:
+        - protocol: TCP
+          port: http
+    # DNS
+    - ports:
+        - port: 53
+          protocol: UDP
+    # Redis (for shared config manager)
+    - to:
+        - podSelector:
+            matchLabels:
+              app.kubernetes.io/instance: test-redis
+      ports:
+        - protocol: TCP
+          port: 6379
+---
+# Source: mutualize/templates/networkpolicy.yaml
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: test-mutualize-tcc
+  labels:
+    helm.sh/chart: mutualize
+    app.kubernetes.io/version: "1.0"
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: mutualize
+    app.kubernetes.io/instance: test
+    app.kubernetes.io/component: tcc
+spec:
+  podSelector:
+    matchLabels:
+      app.kubernetes.io/name: mutualize
+      app.kubernetes.io/instance: test
+      app.kubernetes.io/component: tcc
+  policyTypes:
+    - Egress
+  egress:
+    # Config
+    - to:
+        - podSelector:
+            matchLabels:
+              app.kubernetes.io/name: mutualize
+              app.kubernetes.io/instance: test
+              app.kubernetes.io/component: config
+      ports:
+        - protocol: TCP
+          port: http
+    # DB ?
+    # DNS
+    - ports:
+        - port: 53
+          protocol: UDP
+    # Redis
+    - to:
+        - podSelector:
+            matchLabels:
+              app.kubernetes.io/instance: test-redis
+      ports:
+        - protocol: TCP
+          port: 6379
+    # Public IP
+    - to:
+        - ipBlock:
+            cidr: 0.0.0.0/0
+            except:
+            - 10.0.0.0/8
+            - 172.16.0.0/12
+            - 192.168.0.0/16
+---
+# Source: mutualize/templates/networkpolicy.yaml
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: test-mutualize-tcc-slave
+  labels:
+    helm.sh/chart: mutualize
+    app.kubernetes.io/version: "1.0"
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: mutualize
+    app.kubernetes.io/instance: test
+    app.kubernetes.io/component: tcc-slave
+spec:
+  podSelector:
+    matchLabels:
+      app.kubernetes.io/name: mutualize
+      app.kubernetes.io/instance: test
+      app.kubernetes.io/component: tcc-slave
+  policyTypes:
+    - Egress
+    - Ingress
+  egress:
+    # Config
+    - to:
+        - podSelector:
+            matchLabels:
+              app.kubernetes.io/name: mutualize
+              app.kubernetes.io/instance: test
+              app.kubernetes.io/component: config
+      ports:
+        - protocol: TCP
+          port: http
+    # DB ?
+    # DNS
+    - ports:
+        - port: 53
+          protocol: UDP
+    # Redis
+    - to:
+        - podSelector:
+            matchLabels:
+              app.kubernetes.io/instance: test-redis
+      ports:
+        - protocol: TCP
+          port: 6379
+    # Public IP
+    - to:
+        - ipBlock:
+            cidr: 0.0.0.0/0
+            except:
+            - 10.0.0.0/8
+            - 172.16.0.0/12
+            - 192.168.0.0/16
+---
+# Source: mutualize/templates/networkpolicy.yaml
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: test-mutualize-home
+  labels:
+    helm.sh/chart: mutualize
+    app.kubernetes.io/version: "1.0"
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: mutualize
+    app.kubernetes.io/instance: test
+    app.kubernetes.io/component: home
+spec:
+  podSelector:
+    matchLabels:
+      app.kubernetes.io/name: mutualize
+      app.kubernetes.io/instance: test
+      app.kubernetes.io/component: home
+  policyTypes:
+    - Egress
+---
 # Source: mutualize/templates/home-pdb.yaml
 apiVersion: policy/v1
 kind: PodDisruptionBudget
