@@ -988,7 +988,7 @@ spec:
         app.kubernetes.io/name: mutualize
         app.kubernetes.io/instance: test
         app.kubernetes.io/component: tcc
-        foo: bar
+        foo: "bar"
     spec:
       serviceAccountName: default
       securityContext:
@@ -1143,7 +1143,7 @@ spec:
         app.kubernetes.io/name: mutualize
         app.kubernetes.io/instance: test
         app.kubernetes.io/component: tcc-slave
-        foo: bar
+        foo: "bar"
     spec:
       serviceAccountName: default
       securityContext:
