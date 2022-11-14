@@ -1,5 +1,31 @@
 # Changelog
 
+## [0.3.0](https://github.com/camptocamp/helm-mutualize/tree/0.3.0) (2022-11-14)
+
+[Full Changelog](https://github.com/camptocamp/helm-mutualize/compare/0.2.10...0.3.0)
+
+#### :wrench: Build, CI, Tests, Code style
+
+- Fix Renovate operator-shared-config-manager version [\#113](https://github.com/camptocamp/helm-mutualize/pull/113) ([sbrunner](https://github.com/sbrunner))
+- Fix repository in workflow used to delete old workflow runs [\#112](https://github.com/camptocamp/helm-mutualize/pull/112) ([sbrunner](https://github.com/sbrunner))
+- Fix repository in workflow used to delete old workflow runs [\#111](https://github.com/camptocamp/helm-mutualize/pull/111) ([sbrunner](https://github.com/sbrunner))
+- Add workflow to delete old workflow runs [\#110](https://github.com/camptocamp/helm-mutualize/pull/110) ([sbrunner](https://github.com/sbrunner))
+- Use the standard name for pull request checks workflow [\#107](https://github.com/camptocamp/helm-mutualize/pull/107) ([sbrunner](https://github.com/sbrunner))
+- Schedule Renovate on early Saturday [\#104](https://github.com/camptocamp/helm-mutualize/pull/104) ([sbrunner](https://github.com/sbrunner))
+- Fix the changelog generator workflow [\#102](https://github.com/camptocamp/helm-mutualize/pull/102) ([sbrunner](https://github.com/sbrunner))
+- Clean all the images already present in the image given by GitHub [\#101](https://github.com/camptocamp/helm-mutualize/pull/101) ([sbrunner](https://github.com/sbrunner))
+- Update the changelog generation workflow [\#100](https://github.com/camptocamp/helm-mutualize/pull/100) ([sbrunner](https://github.com/sbrunner))
+- Remove Dependabot configuration [\#99](https://github.com/camptocamp/helm-mutualize/pull/99) ([sbrunner](https://github.com/sbrunner))
+- Update the changelog [\#93](https://github.com/camptocamp/helm-mutualize/pull/93) ([github-actions[bot]](https://github.com/apps/github-actions))
+
+#### :package: Dependencies update
+
+- Update all minor versions \(minor\) [\#115](https://github.com/camptocamp/helm-mutualize/pull/115) ([renovate[bot]](https://github.com/apps/renovate))
+- Update dependency camptocamp/operator-shared-config-manager to v0.2.2 [\#114](https://github.com/camptocamp/helm-mutualize/pull/114) ([renovate[bot]](https://github.com/apps/renovate))
+- Update dependency bootstrap to v5.2.2 [\#108](https://github.com/camptocamp/helm-mutualize/pull/108) ([renovate[bot]](https://github.com/apps/renovate))
+- Update dependency bootstrap to v5.2.1 [\#103](https://github.com/camptocamp/helm-mutualize/pull/103) ([renovate[bot]](https://github.com/apps/renovate))
+- Update dependency font-awesome to v6.2.0 [\#98](https://github.com/camptocamp/helm-mutualize/pull/98) ([renovate[bot]](https://github.com/apps/renovate))
+
 ## [0.2.10](https://github.com/camptocamp/helm-mutualize/tree/0.2.10) (2022-08-31)
 
 [Full Changelog](https://github.com/camptocamp/helm-mutualize/compare/0.2.9...0.2.10)
