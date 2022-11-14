@@ -1,6 +1,7 @@
-import c2cwsgiutils.setup_process  # noqa  # pylint: disable=unused-import
 import logging
 import os
+
+import c2cwsgiutils.setup_process  # noqa  # pylint: disable=unused-import
 import requests
 
 LOG = logging.getLogger("test-c2c")
