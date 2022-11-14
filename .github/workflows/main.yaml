@@ -59,7 +59,7 @@ jobs:
         run: ci/get-version https://camptocamp.github.io/operator-shared-config-manager
       - run: helm repo add operator-shared-config-manager ${{steps.scm-operator.outputs.app}}
       - run:
-          helm install operator-shared-config-manager --set=image.tag=${VERSION} --set=environment=int --version=${VERSION}
+          helm install operator-shared-config-manager --set=image.tag=${VERSION} --set=environment=int --set=env.ENVIRONMENT=int --version=${VERSION}
           operator-shared-config-manager/operator-shared-config-manager
         env:
           VERSION: ${{steps.scm-operator.outputs.version}}
