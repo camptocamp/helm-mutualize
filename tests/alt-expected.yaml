@@ -436,6 +436,58 @@ data:
     test: 111
     toto: 222
 ---
+# Source: mutualize/templates/role.yaml
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: test-mutualize
+  labels:
+    helm.sh/chart: mutualize
+    app.kubernetes.io/version: "1.0"
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: mutualize
+    app.kubernetes.io/instance: test
+    app.kubernetes.io/component: main
+rules:
+- apiGroups:
+    - camptocamp.com
+  resources:
+    - sharedconfigconfigs
+    - sharedconfigsources
+    - githubwebhooks
+  verbs:
+    - get
+    - watch
+    - list
+    - create
+    - update
+    - patch
+    - delete
+---
+# Source: mutualize/templates/rolebinding.yaml
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: test-mutualize
+  labels:
+    helm.sh/chart: mutualize
+    app.kubernetes.io/version: "1.0"
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: mutualize
+    app.kubernetes.io/instance: test
+    app.kubernetes.io/component: main
+subjects:
+- kind: Group
+  name: group1
+  apiGroup: rbac.authorization.k8s.io
+- kind: Group
+  name: group2
+  apiGroup: rbac.authorization.k8s.io
+roleRef:
+  kind: Role
+  name: test-mutualize
+  apiGroup: rbac.authorization.k8s.io
+---
 # Source: mutualize/templates/home-service.yaml
 apiVersion: v1
 kind: Service

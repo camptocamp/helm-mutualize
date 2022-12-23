@@ -15,6 +15,9 @@ fullnameOverride: ''
 environment: to be defined
 sshKey: to be defined
 
+rbac: false
+rbacGroups: []
+
 envConfigMap:
   annotations: {}
 

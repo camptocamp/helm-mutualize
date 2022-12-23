@@ -1,0 +1,17 @@
+{{- if .Values.rbac }}
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: {{ include "common.fullname" ( dict "root" . "service" .Values ) }}
+  {{- include "common.metadata" ( dict "root" . "service" .Values ) | nindent 2 }}
+subjects:
+{{- range .Values.rbacGroups }}
+- kind: Group
+  name: {{ . }}
+  apiGroup: rbac.authorization.k8s.io
+{{- end }}
+roleRef:
+  kind: Role
+  name: {{ include "common.fullname" ( dict "root" . "service" .Values ) }}
+  apiGroup: rbac.authorization.k8s.io
+{{- end }}
