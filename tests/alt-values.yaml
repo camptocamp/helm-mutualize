@@ -10,6 +10,11 @@ global:
 
 environment: prod
 
+rbac: true
+rbacGroups:
+  - group1
+  - group2
+
 config-env-base: &config-env-base
   LOG_TYPE:
     value: console
