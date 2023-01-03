@@ -1,5 +1,28 @@
 # Changelog
 
+## [0.4.0](https://github.com/camptocamp/helm-mutualize/tree/0.4.0) (2022-12-23)
+
+[Full Changelog](https://github.com/camptocamp/helm-mutualize/compare/0.3.0...0.4.0)
+
+#### :sparkles: Enhancements
+
+- Add RBAC for custom resources [\#125](https://github.com/camptocamp/helm-mutualize/pull/125) ([sbrunner](https://github.com/sbrunner))
+
+#### :wrench: Build, CI, Tests, Code style
+
+- Configure Renovate for kubernetes [\#124](https://github.com/camptocamp/helm-mutualize/pull/124) ([sbrunner](https://github.com/sbrunner))
+- Configure Renovate to run monthly [\#123](https://github.com/camptocamp/helm-mutualize/pull/123) ([sbrunner](https://github.com/sbrunner))
+- Configure Mend Bolt [\#122](https://github.com/camptocamp/helm-mutualize/pull/122) ([sbrunner](https://github.com/sbrunner))
+- Upgrade deprecated set-output commands [\#117](https://github.com/camptocamp/helm-mutualize/pull/117) ([sbrunner](https://github.com/sbrunner))
+- Update the changelog [\#116](https://github.com/camptocamp/helm-mutualize/pull/116) ([c2c-bot-gis-ci](https://github.com/c2c-bot-gis-ci))
+
+#### :package: Dependencies update
+
+- Update dependency c2cciutils to v1.4.4 [\#126](https://github.com/camptocamp/helm-mutualize/pull/126) ([renovate[bot]](https://github.com/apps/renovate))
+- Update dependency c2cciutils to v1.4.0 [\#120](https://github.com/camptocamp/helm-mutualize/pull/120) ([renovate[bot]](https://github.com/apps/renovate))
+- Update all patch versions \(patch\) [\#119](https://github.com/camptocamp/helm-mutualize/pull/119) ([renovate[bot]](https://github.com/apps/renovate))
+- Update all patch versions \(patch\) [\#118](https://github.com/camptocamp/helm-mutualize/pull/118) ([renovate[bot]](https://github.com/apps/renovate))
+
 ## [0.3.0](https://github.com/camptocamp/helm-mutualize/tree/0.3.0) (2022-11-14)
 
 [Full Changelog](https://github.com/camptocamp/helm-mutualize/compare/0.2.10...0.3.0)
