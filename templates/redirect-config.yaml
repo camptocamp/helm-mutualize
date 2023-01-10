@@ -2,8 +2,8 @@
 apiVersion: camptocamp.com/v2
 kind: SharedConfigConfig
 metadata:
-  name: {{ include "common.fullname" ( dict "root" . "service" .Values.redirect ) }}-hosts
-  labels: {{ include "common.labels" ( dict "root" . "service" .Values.redirect ) | nindent 4 }}
+  name: {{ include "common.fullname" ( dict "root" . "service" .Values.redirectConfig ) }}
+  {{- include "common.metadata" ( dict "root" . "service" .Values.redirectConfig ) | nindent 2 }}
 spec:
   environment: {{ $.Values.environment }}
   matchLabels:

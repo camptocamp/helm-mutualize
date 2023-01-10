@@ -64,6 +64,7 @@ additionalConfigs:
       type: git
       repo: git@github.com:mapfish/mapfish-print.git
     env: {}
+
   examples2:
     labels:
       mutualize-sharedconfig: 'true'
@@ -151,6 +152,18 @@ tilecloudchain: &tilecloudchain
           secretName: test-tiles-prod-tls
 
 tilecloudchainSlave: *tilecloudchain
+
+sharedConfig:
+  annotations:
+    test: sharedConfig
+
+tilecloudchainConfig:
+  annotations:
+    test: sharedConfig
+
+redirectConfig:
+  annotations:
+    test: redirectConfig
 
 redirect:
   enabled: true

@@ -21,6 +21,10 @@ rbacGroups: []
 envConfigMap:
   annotations: {}
 
+sharedConfig:
+  serviceName: config
+  annotations: {}
+
 config:
   serviceName: config
   replicaCount: 1
@@ -247,6 +251,10 @@ logs:
     failureThreshold: 50
     periodSeconds: 120
 
+tilecloudchainConfig:
+  serviceName: tcc-hosts
+  annotations: {}
+
 tilecloudchain: &tilecloudchain
   enabled: false
   serviceName: tcc
@@ -299,6 +307,10 @@ tilecloudchain: &tilecloudchain
 tilecloudchainSlave:
   <<: *tilecloudchain
   serviceName: tcc-slave
+
+redirectConfig:
+  serviceName: redirect-hosts
+  annotations: {}
 
 # Redirect for OAuth2 from GitHub
 redirect:
