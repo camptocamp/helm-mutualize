@@ -8,7 +8,7 @@ global:
     env: test-mutualize-env
     scm-master-config: test-mutualize-env
 
-environment: prod
+environment: int
 
 rbac: true
 rbacGroups:

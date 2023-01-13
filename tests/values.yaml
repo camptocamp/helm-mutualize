@@ -23,6 +23,8 @@ config-env-base: &config-env-base
     value: '30'
   DEVELOPMENT:
     value: '0'
+  SCM_SECRET:
+    value: secret
 
 home:
   requests:
@@ -152,6 +154,51 @@ tilecloudchain: &tilecloudchain
 
 tilecloudchainSlave:
   <<: *tilecloudchain
+
+additionalConfigs:
+  print:
+    labels:
+      mutualize-sharedconfig: 'true'
+    content:
+      type: git
+      branch: prod-2-7
+      repo: 'https://github.com/camptocamp/demo_geomapfish.git'
+      sub_dir: print/print-apps/geomapfish
+      tags:
+        - print
+      template_engines:
+        - environment_variables: true
+          type: shell
+          data:
+            AWS_ACCESS_KEY_ID: secret
+            AWS_SECRET_ACCESS_KEY: secret
+            SMTP_PASSWORD: secret
+            SMTP_USER: secret
+  tilecloudchain:
+    labels:
+      mutualize-sharedconfig: 'true'
+    content:
+      type: git
+      branch: prod-2-7
+      repo: 'https://github.com/camptocamp/demo_geomapfish.git'
+      sub_dir: tilegeneration
+      tags:
+        - tilecloudchain
+      template_engines:
+        - environment_variables: true
+          type: shell
+          data:
+            MAPSERVER_URL: >-
+              https://host/mapserv_proxy?ogcserver=source for image/png
+            TILEGENERATION_AZURE_CONTAINER: secret
+            VISIBLE_ENTRY_POINT: /
+            VISIBLE_WEB_HOST: host.com
+            VISIBLE_WEB_PROTOCOL: https
+  redirecthosts:
+    labels:
+      mutualize-tilecloudchain-hosts: 'true'
+    content:
+      example.com: /etc/tilecloudchain-configs/example/config.yaml
 
 securityContext:
   runAsNonRoot: true
