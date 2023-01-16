@@ -1,7 +1,7 @@
 {{- range $name, $value := .Values.additionalConfigs }}
 ---
-apiVersion: camptocamp.com/v2
-kind: SharedConfigSource
+apiVersion: camptocamp.com/v3
+kind: SharedConfigSource{{ $.Values.environment | title }}
 metadata:
   name: {{ include "common.fullname" ( dict "root" $ "service" $.Values ) }}-{{ $name }}
   labels: {{ include "common.labels" ( dict "root" $ "service" $.Values ) | nindent 4 }}
@@ -9,7 +9,6 @@ metadata:
     {{ $name }}: {{ $value | quote }}
   {{- end }}
 spec:
-  environment: {{ $.Values.environment }}
   name: {{ $name }}
   content:
     {{- toYaml .content | nindent 4 }}

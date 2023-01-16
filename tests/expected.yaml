@@ -816,6 +816,8 @@ spec:
               value: "console"
             - name: "REDIS_DB"
               value: "1"
+            - name: "SCM_SECRET"
+              value: "secret"
             - name: "TAG_FILTER"
               value: "print"
             - name: "TARGET"
@@ -974,6 +976,8 @@ spec:
                   key: "CONFIG_PATH"
             - name: "SCM_ENV_PREFIXES"
               value: "TEST_"
+            - name: "SCM_SECRET"
+              value: "secret"
             - name: "API_BASE_URL"
               value: "http://$(CONFIG_SERVICE_NAME):8080/"
             - name: "C2C_REDIS_URL"
@@ -1067,6 +1071,8 @@ spec:
               value: "console"
             - name: "REDIS_DB"
               value: "1"
+            - name: "SCM_SECRET"
+              value: "secret"
             - name: "TAG_FILTER"
               value: "tilecloudchain"
             - name: "TARGET"
@@ -1214,6 +1220,8 @@ spec:
               value: "console"
             - name: "REDIS_DB"
               value: "1"
+            - name: "SCM_SECRET"
+              value: "secret"
             - name: "TAG_FILTER"
               value: "tilecloudchain"
             - name: "TARGET"
@@ -1341,8 +1349,8 @@ spec:
                   number: 80
 ---
 # Source: mutualize/templates/shared-config-config.yaml
-apiVersion: camptocamp.com/v2
-kind: SharedConfigConfig
+apiVersion: camptocamp.com/v3
+kind: SharedConfigConfigInt
 metadata:
   name: test-mutualize-config
   labels:
@@ -1353,15 +1361,14 @@ metadata:
     app.kubernetes.io/instance: test
     app.kubernetes.io/component: config
 spec:
-  environment: int
   matchLabels:
     mutualize-sharedconfig: 'true'
   property: sources
   configmapName: config.yaml
 ---
 # Source: mutualize/templates/tilecloudchain-config-hosts.yaml
-apiVersion: camptocamp.com/v2
-kind: SharedConfigConfig
+apiVersion: camptocamp.com/v3
+kind: SharedConfigConfigInt
 metadata:
   name: test-mutualize-tcc-hosts
   labels:
@@ -1372,8 +1379,88 @@ metadata:
     app.kubernetes.io/instance: test
     app.kubernetes.io/component: tcc-hosts
 spec:
-  environment: int
   matchLabels:
     mutualize-tilecloudchain-hosts: 'true'
   configmapName: hosts.yaml
   property: sources
+---
+# Source: mutualize/templates/sharedconfig.yaml
+apiVersion: camptocamp.com/v3
+kind: SharedConfigSourceInt
+metadata:
+  name: test-mutualize-print
+  labels:
+    helm.sh/chart: mutualize
+    app.kubernetes.io/version: "1.0"
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: mutualize
+    app.kubernetes.io/instance: test
+    app.kubernetes.io/component: main
+    mutualize-sharedconfig: "true"
+spec:
+  name: print
+  content:
+    branch: prod-2-7
+    repo: https://github.com/camptocamp/demo_geomapfish.git
+    sub_dir: print/print-apps/geomapfish
+    tags:
+    - print
+    template_engines:
+    - data:
+        AWS_ACCESS_KEY_ID: secret
+        AWS_SECRET_ACCESS_KEY: secret
+        SMTP_PASSWORD: secret
+        SMTP_USER: secret
+      environment_variables: true
+      type: shell
+    type: git
+---
+# Source: mutualize/templates/sharedconfig.yaml
+apiVersion: camptocamp.com/v3
+kind: SharedConfigSourceInt
+metadata:
+  name: test-mutualize-redirecthosts
+  labels:
+    helm.sh/chart: mutualize
+    app.kubernetes.io/version: "1.0"
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: mutualize
+    app.kubernetes.io/instance: test
+    app.kubernetes.io/component: main
+    mutualize-tilecloudchain-hosts: "true"
+spec:
+  name: redirecthosts
+  content:
+    example.com: /etc/tilecloudchain-configs/example/config.yaml
+---
+# Source: mutualize/templates/sharedconfig.yaml
+apiVersion: camptocamp.com/v3
+kind: SharedConfigSourceInt
+metadata:
+  name: test-mutualize-tilecloudchain
+  labels:
+    helm.sh/chart: mutualize
+    app.kubernetes.io/version: "1.0"
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: mutualize
+    app.kubernetes.io/instance: test
+    app.kubernetes.io/component: main
+    mutualize-sharedconfig: "true"
+spec:
+  name: tilecloudchain
+  content:
+    branch: prod-2-7
+    repo: https://github.com/camptocamp/demo_geomapfish.git
+    sub_dir: tilegeneration
+    tags:
+    - tilecloudchain
+    template_engines:
+    - data:
+        MAPSERVER_URL: https://host/mapserv_proxy?ogcserver=source for image/png
+        TILEGENERATION_AZURE_CONTAINER: secret
+        VISIBLE_ENTRY_POINT: /
+        VISIBLE_WEB_HOST: host.com
+        VISIBLE_WEB_PROTOCOL: https
+      environment_variables: true
+      type: shell
+    type: git

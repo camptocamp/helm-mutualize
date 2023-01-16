@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 import argparse
+import os
 
 import yaml
 
@@ -13,8 +14,11 @@ def _main() -> None:
 
     with open(args.config, encoding="utf-8") as f:
         versions = yaml.load(f, Loader=yaml.SafeLoader)
-    print(f"::set-output name=app::{args.version_name}")
-    print(f"::set-output name=version::{versions[args.version_name]}")
+
+    if "GITHUB_OUTPUT" in os.environ:
+        with open(os.environ["GITHUB_OUTPUT"], "a") as f:
+            f.write(f"app={args.version_name}\n")
+            f.write(f"version={versions[args.version_name]}\n")
 
 
 if __name__ == "__main__":
