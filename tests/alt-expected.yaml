@@ -911,7 +911,7 @@ spec:
           emptyDir: {}
         - name: hosts
           configMap:
-            name: test-mutualize-redirect-hosts
+            name: test-mutualize-redirect
 ---
 # Source: mutualize/templates/shared-config-deployment.yaml
 apiVersion: apps/v1

@@ -65,11 +65,11 @@ spec:
           emptyDir: {}
         - name: hosts
           configMap:
-            name: {{ include "common.fullname" ( dict "root" . "service" .Values.tilecloudchain ) }}-hosts
+            name: {{ include "common.fullname" ( dict "root" . "service" .Values.tilecloudchainConfig ) }}
         - name: mainconfig
           configMap:
             name: {{ include "common.fullname" ( dict "root" . "service" .Values.tilecloudchain ) }}-main-config
         - name: masterconfig
           configMap:
-            name: {{ include "common.fullname" ( dict "root" . "service" .Values.config ) }}
+            name: {{ include "common.fullname" ( dict "root" . "service" .Values.sharedConfig ) }}
 {{- end }}
