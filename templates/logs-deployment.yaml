@@ -36,5 +36,5 @@ spec:
       volumes:
         - name: master-config
           configMap:
-            name: {{ include "common.fullname" ( dict "root" . "service" .Values.config ) }}
+            name: {{ include "common.fullname" ( dict "root" . "service" .Values.sharedConfig ) }}
 {{- end }}

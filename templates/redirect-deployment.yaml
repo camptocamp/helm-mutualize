@@ -40,5 +40,5 @@ spec:
           emptyDir: {}
         - name: hosts
           configMap:
-            name: {{ include "common.fullname" ( dict "root" . "service" .Values.redirect ) }}-hosts
+            name: {{ include "common.fullname" ( dict "root" . "service" .Values.redirectConfig ) }}
 {{- end }}

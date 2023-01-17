@@ -92,7 +92,7 @@ spec:
           emptyDir: {}
         - name: masterconfig
           configMap:
-            name: {{ include "common.fullname" ( dict "root" . "service" .Values.config ) }}
+            name: {{ include "common.fullname" ( dict "root" . "service" .Values.sharedConfig ) }}
         - name: web-xml
           configMap:
             name: {{ include "common.fullname" ( dict "root" . "service" .Values.print ) }}
