@@ -210,7 +210,7 @@ data:
           <div style="text">
             <a href="https://example.com/print">Print maps</a><br />
             based on <a href="http://mapfish.github.io/mapfish-print-doc/">MapFish Print</a>.<br />
-            <a href="https://example.com/print/logs">Access to the logs</a>.
+            <a href="https://example.com/print/logs/">Access to the logs</a>.
           </div>
         </div>
         <div class="content">
