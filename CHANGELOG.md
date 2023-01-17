@@ -1,5 +1,31 @@
 # Changelog
 
+## [0.5.1](https://github.com/camptocamp/helm-mutualize/tree/0.5.1) (2023-01-17)
+
+[Full Changelog](https://github.com/camptocamp/helm-mutualize/compare/0.5.0...0.5.1)
+
+#### :bug: Bug Fixes
+
+- Fix names of the configMaps [\#132](https://github.com/camptocamp/helm-mutualize/pull/132) ([sbrunner](https://github.com/sbrunner))
+
+## [0.5.0](https://github.com/camptocamp/helm-mutualize/tree/0.5.0) (2023-01-16)
+
+[Full Changelog](https://github.com/camptocamp/helm-mutualize/compare/0.4.0...0.5.0)
+
+#### :sparkles: Enhancements
+
+- Use new version of the operators [\#131](https://github.com/camptocamp/helm-mutualize/pull/131) ([sbrunner](https://github.com/sbrunner))
+- Be able to add specific annotation to shared config operator object [\#130](https://github.com/camptocamp/helm-mutualize/pull/130) ([sbrunner](https://github.com/sbrunner))
+
+#### :wrench: Build, CI, Tests, Code style
+
+- Fix pull requests check workflow, use our CI token [\#129](https://github.com/camptocamp/helm-mutualize/pull/129) ([sbrunner](https://github.com/sbrunner))
+- Update the changelog [\#128](https://github.com/camptocamp/helm-mutualize/pull/128) ([c2c-bot-gis-ci](https://github.com/c2c-bot-gis-ci))
+
+#### :package: Dependencies update
+
+- Update all minor versions \(minor\) [\#127](https://github.com/camptocamp/helm-mutualize/pull/127) ([renovate[bot]](https://github.com/apps/renovate))
+
 ## [0.4.0](https://github.com/camptocamp/helm-mutualize/tree/0.4.0) (2022-12-23)
 
 [Full Changelog](https://github.com/camptocamp/helm-mutualize/compare/0.3.0...0.4.0)
