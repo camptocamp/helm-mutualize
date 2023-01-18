@@ -5,7 +5,7 @@ metadata:
   name: {{ include "common.fullname" ( dict "root" . "service" .Values.tilecloudchain ) }}
   {{- include "common.metadata" ( dict "root" . "service" .Values.tilecloudchain ) | nindent 2 }}
 spec:
-  replicas: {{ .Values.config.replicaCount }}
+  replicas: {{ .Values.tilecloudchain.replicaCount }}
   revisionHistoryLimit: {{ .Values.global.revisionHistoryLimit | default 3 }}
   strategy:
     type: RollingUpdate
