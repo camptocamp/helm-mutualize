@@ -39,7 +39,7 @@ config-env-base: &config-env-base
   C2C_SECRET:
     value: secret
   C2C_REDIS_TIMEOUT:
-    value: 30
+    value: '30'
 
 config:
   image: &config-image
