@@ -725,7 +725,7 @@ metadata:
     app.kubernetes.io/instance: test
     app.kubernetes.io/component: print
 spec:
-  replicas:
+  replicas: 1
   revisionHistoryLimit: 3
   strategy:
     type: RollingUpdate
