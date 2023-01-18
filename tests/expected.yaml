@@ -705,23 +705,23 @@ spec:
           imagePullPolicy: IfNotPresent
           env:
             - name: "C2C_SECRET"
-              value: "secret"
+              value: secret
             - name: "ES_INDEXES"
-              value: "print"
+              value: print
             - name: "REDIS_DB"
               value: "2"
             - name: "SHARED_CONFIG_MASTER"
-              value: "/master_config/master/shared_config_manager.yaml"
+              value: /master_config/master/shared_config_manager.yaml
             - name: "SOURCES_KEY"
-              value: "secret"
+              value: secret
             - name: "SQLALCHEMY_SLAVE_URL"
-              value: "postgresql://postgres:mySuperTestingPassword@test-pg-postgresql:5432/"
+              value: postgresql://postgres:mySuperTestingPassword@test-pg-postgresql:5432/
             - name: "SQLALCHEMY_URL"
-              value: "postgresql://postgres:mySuperTestingPassword@test-pg-postgresql:5432/"
+              value: postgresql://postgres:mySuperTestingPassword@test-pg-postgresql:5432/
             - name: "C2C_BROADCAST_PREFIX"
-              value: "broadcast_logs_$(REDIS_DB)_"
+              value: broadcast_logs_$(REDIS_DB)_
             - name: "C2C_REDIS_URL"
-              value: "redis://test-redis-master/$(REDIS_DB)"
+              value: redis://test-redis-master/$(REDIS_DB)
           terminationMessagePolicy: FallbackToLogsOnError
           resources:
             {}
@@ -798,11 +798,11 @@ spec:
           imagePullPolicy: IfNotPresent
           env:
             - name: "C2C_BROADCAST_PREFIX"
-              value: "broadcast_scm_$(REDIS_DB)_"
+              value: broadcast_scm_$(REDIS_DB)_
             - name: "C2C_REDIS_TIMEOUT"
               value: "30"
             - name: "C2C_SECRET"
-              value: "secret"
+              value: secret
             - name: "CONFIG_SERVICE_NAME"
               valueFrom:
                 configMapKeyRef:
@@ -811,21 +811,21 @@ spec:
             - name: "DEVELOPMENT"
               value: "0"
             - name: "LOG_LEVEL"
-              value: "DEBUG"
+              value: DEBUG
             - name: "LOG_TYPE"
-              value: "console"
+              value: console
             - name: "REDIS_DB"
               value: "1"
             - name: "SCM_SECRET"
-              value: "secret"
+              value: secret
             - name: "TAG_FILTER"
-              value: "print"
+              value: print
             - name: "TARGET"
-              value: "/config"
+              value: /config
             - name: "API_BASE_URL"
-              value: "http://$(CONFIG_SERVICE_NAME):8080/"
+              value: http://$(CONFIG_SERVICE_NAME):8080/
             - name: "C2C_REDIS_URL"
-              value: "redis://test-redis-master/$(REDIS_DB)"
+              value: redis://test-redis-master/$(REDIS_DB)
           terminationMessagePolicy: FallbackToLogsOnError
           resources:
             {}
@@ -949,11 +949,11 @@ spec:
           imagePullPolicy: IfNotPresent
           env:
             - name: "C2C_BROADCAST_PREFIX"
-              value: "broadcast_scm_$(REDIS_DB)_"
+              value: broadcast_scm_$(REDIS_DB)_
             - name: "C2C_REDIS_TIMEOUT"
               value: "30"
             - name: "C2C_SECRET"
-              value: "secret"
+              value: secret
             - name: "CONFIG_SERVICE_NAME"
               valueFrom:
                 configMapKeyRef:
@@ -962,9 +962,9 @@ spec:
             - name: "DEVELOPMENT"
               value: "0"
             - name: "LOG_LEVEL"
-              value: "DEBUG"
+              value: DEBUG
             - name: "LOG_TYPE"
-              value: "console"
+              value: console
             - name: "MASTER_CONFIG"
               value: ""
             - name: "REDIS_DB"
@@ -975,13 +975,13 @@ spec:
                   name: "test-mutualize-env"
                   key: "CONFIG_PATH"
             - name: "SCM_ENV_PREFIXES"
-              value: "TEST_"
+              value: TEST_
             - name: "SCM_SECRET"
-              value: "secret"
+              value: secret
             - name: "API_BASE_URL"
-              value: "http://$(CONFIG_SERVICE_NAME):8080/"
+              value: http://$(CONFIG_SERVICE_NAME):8080/
             - name: "C2C_REDIS_URL"
-              value: "redis://test-redis-master/$(REDIS_DB)"
+              value: redis://test-redis-master/$(REDIS_DB)
           terminationMessagePolicy: FallbackToLogsOnError
           resources:
             {}
@@ -1053,11 +1053,11 @@ spec:
           imagePullPolicy: IfNotPresent
           env:
             - name: "C2C_BROADCAST_PREFIX"
-              value: "broadcast_scm_$(REDIS_DB)_"
+              value: broadcast_scm_$(REDIS_DB)_
             - name: "C2C_REDIS_TIMEOUT"
               value: "30"
             - name: "C2C_SECRET"
-              value: "secret"
+              value: secret
             - name: "CONFIG_SERVICE_NAME"
               valueFrom:
                 configMapKeyRef:
@@ -1066,21 +1066,21 @@ spec:
             - name: "DEVELOPMENT"
               value: "0"
             - name: "LOG_LEVEL"
-              value: "DEBUG"
+              value: DEBUG
             - name: "LOG_TYPE"
-              value: "console"
+              value: console
             - name: "REDIS_DB"
               value: "1"
             - name: "SCM_SECRET"
-              value: "secret"
+              value: secret
             - name: "TAG_FILTER"
-              value: "tilecloudchain"
+              value: tilecloudchain
             - name: "TARGET"
-              value: "/config"
+              value: /config
             - name: "API_BASE_URL"
-              value: "http://$(CONFIG_SERVICE_NAME):8080/"
+              value: http://$(CONFIG_SERVICE_NAME):8080/
             - name: "C2C_REDIS_URL"
-              value: "redis://test-redis-master/$(REDIS_DB)"
+              value: redis://test-redis-master/$(REDIS_DB)
           terminationMessagePolicy: FallbackToLogsOnError
           resources:
             {}
@@ -1109,25 +1109,25 @@ spec:
           imagePullPolicy: IfNotPresent
           env:
             - name: "C2C_SECRET"
-              value: "secret"
+              value: secret
             - name: "REDIS_DB"
               value: "2"
             - name: "SHARED_CONFIG_MASTER"
-              value: "/master_config/master/shared_config_manager.yaml"
+              value: /master_config/master/shared_config_manager.yaml
             - name: "SOURCES_KEY"
-              value: "secret"
+              value: secret
             - name: "TILECLOUD_CHAIN_SESSION_SALT"
-              value: "secret"
+              value: secret
             - name: "TILECLOUD_CHAIN_SESSION_SECRET"
-              value: "secret"
+              value: secret
             - name: "TILEGENERATION_HOSTSFILE"
-              value: "/etc/tilecloudchain-hosts/hosts.yaml"
+              value: /etc/tilecloudchain-hosts/hosts.yaml
             - name: "TILEGENERATION_MAIN_CONFIGFILE"
-              value: "/etc/tilecloudchain-main/config.yaml"
+              value: /etc/tilecloudchain-main/config.yaml
             - name: "C2C_BROADCAST_PREFIX"
-              value: "broadcast_scm_$(REDIS_DB)_"
+              value: broadcast_scm_$(REDIS_DB)_
             - name: "C2C_REDIS_URL"
-              value: "redis://test-redis-master/$(REDIS_DB)"
+              value: redis://test-redis-master/$(REDIS_DB)
           terminationMessagePolicy: FallbackToLogsOnError
           resources:
             {}
@@ -1202,11 +1202,11 @@ spec:
           imagePullPolicy: IfNotPresent
           env:
             - name: "C2C_BROADCAST_PREFIX"
-              value: "broadcast_scm_$(REDIS_DB)_"
+              value: broadcast_scm_$(REDIS_DB)_
             - name: "C2C_REDIS_TIMEOUT"
               value: "30"
             - name: "C2C_SECRET"
-              value: "secret"
+              value: secret
             - name: "CONFIG_SERVICE_NAME"
               valueFrom:
                 configMapKeyRef:
@@ -1215,21 +1215,21 @@ spec:
             - name: "DEVELOPMENT"
               value: "0"
             - name: "LOG_LEVEL"
-              value: "DEBUG"
+              value: DEBUG
             - name: "LOG_TYPE"
-              value: "console"
+              value: console
             - name: "REDIS_DB"
               value: "1"
             - name: "SCM_SECRET"
-              value: "secret"
+              value: secret
             - name: "TAG_FILTER"
-              value: "tilecloudchain"
+              value: tilecloudchain
             - name: "TARGET"
-              value: "/config"
+              value: /config
             - name: "API_BASE_URL"
-              value: "http://$(CONFIG_SERVICE_NAME):8080/"
+              value: http://$(CONFIG_SERVICE_NAME):8080/
             - name: "C2C_REDIS_URL"
-              value: "redis://test-redis-master/$(REDIS_DB)"
+              value: redis://test-redis-master/$(REDIS_DB)
           terminationMessagePolicy: FallbackToLogsOnError
           resources:
             {}
@@ -1258,25 +1258,25 @@ spec:
           imagePullPolicy: IfNotPresent
           env:
             - name: "C2C_SECRET"
-              value: "secret"
+              value: secret
             - name: "REDIS_DB"
               value: "2"
             - name: "SHARED_CONFIG_MASTER"
-              value: "/master_config/master/shared_config_manager.yaml"
+              value: /master_config/master/shared_config_manager.yaml
             - name: "SOURCES_KEY"
-              value: "secret"
+              value: secret
             - name: "TILECLOUD_CHAIN_SESSION_SALT"
-              value: "secret"
+              value: secret
             - name: "TILECLOUD_CHAIN_SESSION_SECRET"
-              value: "secret"
+              value: secret
             - name: "TILEGENERATION_HOSTSFILE"
-              value: "/etc/tilecloudchain-hosts/hosts.yaml"
+              value: /etc/tilecloudchain-hosts/hosts.yaml
             - name: "TILEGENERATION_MAIN_CONFIGFILE"
-              value: "/etc/tilecloudchain-main/config.yaml"
+              value: /etc/tilecloudchain-main/config.yaml
             - name: "C2C_BROADCAST_PREFIX"
-              value: "broadcast_scm_$(REDIS_DB)_"
+              value: broadcast_scm_$(REDIS_DB)_
             - name: "C2C_REDIS_URL"
-              value: "redis://test-redis-master/$(REDIS_DB)"
+              value: redis://test-redis-master/$(REDIS_DB)
           terminationMessagePolicy: FallbackToLogsOnError
           resources:
             {}
