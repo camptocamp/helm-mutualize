@@ -6,7 +6,7 @@ metadata:
   {{- include "common.metadata" ( dict "root" . "service" .Values.print ) | nindent 2 }}
 spec:
   replicas: {{ .Values.print.config.replicaCount }}
-  revisionHistoryLimit: {{ .Values.global.revisionHistoryLimit | default 3 }}
+  revisionHistoryLimit: {{ .Values.global.revisionHistoryLimit | default 0 }}
   strategy:
     type: RollingUpdate
     rollingUpdate:

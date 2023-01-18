@@ -6,7 +6,7 @@ metadata:
   {{- include "common.metadata" ( dict "root" . "service" .Values.tilecloudchain ) | nindent 2 }}
 spec:
   replicas: {{ .Values.tilecloudchain.replicaCount }}
-  revisionHistoryLimit: {{ .Values.global.revisionHistoryLimit | default 3 }}
+  revisionHistoryLimit: {{ .Values.global.revisionHistoryLimit | default 0 }}
   strategy:
     type: RollingUpdate
   selector:
