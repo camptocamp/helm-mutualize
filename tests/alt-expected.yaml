@@ -452,9 +452,9 @@ rules:
 - apiGroups:
     - camptocamp.com
   resources:
-    - sharedconfigconfigs
-    - sharedconfigsources
-    - githubwebhooks
+    - sharedconfigconfigsint
+    - sharedconfigsourcesint
+    - githubwebhooksint
   verbs:
     - get
     - watch

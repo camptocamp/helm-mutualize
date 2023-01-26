@@ -8,9 +8,9 @@ rules:
 - apiGroups:
     - camptocamp.com
   resources:
-    - sharedconfigconfigs
-    - sharedconfigsources
-    - githubwebhooks
+    - sharedconfigconfigs{{ .Values.environment | lower }}
+    - sharedconfigsources{{ .Values.environment | lower }}
+    - githubwebhooks{{ .Values.environment | lower }}
   verbs:
     - get
     - watch
