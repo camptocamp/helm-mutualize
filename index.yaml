@@ -3,6 +3,22 @@ entries:
   mutualize:
   - apiVersion: v2
     appVersion: "1.0"
+    created: "2023-01-26T13:57:16.570590557Z"
+    dependencies:
+    - name: common
+      repository: https://camptocamp.github.io/helm-common
+      version: 0.5.3
+    description: A Helm chart for deploying mutualize services on Kubernetes
+    digest: 347d05ff4d9462d1399d63e52fbd8abb7dedc2e8622bbba984bef5c5fd157906
+    name: mutualize
+    sources:
+    - https://github.com/mapfish/mapfish-print
+    - https://github.com/camptocamp/tilecloud-chain
+    urls:
+    - https://github.com/camptocamp/helm-mutualize/releases/download/0.5.6/mutualize-0.5.6.tgz
+    version: 0.5.6
+  - apiVersion: v2
+    appVersion: "1.0"
     created: "2023-01-18T19:38:51.859020516Z"
     dependencies:
     - name: common
@@ -482,4 +498,4 @@ entries:
     urls:
     - https://github.com/camptocamp/helm-mutualized/releases/download/0.1.0/mutualized-0.1.0.tgz
     version: 0.1.0
-generated: "2023-01-18T19:38:51.859320823Z"
+generated: "2023-01-26T13:57:16.571107461Z"
