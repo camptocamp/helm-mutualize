@@ -147,3 +147,12 @@ The TileCloud also need the hosts config:
     contentType: json
   ```
 - Will create a GitHub webhook to trigger the shared config manager updates.
+
+## Contributing
+
+Install the pre-commit hooks:
+
+```bash
+pip install pre-commit
+pre-commit install --allow-missing-config
+```

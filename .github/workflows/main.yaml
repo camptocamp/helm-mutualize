@@ -34,6 +34,16 @@ jobs:
       - run: echo "${HOME}/.local/bin" >> ${GITHUB_PATH}
       - run: python3 -m pip install --user --requirement=ci/requirements.txt
 
+      - uses: actions/cache@v3
+        with:
+          path: ~/.cache/pre-commit
+          key: pre-commit-${{ hashFiles('.pre-commit-config.yaml') }}
+          restore-keys: "pre-commit-${{ hashFiles('.pre-commit-config.yaml') }}\npre-commit-"
+      - run: pre-commit run --all-files
+        env:
+          SKIP: helm-lock
+      - run: git diff
+        if: failure()
       - name: Checks
         run: c2cciutils-checks
 
@@ -52,19 +62,20 @@ jobs:
         run: c2cciutils-k8s-install
 
       - name: Create the database
-        run: c2cciutils-k8s-db
+        run:
+          c2cciutils-k8s-db
 
-        # Install operator
+          # Install operator
       - id: scm-operator
         run: ci/get-version camptocamp/operator-shared-config-manager
       - run: helm repo add operator-shared-config-manager https://camptocamp.github.io/operator-shared-config-manager
       - run:
-          helm install operator-shared-config-manager --set=image.tag=${VERSION} --set=crd.suffix=int --set=crd.shortSuffix=i --set=env.ENVIRONMENT=int --version=${VERSION}
-          operator-shared-config-manager/operator-shared-config-manager
+          helm install operator-shared-config-manager --set=image.tag=${VERSION} --set=crd.suffix=int --set=crd.shortSuffix=i
+          --set=env.ENVIRONMENT=int --version=${VERSION} operator-shared-config-manager/operator-shared-config-manager
         env:
           VERSION: ${{steps.scm-operator.outputs.version}}
 
-        # Install Redis
+          # Install Redis
       - run: helm repo add bitnami https://charts.bitnami.com/bitnami
       - run:
           helm install test-redis --set=auth.enabled=false --set=replica.replicaCount=0 --set=master.persistence.enabled=false
@@ -77,9 +88,10 @@ jobs:
       - run: kubectl wait --for=condition=Available=True --timeout=1m deployment test-mutualize-logs
       - run: c2cciutils-k8s-logs
         if: always()
-      - run: kubectl delete -f tests/expected.yaml || true
+      - run:
+          kubectl delete -f tests/expected.yaml || true
 
-        # Just test that we can apply it
+          # Just test that we can apply it
       - run: kubectl apply -f tests/alt-expected.yaml
 
       - run: helm uninstall test-redis
