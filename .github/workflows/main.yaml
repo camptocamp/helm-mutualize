@@ -42,7 +42,7 @@ jobs:
       - run: pre-commit run --all-files
         env:
           SKIP: helm-lock
-      - run: git diff
+      - run: git diff && false
         if: failure()
       - name: Checks
         run: c2cciutils-checks
@@ -73,9 +73,10 @@ jobs:
           helm install operator-shared-config-manager --set=image.tag=${VERSION} --set=crd.suffix=int --set=crd.shortSuffix=i
           --set=env.ENVIRONMENT=int --version=${VERSION} operator-shared-config-manager/operator-shared-config-manager
         env:
-          VERSION: ${{steps.scm-operator.outputs.version}}
+          VERSION:
+            ${{steps.scm-operator.outputs.version}}
 
-          # Install Redis
+            # Install Redis
       - run: helm repo add bitnami https://charts.bitnami.com/bitnami
       - run:
           helm install test-redis --set=auth.enabled=false --set=replica.replicaCount=0 --set=master.persistence.enabled=false
