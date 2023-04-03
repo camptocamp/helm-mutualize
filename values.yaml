@@ -375,6 +375,14 @@ ingress:
     #  tls:
     #    - secretName: main-tls
 
+# Information needed to create the network policy
+networkPolicy:
+  # Information about Redis
+  redis:
+    enable: false
+    serviceName: redis
+    labels: {}
+
 nodeSelector: {}
 
 tolerations: []
