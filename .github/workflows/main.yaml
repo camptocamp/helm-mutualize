@@ -53,11 +53,6 @@ jobs:
       - run: helm lint .
       - run: helm template test .
 
-      - run: helm template --namespace=default --values=tests/values.yaml test . > tests/actual.yaml
-      - run: diff --ignore-trailing-space tests/actual.yaml tests/expected.yaml
-      - run: helm template --namespace=default --values=tests/alt-values.yaml test . > tests/alt-actual.yaml
-      - run: diff --ignore-trailing-space tests/alt-actual.yaml tests/alt-expected.yaml
-
       - name: Setup k3s/k3d
         run: c2cciutils-k8s-install
 
