@@ -1,16 +1,16 @@
-{{- if .Values.ingress.enabled -}}
-{{- $fullName := include "common.fullname" ( dict "root" . "service" .Values ) -}}
-{{- $svcPrintPort := .Values.print.service.port -}}
-{{- $svcLogsPort := .Values.logs.service.port -}}
-{{- $svcConfigPort := .Values.config.service.port -}}
+{{- if .Values.ingress.enabled }}
+{{- $fullName := include "common.fullname" ( dict "root" . "service" .Values ) }}
+{{- $svcPrintPort := .Values.print.service.port }}
+{{- $svcLogsPort := .Values.logs.service.port }}
+{{- $svcConfigPort := .Values.config.service.port }}
 {{- range $ingress_host := .Values.ingress.hosts }}
 ---
 {{- if semverCompare ">=1.19.0" ( trimPrefix "v" $.Capabilities.KubeVersion.Version ) }}
 apiVersion: networking.k8s.io/v1
-{{- else -}}
-{{- if semverCompare ">=1.14-0" $.Capabilities.KubeVersion.GitVersion -}}
+{{- else }}
+{{- if semverCompare ">=1.14-0" $.Capabilities.KubeVersion.GitVersion }}
 apiVersion: networking.k8s.io/v1beta1
-{{- else -}}
+{{- else }}
 apiVersion: extensions/v1beta1
 {{- end }}
 {{- end }}
@@ -75,7 +75,7 @@ spec:
               {{- else }}
               serviceName: {{ $fullName }}-config
               servicePort: {{ $svcConfigPort }}
-              {{- end -}}
+              {{- end }}
         {{- end }}
 {{- end }}
 {{- end }}

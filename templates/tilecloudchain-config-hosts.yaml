@@ -1,4 +1,4 @@
-{{- if .Values.tilecloudchain.enabled -}}
+{{- if .Values.tilecloudchain.enabled }}
 apiVersion: camptocamp.com/v3
 kind: SharedConfigConfig{{ .Values.environment | title }}
 metadata:
