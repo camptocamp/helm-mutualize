@@ -76,6 +76,8 @@ print:
       API_BASE_URL:
         value: http://$(CONFIG_SERVICE_NAME):8080/
         order: 1
+      JAVA_OPTS:
+        value: -javaagent:jmx-lib/jmx_prometheus_javaagent-0.18.0.jar=9110:jmx-exporter.yaml
 
 logs:
   image:

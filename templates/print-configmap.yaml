@@ -7,3 +7,5 @@ metadata:
 data:
   web.xml: |
     {{- .Values.print.webXml | nindent 4 }}
+  jmx-exporter.yaml: |
+    {{- .Values.print.jmxExporter.config | nindent 4 }}
