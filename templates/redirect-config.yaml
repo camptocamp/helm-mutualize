@@ -1,4 +1,4 @@
-{{- if .Values.redirect.enabled -}}
+{{- if .Values.redirect.enabled }}
 apiVersion: camptocamp.com/v3
 kind: SharedConfigConfig{{ .Values.environment | title }}
 metadata:

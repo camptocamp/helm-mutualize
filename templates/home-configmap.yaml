@@ -1,4 +1,4 @@
-{{- if .Values.home.enabled -}}
+{{- if .Values.home.enabled }}
 {{ $fullname := include "common.fullname" ( dict "root" . "service" .Values.home ) }}
 apiVersion: v1
 kind: ConfigMap
