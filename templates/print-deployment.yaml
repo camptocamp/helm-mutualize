@@ -24,6 +24,16 @@ spec:
     metadata: {{- include "common.podMetadata" ( dict "root" . "service" .Values.print ) | nindent 6 }}
     spec:
       {{- include "common.podConfig" ( dict "root" . "service" .Values.print ) | nindent 6 }}
+      initContainers:
+        - name: jmx-exporter
+          {{- include "common.containerConfig" ( dict "root" . "container" .Values.print.jmxExporter ) | nindent 10 }}
+          args:
+            - bash
+            - -c
+              cp /opt/bitnami/jmx-exporter/jmx_prometheus_javaagent.jar /jmx-exporter-jar/
+          volumeMounts:
+            - mountPath: /jmx-exporter-jar
+              name: jmx-exporter-jar
       containers:
         - name: config
           {{- include "common.containerConfig" ( dict "root" . "container" .Values.print.config ) | nindent 10 }}
@@ -58,6 +68,11 @@ spec:
             - name: web-xml
               mountPath: /usr/local/tomcat/webapps/ROOT/WEB-INF/web.xml
               subPath: web.xml
+            - name: jmx-exporter-config
+              mountPath: /usr/local/tomcat/jmx-exporter.yaml
+              subPath: jmx-exporter.yaml
+            - mountPath: /usr/local/tomcat/jmx-lib
+              name: jmx-exporter-jar
             {{- range $name, $path := .Values.print.volumes }}
             - name: {{ $name }}
               mountPath: {{ $path }}
@@ -65,6 +80,9 @@ spec:
           ports:
             - name: http
               containerPort: 8080
+              protocol: TCP
+            - name: prometheus
+              containerPort: 9110
               protocol: TCP
           readinessProbe:
             httpGet:
@@ -90,6 +108,8 @@ spec:
       volumes:
         - name: configs
           emptyDir: {}
+        - name: jmx-exporter-jar
+          emptyDir: {}
         - name: masterconfig
           configMap:
             name: {{ include "common.fullname" ( dict "root" . "service" .Values.sharedConfig ) }}
@@ -99,6 +119,12 @@ spec:
             items:
               - key: web.xml
                 path: web.xml
+        - name: jmx-exporter-config
+          configMap:
+            name: {{ include "common.fullname" ( dict "root" . "service" .Values.print ) }}
+            items:
+              - key: jmx-exporter.yaml
+                path: jmx-exporter.yaml
         {{- range $name, $path := .Values.print.volumes }}
         - name: {{ $name }}
           emptyDir: {}

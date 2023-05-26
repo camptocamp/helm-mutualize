@@ -21,6 +21,9 @@ rbacGroups: []
 envConfigMap:
   annotations: {}
 
+prometheus:
+  enabled: true
+
 sharedConfig:
   serviceName: config
   annotations: {}
@@ -84,6 +87,19 @@ print:
       TARGET:
         value: /config
     resources: {}
+  jmxExporter:
+    image:
+      repository: bitnami/jmx-exporter
+      tag: 0.18.0
+      sha:
+    resources: {}
+    config: |
+      startDelaySeconds: 30
+      username:
+      password:
+      ssl: false
+      lowercaseOutputLabelNames: true
+      lowercaseOutputName: true
 
   webXml: |
     <?xml version="1.0" encoding="UTF-8"?>

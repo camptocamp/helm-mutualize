@@ -438,6 +438,14 @@ data:
         </servlet-mapping>
 
     </web-app>
+
+  jmx-exporter.yaml: |
+    startDelaySeconds: 30
+    username:
+    password:
+    ssl: false
+    lowercaseOutputLabelNames: true
+    lowercaseOutputName: true
 ---
 # Source: mutualize/templates/tilecloudchain-configmap-mainconfig.yaml
 apiVersion: v1
@@ -789,6 +797,23 @@ spec:
         {}
       affinity:
         {}
+      initContainers:
+        - name: jmx-exporter
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: 33
+          image: "bitnami/jmx-exporter:0.18.0"
+          imagePullPolicy: IfNotPresent
+          terminationMessagePolicy: FallbackToLogsOnError
+          resources:
+            {}
+          args:
+            - bash
+            - -c
+              cp /opt/bitnami/jmx-exporter/jmx_prometheus_javaagent.jar /jmx-exporter-jar/
+          volumeMounts:
+            - mountPath: /jmx-exporter-jar
+              name: jmx-exporter-jar
       containers:
         - name: config
           securityContext:
@@ -810,6 +835,8 @@ spec:
                   key: "CONFIG_SERVICE_NAME"
             - name: "DEVELOPMENT"
               value: "0"
+            - name: "JAVA_OPTS"
+              value: -javaagent:jmx-lib/jmx_prometheus_javaagent-0.18.0.jar=9110:jmx-exporter.yaml
             - name: "LOG_LEVEL"
               value: DEBUG
             - name: "LOG_TYPE"
@@ -864,11 +891,19 @@ spec:
             - name: web-xml
               mountPath: /usr/local/tomcat/webapps/ROOT/WEB-INF/web.xml
               subPath: web.xml
+            - name: jmx-exporter-config
+              mountPath: /usr/local/tomcat/jmx-exporter.yaml
+              subPath: jmx-exporter.yaml
+            - mountPath: /usr/local/tomcat/jmx-lib
+              name: jmx-exporter-jar
             - name: entrypoint
               mountPath: /usr/local/tomcat/webapps/ROOT/print
           ports:
             - name: http
               containerPort: 8080
+              protocol: TCP
+            - name: prometheus
+              containerPort: 9110
               protocol: TCP
           readinessProbe:
             httpGet:
@@ -894,6 +929,8 @@ spec:
       volumes:
         - name: configs
           emptyDir: {}
+        - name: jmx-exporter-jar
+          emptyDir: {}
         - name: masterconfig
           configMap:
             name: test-mutualize-config
@@ -903,6 +940,12 @@ spec:
             items:
               - key: web.xml
                 path: web.xml
+        - name: jmx-exporter-config
+          configMap:
+            name: test-mutualize-print
+            items:
+              - key: jmx-exporter.yaml
+                path: jmx-exporter.yaml
         - name: entrypoint
           emptyDir: {}
 ---
@@ -1065,6 +1108,8 @@ spec:
                   key: "CONFIG_SERVICE_NAME"
             - name: "DEVELOPMENT"
               value: "0"
+            - name: "JAVA_OPTS"
+              value: -javaagent:jmx-lib/jmx_prometheus_javaagent-0.18.0.jar=9110:jmx-exporter.yaml
             - name: "LOG_LEVEL"
               value: DEBUG
             - name: "LOG_TYPE"
@@ -1214,6 +1259,8 @@ spec:
                   key: "CONFIG_SERVICE_NAME"
             - name: "DEVELOPMENT"
               value: "0"
+            - name: "JAVA_OPTS"
+              value: -javaagent:jmx-lib/jmx_prometheus_javaagent-0.18.0.jar=9110:jmx-exporter.yaml
             - name: "LOG_LEVEL"
               value: DEBUG
             - name: "LOG_TYPE"
@@ -1347,6 +1394,31 @@ spec:
                 name: test-mutualize-config
                 port:
                   number: 80
+---
+# Source: mutualize/templates/print-podmonitor.yaml
+apiVersion: monitoring.coreos.com/v1
+kind: PodMonitor
+metadata:
+  name: test-mutualize-print
+  labels:
+    helm.sh/chart: mutualize
+    app.kubernetes.io/version: "1.0"
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: mutualize
+    app.kubernetes.io/instance: test
+    app.kubernetes.io/component: print
+  annotations:
+    reloader.stakater.com/auto: "true"
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: mutualize
+      app.kubernetes.io/instance: test
+      app.kubernetes.io/component: print
+  podMetricsEndpoints:
+    - honorLabels: true
+      interval: 10s
+      port: prometheus
 ---
 # Source: mutualize/templates/shared-config-config.yaml
 apiVersion: camptocamp.com/v3
