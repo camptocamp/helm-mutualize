@@ -767,10 +767,11 @@ spec:
           terminationMessagePolicy: FallbackToLogsOnError
           resources:
             {}
-          args:
-            - bash
+          command:
+            - /bin/bash
             - -c
-              cp /opt/bitnami/jmx-exporter/jmx_prometheus_javaagent.jar /jmx-exporter-jar/
+          args:
+            - cp /opt/bitnami/jmx-exporter/jmx_prometheus_javaagent.jar /jmx-exporter-jar/
           volumeMounts:
             - mountPath: /jmx-exporter-jar
               name: jmx-exporter-jar
