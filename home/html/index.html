@@ -63,14 +63,19 @@
     </h1>
 
     <p>This will provide the following services:</p>
+    {{- if .Values.print.enabled }}
     <div class="content">
       <div class="icon fa-solid fa-print"></div>
       <div style="text">
         <a href="{{ .Values.home.serviceUrl }}/print">Print maps</a><br />
         based on <a href="http://mapfish.github.io/mapfish-print-doc/">MapFish Print</a>.<br />
+        {{- if .Values.logs.enabled }}
         <a href="{{ .Values.home.serviceUrl }}/print/logs/">Access to the logs</a>.
+        {{- end }}
       </div>
     </div>
+    {{- end }}
+    {{- if .Values.tilecloudchain.enabled }}
     <div class="content">
       <div class="icon fa-solid fa-layer-group"></div>
       <div style="text">
@@ -81,6 +86,7 @@
         <a href="https://geomapfish-demo-2-7.camptocamp.com/tiles/admin/">example</a>.
       </div>
     </div>
+    {{- end }}
     <div class="content">
       <div class="icon fa-solid fa-share-nodes"></div>
       <div style="text">
