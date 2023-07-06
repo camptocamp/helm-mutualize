@@ -8,7 +8,7 @@ spec:
   replicas: {{ .Values.tilecloudchainSlave.replicaCount }}
   revisionHistoryLimit: {{ .Values.global.revisionHistoryLimit | default 0 }}
   strategy:
-    type: RollingUpdate
+    type: Recreate
   selector:
     matchLabels: {{ include "common.selectorLabels" ( dict "root" . "service" .Values.tilecloudchainSlave ) | nindent 6 }}
   template:
