@@ -39,7 +39,8 @@ repos:
             ^templates/.*$
             |^values\.yaml$
             |^Chart\.yaml$
-            |tests/values\.yaml$
+            |^tests/values\.yaml$
+            |^home/html/index\.html$
           )
         args:
           - --values=tests/values.yaml
@@ -52,7 +53,8 @@ repos:
             ^templates/.*$
             |^values\.yaml$
             |^Chart\.yaml$
-            |tests/alt-values\.yaml$
+            |^tests/values\.yaml$
+            |^home/html/index\.html$
           )
         args:
           - --values=tests/alt-values.yaml
