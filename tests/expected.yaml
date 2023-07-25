@@ -825,6 +825,8 @@ spec:
           env:
             - name: "C2C_BROADCAST_PREFIX"
               value: broadcast_scm_$(REDIS_DB)_
+            - name: "C2C_PROMETHEUS_PORT"
+              value: "9190"
             - name: "C2C_REDIS_TIMEOUT"
               value: "30"
             - name: "C2C_SECRET"
@@ -874,6 +876,10 @@ spec:
           livenessProbe:
             <<: *configProbe
             periodSeconds: 120
+          ports:
+            - name: prometheus-conf
+              containerPort: 9110
+              protocol: TCP
         - name: print
           securityContext:
             runAsNonRoot: true
@@ -994,6 +1000,8 @@ spec:
           env:
             - name: "C2C_BROADCAST_PREFIX"
               value: broadcast_scm_$(REDIS_DB)_
+            - name: "C2C_PROMETHEUS_PORT"
+              value: "9190"
             - name: "C2C_REDIS_TIMEOUT"
               value: "30"
             - name: "C2C_SECRET"
@@ -1032,6 +1040,9 @@ spec:
           ports:
             - name: http
               containerPort: 8080
+              protocol: TCP
+            - name: prometheus
+              containerPort: 9110
               protocol: TCP
           readinessProbe:
             httpGet:
@@ -1098,6 +1109,8 @@ spec:
           env:
             - name: "C2C_BROADCAST_PREFIX"
               value: broadcast_scm_$(REDIS_DB)_
+            - name: "C2C_PROMETHEUS_PORT"
+              value: "9190"
             - name: "C2C_REDIS_TIMEOUT"
               value: "30"
             - name: "C2C_SECRET"
@@ -1147,6 +1160,10 @@ spec:
             - name: masterconfig
               readOnly: true
               mountPath: /etc/shared_config_manager
+          ports:
+            - name: prometheus
+              containerPort: 9110
+              protocol: TCP
         - name: tilecloudchain
           securityContext:
             runAsNonRoot: true
@@ -1154,6 +1171,8 @@ spec:
           image: "camptocamp/tilecloud-chain:master"
           imagePullPolicy: IfNotPresent
           env:
+            - name: "C2C_PROMETHEUS_PORT"
+              value: "9190"
             - name: "C2C_SECRET"
               value: secret
             - name: "REDIS_DB"
@@ -1189,6 +1208,9 @@ spec:
           ports:
             - name: http
               containerPort: 8080
+              protocol: TCP
+            - name: prometheus
+              containerPort: 9110
               protocol: TCP
       volumes:
         - name: configs
@@ -1249,6 +1271,8 @@ spec:
           env:
             - name: "C2C_BROADCAST_PREFIX"
               value: broadcast_scm_$(REDIS_DB)_
+            - name: "C2C_PROMETHEUS_PORT"
+              value: "9190"
             - name: "C2C_REDIS_TIMEOUT"
               value: "30"
             - name: "C2C_SECRET"
@@ -1298,6 +1322,10 @@ spec:
             - name: masterconfig
               readOnly: true
               mountPath: /etc/shared_config_manager
+          ports:
+            - name: prometheus
+              containerPort: 9110
+              protocol: TCP
         - name: tilecloudchain
           securityContext:
             runAsNonRoot: true
@@ -1305,6 +1333,8 @@ spec:
           image: "camptocamp/tilecloud-chain:master"
           imagePullPolicy: IfNotPresent
           env:
+            - name: "C2C_PROMETHEUS_PORT"
+              value: "9190"
             - name: "C2C_SECRET"
               value: secret
             - name: "REDIS_DB"
@@ -1339,8 +1369,8 @@ spec:
             - mountPath: /tmp
               name: tmp-volume
           ports:
-            - name: http
-              containerPort: 8080
+            - name: prometheus
+              containerPort: 9110
               protocol: TCP
       volumes:
         - name: configs
@@ -1400,6 +1430,31 @@ spec:
 apiVersion: monitoring.coreos.com/v1
 kind: PodMonitor
 metadata:
+  name: test-mutualize-print-config
+  labels:
+    helm.sh/chart: mutualize
+    app.kubernetes.io/version: "1.0"
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: mutualize
+    app.kubernetes.io/instance: test
+    app.kubernetes.io/component: print
+  annotations:
+    reloader.stakater.com/auto: "true"
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: mutualize
+      app.kubernetes.io/instance: test
+      app.kubernetes.io/component: print
+  podMetricsEndpoints:
+    - honorLabels: true
+      interval: 10s
+      port: prometheus-conf
+---
+# Source: mutualize/templates/print-podmonitor.yaml
+apiVersion: monitoring.coreos.com/v1
+kind: PodMonitor
+metadata:
   name: test-mutualize-print
   labels:
     helm.sh/chart: mutualize
@@ -1416,6 +1471,121 @@ spec:
       app.kubernetes.io/name: mutualize
       app.kubernetes.io/instance: test
       app.kubernetes.io/component: print
+  podMetricsEndpoints:
+    - honorLabels: true
+      interval: 10s
+      port: prometheus
+---
+# Source: mutualize/templates/shared-config-podmonitor.yaml
+apiVersion: monitoring.coreos.com/v1
+kind: PodMonitor
+metadata:
+  name: test-mutualize-config
+  labels:
+    helm.sh/chart: mutualize
+    app.kubernetes.io/version: "1.0"
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: mutualize
+    app.kubernetes.io/instance: test
+    app.kubernetes.io/component: config
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: mutualize
+      app.kubernetes.io/instance: test
+      app.kubernetes.io/component: config
+  podMetricsEndpoints:
+    - honorLabels: true
+      interval: 10s
+      port: prometheus
+---
+# Source: mutualize/templates/tilecloudchain-podmonitor.yaml
+apiVersion: monitoring.coreos.com/v1
+kind: PodMonitor
+metadata:
+  name: test-mutualize-tcc-config
+  labels:
+    helm.sh/chart: mutualize
+    app.kubernetes.io/version: "1.0"
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: mutualize
+    app.kubernetes.io/instance: test
+    app.kubernetes.io/component: tcc
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: mutualize
+      app.kubernetes.io/instance: test
+      app.kubernetes.io/component: tcc
+  podMetricsEndpoints:
+    - honorLabels: true
+      interval: 10s
+      port: prometheus-conf
+---
+# Source: mutualize/templates/tilecloudchain-podmonitor.yaml
+apiVersion: monitoring.coreos.com/v1
+kind: PodMonitor
+metadata:
+  name: test-mutualize-tcc
+  labels:
+    helm.sh/chart: mutualize
+    app.kubernetes.io/version: "1.0"
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: mutualize
+    app.kubernetes.io/instance: test
+    app.kubernetes.io/component: tcc
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: mutualize
+      app.kubernetes.io/instance: test
+      app.kubernetes.io/component: tcc
+  podMetricsEndpoints:
+    - honorLabels: true
+      interval: 10s
+      port: prometheus
+---
+# Source: mutualize/templates/tilecloudchain-podmonitor.yaml
+apiVersion: monitoring.coreos.com/v1
+kind: PodMonitor
+metadata:
+  name: test-mutualize-tcc-slave-config
+  labels:
+    helm.sh/chart: mutualize
+    app.kubernetes.io/version: "1.0"
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: mutualize
+    app.kubernetes.io/instance: test
+    app.kubernetes.io/component: tcc-slave
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: mutualize
+      app.kubernetes.io/instance: test
+      app.kubernetes.io/component: tcc-slave
+  podMetricsEndpoints:
+    - honorLabels: true
+      interval: 10s
+      port: prometheus-conf
+---
+# Source: mutualize/templates/tilecloudchain-podmonitor.yaml
+apiVersion: monitoring.coreos.com/v1
+kind: PodMonitor
+metadata:
+  name: test-mutualize-tcc-slave
+  labels:
+    helm.sh/chart: mutualize
+    app.kubernetes.io/version: "1.0"
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: mutualize
+    app.kubernetes.io/instance: test
+    app.kubernetes.io/component: tcc-slave
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: mutualize
+      app.kubernetes.io/instance: test
+      app.kubernetes.io/component: tcc-slave
   podMetricsEndpoints:
     - honorLabels: true
       interval: 10s

@@ -21,6 +21,11 @@ spec:
             - name: http
               containerPort: 8080
               protocol: TCP
+{{- if .Values.prometheus.enabled }}
+            - name: prometheus
+              containerPort: 9110
+              protocol: TCP
+{{- end }}
           readinessProbe:
             httpGet:
               path: {{ .Values.config.path }}c2c/health_check

@@ -806,6 +806,10 @@ spec:
           livenessProbe:
             <<: *configProbe
             periodSeconds: 120
+          ports:
+            - name: prometheus-conf
+              containerPort: 9110
+              protocol: TCP
         - name: print
           securityContext:
             runAsNonRoot: true
@@ -1028,6 +1032,9 @@ spec:
             - name: http
               containerPort: 8080
               protocol: TCP
+            - name: prometheus
+              containerPort: 9110
+              protocol: TCP
           readinessProbe:
             httpGet:
               path: /c2c/health_check
@@ -1145,6 +1152,10 @@ spec:
             - name: masterconfig
               readOnly: true
               mountPath: /etc/shared_config_manager
+          ports:
+            - name: prometheus
+              containerPort: 9110
+              protocol: TCP
         - name: tilecloudchain
           securityContext:
             runAsNonRoot: true
@@ -1179,6 +1190,9 @@ spec:
           ports:
             - name: http
               containerPort: 8080
+              protocol: TCP
+            - name: prometheus
+              containerPort: 9110
               protocol: TCP
           readinessProbe:
             httpGet:
@@ -1305,6 +1319,10 @@ spec:
             - name: masterconfig
               readOnly: true
               mountPath: /etc/shared_config_manager
+          ports:
+            - name: prometheus
+              containerPort: 9110
+              protocol: TCP
         - name: tilecloudchain
           securityContext:
             runAsNonRoot: true
@@ -1338,8 +1356,8 @@ spec:
             - mountPath: /tmp
               name: tmp-volume
           ports:
-            - name: http
-              containerPort: 8080
+            - name: prometheus
+              containerPort: 9110
               protocol: TCP
       volumes:
         - name: configs
@@ -1488,6 +1506,29 @@ spec:
 apiVersion: monitoring.coreos.com/v1
 kind: PodMonitor
 metadata:
+  name: test-mutualize-print-config
+  labels:
+    helm.sh/chart: mutualize
+    app.kubernetes.io/version: "1.0"
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: mutualize
+    app.kubernetes.io/instance: test
+    app.kubernetes.io/component: print
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: mutualize
+      app.kubernetes.io/instance: test
+      app.kubernetes.io/component: print
+  podMetricsEndpoints:
+    - honorLabels: true
+      interval: 10s
+      port: prometheus-conf
+---
+# Source: mutualize/templates/print-podmonitor.yaml
+apiVersion: monitoring.coreos.com/v1
+kind: PodMonitor
+metadata:
   name: test-mutualize-print
   labels:
     helm.sh/chart: mutualize
@@ -1502,6 +1543,121 @@ spec:
       app.kubernetes.io/name: mutualize
       app.kubernetes.io/instance: test
       app.kubernetes.io/component: print
+  podMetricsEndpoints:
+    - honorLabels: true
+      interval: 10s
+      port: prometheus
+---
+# Source: mutualize/templates/shared-config-podmonitor.yaml
+apiVersion: monitoring.coreos.com/v1
+kind: PodMonitor
+metadata:
+  name: test-mutualize-config
+  labels:
+    helm.sh/chart: mutualize
+    app.kubernetes.io/version: "1.0"
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: mutualize
+    app.kubernetes.io/instance: test
+    app.kubernetes.io/component: config
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: mutualize
+      app.kubernetes.io/instance: test
+      app.kubernetes.io/component: config
+  podMetricsEndpoints:
+    - honorLabels: true
+      interval: 10s
+      port: prometheus
+---
+# Source: mutualize/templates/tilecloudchain-podmonitor.yaml
+apiVersion: monitoring.coreos.com/v1
+kind: PodMonitor
+metadata:
+  name: test-mutualize-tcc-config
+  labels:
+    helm.sh/chart: mutualize
+    app.kubernetes.io/version: "1.0"
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: mutualize
+    app.kubernetes.io/instance: test
+    app.kubernetes.io/component: tcc
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: mutualize
+      app.kubernetes.io/instance: test
+      app.kubernetes.io/component: tcc
+  podMetricsEndpoints:
+    - honorLabels: true
+      interval: 10s
+      port: prometheus-conf
+---
+# Source: mutualize/templates/tilecloudchain-podmonitor.yaml
+apiVersion: monitoring.coreos.com/v1
+kind: PodMonitor
+metadata:
+  name: test-mutualize-tcc
+  labels:
+    helm.sh/chart: mutualize
+    app.kubernetes.io/version: "1.0"
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: mutualize
+    app.kubernetes.io/instance: test
+    app.kubernetes.io/component: tcc
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: mutualize
+      app.kubernetes.io/instance: test
+      app.kubernetes.io/component: tcc
+  podMetricsEndpoints:
+    - honorLabels: true
+      interval: 10s
+      port: prometheus
+---
+# Source: mutualize/templates/tilecloudchain-podmonitor.yaml
+apiVersion: monitoring.coreos.com/v1
+kind: PodMonitor
+metadata:
+  name: test-mutualize-tcc-slave-config
+  labels:
+    helm.sh/chart: mutualize
+    app.kubernetes.io/version: "1.0"
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: mutualize
+    app.kubernetes.io/instance: test
+    app.kubernetes.io/component: tcc-slave
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: mutualize
+      app.kubernetes.io/instance: test
+      app.kubernetes.io/component: tcc-slave
+  podMetricsEndpoints:
+    - honorLabels: true
+      interval: 10s
+      port: prometheus-conf
+---
+# Source: mutualize/templates/tilecloudchain-podmonitor.yaml
+apiVersion: monitoring.coreos.com/v1
+kind: PodMonitor
+metadata:
+  name: test-mutualize-tcc-slave
+  labels:
+    helm.sh/chart: mutualize
+    app.kubernetes.io/version: "1.0"
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: mutualize
+    app.kubernetes.io/instance: test
+    app.kubernetes.io/component: tcc-slave
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: mutualize
+      app.kubernetes.io/instance: test
+      app.kubernetes.io/component: tcc-slave
   podMetricsEndpoints:
     - honorLabels: true
       interval: 10s

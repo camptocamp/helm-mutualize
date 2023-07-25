@@ -35,6 +35,12 @@ spec:
             - name: masterconfig
               readOnly: true
               mountPath: /etc/shared_config_manager
+{{- if .Values.prometheus.enabled }}
+          ports:
+            - name: prometheus
+              containerPort: 9110
+              protocol: TCP
+{{- end }}
         - name: tilecloudchain
           {{- include "common.containerConfig" ( dict "root" . "container" .Values.tilecloudchain ) | nindent 10 }}
           volumeMounts:
@@ -50,6 +56,11 @@ spec:
             - name: http
               containerPort: 8080
               protocol: TCP
+{{- if .Values.prometheus.enabled }}
+            - name: prometheus
+              containerPort: 9110
+              protocol: TCP
+{{- end }}
           {{- with .Values.tilecloudchain.probes }}
           readinessProbe:
             {{- toYaml . | nindent 12 }}

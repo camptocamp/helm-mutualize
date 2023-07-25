@@ -55,6 +55,12 @@ spec:
           livenessProbe:
             <<: *configProbe
             periodSeconds: 120
+{{- if .Values.prometheus.enabled }}
+          ports:
+            - name: prometheus-conf
+              containerPort: 9110
+              protocol: TCP
+{{- end }}
         - name: print
           {{- include "common.containerConfig" ( dict "root" . "container" .Values.print ) | nindent 10 }}
           {{- with .Values.print.command }}
@@ -82,9 +88,11 @@ spec:
             - name: http
               containerPort: 8080
               protocol: TCP
+{{- if .Values.prometheus.enabled }}
             - name: prometheus
               containerPort: 9110
               protocol: TCP
+{{- end }}
           readinessProbe:
             httpGet:
               path: /print/metrics/ping?health_check=true
