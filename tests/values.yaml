@@ -25,6 +25,8 @@ config-env-base: &config-env-base
     value: '0'
   SCM_SECRET:
     value: secret
+  C2C_PROMETHEUS_PORT:
+    value: '9190'
 
 home:
   requests:
@@ -134,6 +136,8 @@ tilecloudchain: &tilecloudchain
       value: secret
     TILECLOUD_CHAIN_SESSION_SALT:
       value: secret
+    C2C_PROMETHEUS_PORT:
+      value: '9190'
 
   probes:
 

@@ -35,6 +35,12 @@ spec:
             - name: masterconfig
               readOnly: true
               mountPath: /etc/shared_config_manager
+{{- if .Values.prometheus.enabled }}
+          ports:
+            - name: prometheus
+              containerPort: 9110
+              protocol: TCP
+{{- end }}
         - name: tilecloudchain
           {{- include "common.containerConfig" ( dict "root" . "container" .Values.tilecloudchainSlave ) | nindent 10 }}
           args: ["generate-tiles", "--role=slave", "--daemon"]
@@ -47,10 +53,12 @@ spec:
               mountPath: /etc/tilecloudchain-main
             - mountPath: /tmp
               name: tmp-volume
+{{- if .Values.prometheus.enabled }}
           ports:
-            - name: http
-              containerPort: 8080
+            - name: prometheus
+              containerPort: 9110
               protocol: TCP
+{{- end }}
       volumes:
         - name: configs
           emptyDir: {}

@@ -4,6 +4,19 @@
 apiVersion: monitoring.coreos.com/v1
 kind: PodMonitor
 metadata:
+  name: {{ include "common.fullname" ( dict "root" . "service" .Values.print ) }}-config
+  {{- include "common.metadata" ( dict "root" . "service" .Values.print ) | nindent 2 }}
+spec:
+  selector:
+    matchLabels: {{- include "common.selectorLabels" ( dict "root" $ "service" $.Values.print ) | nindent 6 }}
+  podMetricsEndpoints:
+    - honorLabels: true
+      interval: 10s
+      port: prometheus-conf
+---
+apiVersion: monitoring.coreos.com/v1
+kind: PodMonitor
+metadata:
   name: {{ include "common.fullname" ( dict "root" . "service" .Values.print ) }}
   {{- include "common.metadata" ( dict "root" . "service" .Values.print ) | nindent 2 }}
 spec:
