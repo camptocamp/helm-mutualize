@@ -808,7 +808,7 @@ spec:
             periodSeconds: 120
           ports:
             - name: prometheus-conf
-              containerPort: 9110
+              containerPort: 9111
               protocol: TCP
         - name: print
           securityContext:
@@ -1154,7 +1154,7 @@ spec:
               mountPath: /etc/shared_config_manager
           ports:
             - name: prometheus-conf
-              containerPort: 9110
+              containerPort: 9111
               protocol: TCP
         - name: tilecloudchain
           securityContext:
@@ -1321,7 +1321,7 @@ spec:
               mountPath: /etc/shared_config_manager
           ports:
             - name: prometheus-conf
-              containerPort: 9110
+              containerPort: 9111
               protocol: TCP
         - name: tilecloudchain
           securityContext:
