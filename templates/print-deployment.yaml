@@ -58,7 +58,7 @@ spec:
 {{- if .Values.prometheus.enabled }}
           ports:
             - name: prometheus-conf
-              containerPort: 9110
+              containerPort: 9111
               protocol: TCP
 {{- end }}
         - name: print
