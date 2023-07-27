@@ -37,7 +37,7 @@ spec:
               mountPath: /etc/shared_config_manager
 {{- if .Values.prometheus.enabled }}
           ports:
-            - name: prometheus
+            - name: prometheus-conf
               containerPort: 9110
               protocol: TCP
 {{- end }}

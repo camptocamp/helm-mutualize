@@ -1161,7 +1161,7 @@ spec:
               readOnly: true
               mountPath: /etc/shared_config_manager
           ports:
-            - name: prometheus
+            - name: prometheus-conf
               containerPort: 9110
               protocol: TCP
         - name: tilecloudchain
@@ -1323,7 +1323,7 @@ spec:
               readOnly: true
               mountPath: /etc/shared_config_manager
           ports:
-            - name: prometheus
+            - name: prometheus-conf
               containerPort: 9110
               protocol: TCP
         - name: tilecloudchain
