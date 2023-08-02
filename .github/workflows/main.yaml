@@ -53,46 +53,16 @@ jobs:
       - run: helm lint .
       - run: helm template test .
 
-      - name: Setup k3s/k3d
-        run: c2cciutils-k8s-install
+      - name: Acceptance tests
+        run: make acceptance
 
-      - name: Create the database
-        run: c2cciutils-k8s-db
-
-      # Install operator
-      - id: scm-operator
-        run: ci/get-version camptocamp/operator-shared-config-manager
-      - run: helm repo add operator-shared-config-manager https://camptocamp.github.io/operator-shared-config-manager
-      - run:
-          helm install operator-shared-config-manager --set=image.tag=${VERSION} --set=crd.suffix=int --set=crd.shortSuffix=i
-          --set=env.ENVIRONMENT=int --version=${VERSION} operator-shared-config-manager/operator-shared-config-manager
-        env:
-          VERSION: ${{steps.scm-operator.outputs.version}}
-
-      # Install Redis
-      - run: helm repo add bitnami https://charts.bitnami.com/bitnami
-      - run:
-          helm install test-redis --set=auth.enabled=false --set=replica.replicaCount=0 --set=master.persistence.enabled=false
-          --version=17.14.2 bitnami/redis
-
-      - name: Install prometheus CRD
-        run: |
-          curl https://raw.githubusercontent.com/prometheus-operator/prometheus-operator/main/jsonnet/prometheus-operator/podmonitors-crd.json --output /tmp/podmonitors-crd.json
-          kubectl apply -f /tmp/podmonitors-crd.json
-
-      - run: kubectl apply -f tests/expected.yaml
-      - run: kubectl wait --for=condition=Available=True --timeout=1m deployment operator-shared-config-manager
-      - run: kubectl wait --for=condition=Available=True --timeout=3m deployment test-mutualize-config
-      - run: kubectl wait --for=condition=Available=True --timeout=1m deployment test-mutualize-home
-      - run: kubectl wait --for=condition=Available=True --timeout=1m deployment test-mutualize-logs
       - run: c2cciutils-k8s-logs
         if: always()
-      - run: kubectl delete -f tests/expected.yaml || true
 
       # Just test that we can apply it
       - run: kubectl apply -f tests/alt-expected.yaml
 
-      - run: helm uninstall test-redis
+      - run: make acceptance-clean
 
       - name: Publish
         run: c2cciutils-publish
