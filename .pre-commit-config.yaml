@@ -6,6 +6,7 @@ ci:
     - ripsecrets
     - helm-template-gen
 
+    - jsonschema-validator
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v4.4.0
@@ -122,3 +123,8 @@ repos:
     hooks:
       - id: black
         exclude: .*\.yaml
+  - repo: https://github.com/sbrunner/jsonschema-validator
+    rev: 0.1.0
+    hooks:
+      - id: jsonschema-validator
+        files: ^ci/config\.yaml$
