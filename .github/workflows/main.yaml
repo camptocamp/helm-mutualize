@@ -84,7 +84,7 @@ jobs:
 
       - run: kubectl apply -f tests/expected.yaml
       - run: kubectl wait --for=condition=Available=True --timeout=1m deployment operator-shared-config-manager
-      - run: kubectl wait --for=condition=Available=True --timeout=2m deployment test-mutualize-config
+      - run: kubectl wait --for=condition=Available=True --timeout=3m deployment test-mutualize-config
       - run: kubectl wait --for=condition=Available=True --timeout=1m deployment test-mutualize-home
       - run: kubectl wait --for=condition=Available=True --timeout=1m deployment test-mutualize-logs
       - run: c2cciutils-k8s-logs
