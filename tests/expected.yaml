@@ -826,7 +826,7 @@ spec:
             - name: "C2C_BROADCAST_PREFIX"
               value: broadcast_scm_$(REDIS_DB)_
             - name: "C2C_PROMETHEUS_PORT"
-              value: "9190"
+              value: "9111"
             - name: "C2C_REDIS_TIMEOUT"
               value: "30"
             - name: "C2C_SECRET"
@@ -1001,7 +1001,7 @@ spec:
             - name: "C2C_BROADCAST_PREFIX"
               value: broadcast_scm_$(REDIS_DB)_
             - name: "C2C_PROMETHEUS_PORT"
-              value: "9190"
+              value: "9110"
             - name: "C2C_REDIS_TIMEOUT"
               value: "30"
             - name: "C2C_SECRET"
@@ -1110,7 +1110,7 @@ spec:
             - name: "C2C_BROADCAST_PREFIX"
               value: broadcast_scm_$(REDIS_DB)_
             - name: "C2C_PROMETHEUS_PORT"
-              value: "9190"
+              value: "9111"
             - name: "C2C_REDIS_TIMEOUT"
               value: "30"
             - name: "C2C_SECRET"
@@ -1172,7 +1172,7 @@ spec:
           imagePullPolicy: IfNotPresent
           env:
             - name: "C2C_PROMETHEUS_PORT"
-              value: "9190"
+              value: "9110"
             - name: "C2C_SECRET"
               value: secret
             - name: "REDIS_DB"
@@ -1272,7 +1272,7 @@ spec:
             - name: "C2C_BROADCAST_PREFIX"
               value: broadcast_scm_$(REDIS_DB)_
             - name: "C2C_PROMETHEUS_PORT"
-              value: "9190"
+              value: "9111"
             - name: "C2C_REDIS_TIMEOUT"
               value: "30"
             - name: "C2C_SECRET"
@@ -1334,7 +1334,7 @@ spec:
           imagePullPolicy: IfNotPresent
           env:
             - name: "C2C_PROMETHEUS_PORT"
-              value: "9190"
+              value: "9110"
             - name: "C2C_SECRET"
               value: secret
             - name: "REDIS_DB"
