@@ -823,8 +823,6 @@ spec:
           image: "camptocamp/shared_config_manager:master"
           imagePullPolicy: IfNotPresent
           env:
-            - name: "C2C_BROADCAST_PREFIX"
-              value: broadcast_scm_$(REDIS_DB)_
             - name: "C2C_PROMETHEUS_PORT"
               value: "9111"
             - name: "C2C_REDIS_TIMEOUT"
@@ -854,6 +852,8 @@ spec:
               value: /config
             - name: "API_BASE_URL"
               value: http://$(CONFIG_SERVICE_NAME):8080/
+            - name: "C2C_BROADCAST_PREFIX"
+              value: broadcast_scm_$(REDIS_DB)_
             - name: "C2C_REDIS_URL"
               value: redis://test-redis-master/$(REDIS_DB)
           terminationMessagePolicy: FallbackToLogsOnError
@@ -998,8 +998,6 @@ spec:
           image: "camptocamp/shared_config_manager:master"
           imagePullPolicy: IfNotPresent
           env:
-            - name: "C2C_BROADCAST_PREFIX"
-              value: broadcast_scm_$(REDIS_DB)_
             - name: "C2C_PROMETHEUS_PORT"
               value: "9110"
             - name: "C2C_REDIS_TIMEOUT"
@@ -1032,6 +1030,8 @@ spec:
               value: secret
             - name: "API_BASE_URL"
               value: http://$(CONFIG_SERVICE_NAME):8080/
+            - name: "C2C_BROADCAST_PREFIX"
+              value: broadcast_scm_$(REDIS_DB)_
             - name: "C2C_REDIS_URL"
               value: redis://test-redis-master/$(REDIS_DB)
           terminationMessagePolicy: FallbackToLogsOnError
@@ -1107,8 +1107,6 @@ spec:
           image: "camptocamp/shared_config_manager:master"
           imagePullPolicy: IfNotPresent
           env:
-            - name: "C2C_BROADCAST_PREFIX"
-              value: broadcast_scm_$(REDIS_DB)_
             - name: "C2C_PROMETHEUS_PORT"
               value: "9111"
             - name: "C2C_REDIS_TIMEOUT"
@@ -1138,6 +1136,8 @@ spec:
               value: /config
             - name: "API_BASE_URL"
               value: http://$(CONFIG_SERVICE_NAME):8080/
+            - name: "C2C_BROADCAST_PREFIX"
+              value: broadcast_scm_$(REDIS_DB)_
             - name: "C2C_REDIS_URL"
               value: redis://test-redis-master/$(REDIS_DB)
           terminationMessagePolicy: FallbackToLogsOnError
@@ -1269,8 +1269,6 @@ spec:
           image: "camptocamp/shared_config_manager:master"
           imagePullPolicy: IfNotPresent
           env:
-            - name: "C2C_BROADCAST_PREFIX"
-              value: broadcast_scm_$(REDIS_DB)_
             - name: "C2C_PROMETHEUS_PORT"
               value: "9111"
             - name: "C2C_REDIS_TIMEOUT"
@@ -1300,6 +1298,8 @@ spec:
               value: /config
             - name: "API_BASE_URL"
               value: http://$(CONFIG_SERVICE_NAME):8080/
+            - name: "C2C_BROADCAST_PREFIX"
+              value: broadcast_scm_$(REDIS_DB)_
             - name: "C2C_REDIS_URL"
               value: redis://test-redis-master/$(REDIS_DB)
           terminationMessagePolicy: FallbackToLogsOnError

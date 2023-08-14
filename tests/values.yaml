@@ -17,6 +17,7 @@ config-env-base: &config-env-base
     order: 1
   C2C_BROADCAST_PREFIX:
     value: broadcast_scm_$(REDIS_DB)_
+    order: 1
   C2C_SECRET:
     value: secret
   C2C_REDIS_TIMEOUT:
