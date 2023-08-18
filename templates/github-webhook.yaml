@@ -1,4 +1,5 @@
 {{- range $source, $repository := $.Values.additionalWebhooks.repositories }}
+---
 apiVersion: camptocamp.com/v4
 kind: GitHubWebhook{{ $.Values.environment | title }}
 metadata:
