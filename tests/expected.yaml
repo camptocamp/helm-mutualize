@@ -1426,6 +1426,24 @@ spec:
                 port:
                   number: 80
 ---
+# Source: mutualize/templates/github-webhook.yaml
+apiVersion: camptocamp.com/v4
+kind: GitHubWebhookInt
+metadata:
+  name: test-mutualize-webhooks-test
+  labels:
+    helm.sh/chart: mutualize
+    app.kubernetes.io/version: "1.0"
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: mutualize
+    app.kubernetes.io/instance: test
+    app.kubernetes.io/component: webhooks
+spec:
+  contentType: json
+  repository: camptocamp/demo
+  secret: to be defined
+  url: https://example.com/test
+---
 # Source: mutualize/templates/print-podmonitor.yaml
 apiVersion: monitoring.coreos.com/v1
 kind: PodMonitor

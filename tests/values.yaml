@@ -209,6 +209,13 @@ additionalConfigs:
     content:
       example.com: /etc/tilecloudchain-configs/example/config.yaml
 
+additionalWebhooks:
+  serviceName: webhooks
+  base_url: https://example.com/
+  secret: to be defined
+  repositories:
+    test: camptocamp/demo
+
 securityContext:
   runAsNonRoot: true
   runAsUser: 33 # www-data
