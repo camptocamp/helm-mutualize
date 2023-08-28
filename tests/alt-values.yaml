@@ -1,6 +1,5 @@
 # Redis DB:
 # config: 1
-# print logs: 2
 # tilecloud-chain: 3
 
 global:
@@ -15,35 +14,36 @@ rbacGroups:
   - group1
   - group2
 
-config-env-base: &config-env-base
-  LOG_TYPE:
-    value: console
-  LOG_LEVEL:
-    value: DEBUG
-  MASTER_CONFIG:
-    value: |
-      type: git
-      repo: 'https://github.com/camptocamp/helm-mutualize.git'
-      branch: master
-      key: secret
-      sub_dir: tests/shared-config
-      sparse: false
-  REDIS_DB:
-    value: '1'
-  C2C_REDIS_URL:
-    value: redis://test-redis-master/$(REDIS_DB)
-    order: 1
-  C2C_BROADCAST_PREFIX:
-    value: broadcast_config_$(REDIS_DB)_
-    order: 1
-  C2C_SECRET:
-    value: secret
-  C2C_REDIS_TIMEOUT:
-    value: '30'
+common:
+  config-env-base: &config-env-base
+    LOG_TYPE:
+      value: console
+    LOG_LEVEL:
+      value: DEBUG
+    MASTER_CONFIG:
+      value: |
+        type: git
+        repo: 'https://github.com/camptocamp/helm-mutualize.git'
+        branch: master
+        key: secret
+        sub_dir: tests/shared-config
+        sparse: false
+    REDIS_DB:
+      value: '1'
+    C2C_REDIS_URL:
+      value: redis://test-redis-master/$(REDIS_DB)
+      order: 1
+    C2C_BROADCAST_PREFIX:
+      value: broadcast_config_$(REDIS_DB)_
+      order: 1
+    C2C_SECRET:
+      value: secret
+    C2C_REDIS_TIMEOUT:
+      value: '30'
 
 config:
   image: &config-image
-    tag: 3.1
+    tag: '3.1'
   env:
     <<: *config-env-base
     MASTER_CONFIG:
@@ -88,19 +88,6 @@ print:
     - bbb
     - ccc
 
-logs:
-  enabled: false
-
-  env:
-    REDIS_DB:
-      value: '2'
-    C2C_REDIS_URL:
-      value: redis://test-redis-master/$(REDIS_DB)
-      order: 1
-    C2C_BROADCAST_PREFIX:
-      value: broadcast_scm_$(REDIS_DB)_
-      order: 1
-
 tilecloudchain: &tilecloudchain
   enabled: true
   podLabels:
@@ -136,21 +123,6 @@ tilecloudchain: &tilecloudchain
       TAG_FILTER:
         value: tilecloudchain
 
-  ingress:
-    enabled: true
-    paths:
-      - /
-      - /test-tiles/
-    hosts:
-      - name: main
-        host: mutualize-tiles.local
-        tls:
-          secretName: test-tiles-tls
-      - name: prod
-        host: mutualize-tiles.prod.local
-        tls:
-          secretName: test-tiles-prod-tls
-
 tilecloudchainSlave: *tilecloudchain
 
 sharedConfig:
@@ -166,9 +138,6 @@ redirectConfig:
     test: redirectConfig
 
 redirect:
-  enabled: true
-
-dbstats:
   enabled: true
 
 securityContext:

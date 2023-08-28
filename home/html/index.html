@@ -77,9 +77,6 @@
       <div style="text">
         <a href="{{ .Values.home.serviceUrl }}/print">Print maps</a><br />
         based on <a href="http://mapfish.github.io/mapfish-print-doc/">MapFish Print</a>.<br />
-        {{- if .Values.logs.enabled }}
-        <a href="{{ .Values.home.serviceUrl }}/print/logs/">Access to the logs</a>.
-        {{- end }}
       </div>
     </div>
     {{- end }}

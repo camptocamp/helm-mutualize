@@ -15,9 +15,7 @@ data:
   CONFIG_PATH: {{.Values.config.path | quote }}
   CONFIG_IMAGE_TAG: {{ .Values.config.image.tag | quote }}
   PRINT_IMAGE_TAG: {{ .Values.print.image.tag | quote }}
-  PRINT_LOGS_IMAGE_TAG: {{ .Values.logs.image.tag | quote }}
   TILECLOUDCHAIN_IMAGE_TAG: {{ .Values.tilecloudchain.image.tag | quote }}
   CONFIG_SERVICE_NAME: {{ include "common.fullname" ( dict "root" . "service" .Values.config ) }}
   PRINT_SERVICE_NAME: {{ include "common.fullname" ( dict "root" . "service" .Values.print ) }}
-  PRINT_LOGS_SERVICE_NAME: {{ include "common.fullname" ( dict "root" . "service" .Values.logs ) }}
   TILECLOUDCHAIN_SERVICE_NAME: {{ include "common.fullname" ( dict "root" . "service" .Values.tilecloudchain ) }}

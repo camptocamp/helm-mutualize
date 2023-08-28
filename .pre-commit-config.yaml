@@ -5,9 +5,19 @@ ci:
     - helm-lock
     - ripsecrets
     - helm-template-gen
-
     - jsonschema-validator
+    - jsonschema2md
+
 repos:
+  - repo: https://github.com/sbrunner/jsonschema2md
+    rev: 0.9.0
+    hooks:
+      - id: jsonschema2md
+        files: values.schema.json
+        args:
+          - --pre-commit
+          - values.schema.json
+          - values.md
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v4.4.0
     hooks:
@@ -113,7 +123,7 @@ repos:
     hooks:
       - id: pyupgrade
         args:
-          - --py39-plus
+          - --py38-plus
   - repo: https://github.com/PyCQA/isort
     rev: 5.12.0
     hooks:

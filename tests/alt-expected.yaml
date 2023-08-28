@@ -1,4 +1,24 @@
 ---
+# Source: mutualize/templates/home-pdb.yaml
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: test-mutualize-home
+  labels:
+    helm.sh/chart: mutualize
+    app.kubernetes.io/version: "1.0"
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: mutualize
+    app.kubernetes.io/instance: test
+    app.kubernetes.io/component: home
+spec:
+  maxUnavailable: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: mutualize
+      app.kubernetes.io/instance: test
+      app.kubernetes.io/component: home
+---
 # Source: mutualize/templates/print-pdb.yaml
 apiVersion: policy/v1
 kind: PodDisruptionBudget
@@ -97,11 +117,9 @@ data:
   CONFIG_PATH: "/"
   CONFIG_IMAGE_TAG: "3.1"
   PRINT_IMAGE_TAG: "latest"
-  PRINT_LOGS_IMAGE_TAG: "latest"
   TILECLOUDCHAIN_IMAGE_TAG: "latest"
   CONFIG_SERVICE_NAME: test-mutualize-config
   PRINT_SERVICE_NAME: test-mutualize-print
-  PRINT_LOGS_SERVICE_NAME: test-mutualize-logs
   TILECLOUDCHAIN_SERVICE_NAME: test-mutualize-tcc
 ---
 # Source: mutualize/templates/home-configmap.yaml
@@ -526,30 +544,6 @@ spec:
     app.kubernetes.io/name: mutualize
     app.kubernetes.io/instance: test
     app.kubernetes.io/component: home
----
-# Source: mutualize/templates/logs-service.yaml
-apiVersion: v1
-kind: Service
-metadata:
-  name: test-mutualize-logs
-  labels:
-    helm.sh/chart: mutualize
-    app.kubernetes.io/version: "1.0"
-    app.kubernetes.io/managed-by: Helm
-    app.kubernetes.io/name: mutualize
-    app.kubernetes.io/instance: test
-    app.kubernetes.io/component: logs
-spec:
-  type: ClusterIP
-  ports:
-    - port: 80
-      targetPort: http
-      protocol: TCP
-      name: http
-  selector:
-    app.kubernetes.io/name: mutualize
-    app.kubernetes.io/instance: test
-    app.kubernetes.io/component: logs
 ---
 # Source: mutualize/templates/print-service.yaml
 apiVersion: v1
@@ -1410,13 +1404,6 @@ spec:
                 name: test-mutualize-print
                 port:
                   number: 80
-          - path: /print/logs
-            pathType: Prefix
-            backend:
-              service:
-                name: test-mutualize-logs
-                port:
-                  number: 80
           - path: /config
             pathType: Prefix
             backend:
@@ -1429,13 +1416,6 @@ spec:
             backend:
               service:
                 name: test-mutualize-print
-                port:
-                  number: 80
-          - path: /test/print/logs
-            pathType: Prefix
-            backend:
-              service:
-                name: test-mutualize-logs
                 port:
                   number: 80
           - path: /test/config
@@ -1474,13 +1454,6 @@ spec:
                 name: test-mutualize-print
                 port:
                   number: 80
-          - path: /print/logs
-            pathType: Prefix
-            backend:
-              service:
-                name: test-mutualize-logs
-                port:
-                  number: 80
           - path: /config
             pathType: Prefix
             backend:
@@ -1493,13 +1466,6 @@ spec:
             backend:
               service:
                 name: test-mutualize-print
-                port:
-                  number: 80
-          - path: /test/print/logs
-            pathType: Prefix
-            backend:
-              service:
-                name: test-mutualize-logs
                 port:
                   number: 80
           - path: /test/config

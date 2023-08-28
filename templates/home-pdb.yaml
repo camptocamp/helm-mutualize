@@ -1,4 +1,4 @@
-{{- if .Values.logs.enabled }}
+{{- if .Values.home.enabled }}
 {{- if semverCompare ">=1.21.0" ( trimPrefix "v" $.Capabilities.KubeVersion.Version ) }}
 apiVersion: policy/v1
 {{- else }}
