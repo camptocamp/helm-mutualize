@@ -5,36 +5,38 @@ global:
 
 environment: int
 
-config-env-base: &config-env-base
-  LOG_TYPE:
-    value: console
-  LOG_LEVEL:
-    value: DEBUG
-  REDIS_DB:
-    value: '1'
-  C2C_REDIS_URL:
-    value: redis://test-redis-master/$(REDIS_DB)
-    order: 1
-  C2C_BROADCAST_PREFIX:
-    value: broadcast_scm_$(REDIS_DB)_
-    order: 1
-  C2C_SECRET:
-    value: secret
-  C2C_REDIS_TIMEOUT:
-    value: '30'
-  DEVELOPMENT:
-    value: '0'
-  SCM_SECRET:
-    value: secret
-  C2C_PROMETHEUS_PORT:
-    value: '9111'
+common:
+  config-env-base: &config-env-base
+    LOG_TYPE:
+      value: console
+    LOG_LEVEL:
+      value: DEBUG
+    REDIS_DB:
+      value: '1'
+    C2C_REDIS_URL:
+      value: redis://test-redis-master/$(REDIS_DB)
+      order: 1
+    C2C_BROADCAST_PREFIX:
+      value: broadcast_scm_$(REDIS_DB)_
+      order: 1
+    C2C_SECRET:
+      value: secret
+    C2C_REDIS_TIMEOUT:
+      value: '30'
+    DEVELOPMENT:
+      value: '0'
+    SCM_SECRET:
+      value: secret
+    C2C_PROMETHEUS_PORT:
+      value: '9111'
 
 home:
-  requests:
-    memory: 12Mi
-    cpu: .01m
-  limits:
-    memory: 25Mi
+  resources:
+    requests:
+      memory: 12Mi
+      cpu: .01m
+    limits:
+      memory: 25Mi
 
 config:
   image: &config-image
@@ -62,7 +64,7 @@ config:
 print:
   enabled: true
   image:
-    tag: 3.26
+    tag: '3.26'
   annotations:
     reloader.stakater.com/auto: 'true'
   env:
@@ -83,37 +85,6 @@ print:
         order: 1
       JAVA_OPTS:
         value: -javaagent:jmx-lib/jmx_prometheus_javaagent-0.18.0.jar=9110:jmx-exporter.yaml
-
-logs:
-  image:
-    tag: latest
-
-  env:
-    SQLALCHEMY_URL:
-      value: postgresql://postgres:mySuperTestingPassword@test-pg-postgresql:5432/
-    SQLALCHEMY_SLAVE_URL:
-      value: postgresql://postgres:mySuperTestingPassword@test-pg-postgresql:5432/
-    REDIS_DB:
-      value: '2'
-    C2C_REDIS_URL:
-      value: redis://test-redis-master/$(REDIS_DB)
-      order: 1
-    C2C_BROADCAST_PREFIX:
-      value: broadcast_logs_$(REDIS_DB)_
-      order: 1
-    SOURCES_KEY:
-      value: secret
-    C2C_SECRET:
-      value: secret
-    SHARED_CONFIG_MASTER:
-      value: /master_config/master/shared_config_manager.yaml
-    ES_INDEXES:
-      value: print
-
-  config:
-    image: *config-image
-    env:
-      <<: *config-env-slave
 
 tilecloudchain: &tilecloudchain
   enabled: true

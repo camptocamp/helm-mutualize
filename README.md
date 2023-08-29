@@ -148,6 +148,10 @@ The TileCloud also need the hosts config:
   ```
 - Will create a GitHub webhook to trigger the shared config manager updates.
 
+## Schema documentation
+
+Documentation based on the schema defined in [values.md](./values.md).
+
 ## Contributing
 
 Install the pre-commit hooks:

@@ -45,6 +45,7 @@ config:
   service:
     type: ClusterIP
     port: 80
+  nodeSelector: {}
 
 home:
   enabled: true
@@ -58,12 +59,12 @@ home:
   service:
     type: ClusterIP
     port: 80
+  nodeSelector: {}
 
 print:
   enabled: true
   serviceName: print
   replicaCount: 1
-  terminationGracePeriodSeconds: 120
   image:
     repository: camptocamp/mapfish_print
     tag: latest
@@ -236,36 +237,7 @@ print:
         </servlet-mapping>
 
     </web-app>
-
-logs:
-  enabled: true
-  serviceName: logs
-  replicaCount: 1
-  image:
-    repository: camptocamp/mapfish-print-logs
-    tag: latest
-    sha:
-  env: {}
-  annotations: {}
-  podLabels: {}
-  podAnnotations: {}
-  resources: {}
-  service:
-    type: ClusterIP
-    port: 80
-  readinessProbe:
-    httpGet:
-      path: /logs/c2c/health_check
-      port: http
-    initialDelaySeconds: 15
-    periodSeconds: 30
-  livenessProbe:
-    httpGet:
-      path: /logs/c2c/health_check?max_level=0
-      port: http
-    initialDelaySeconds: 20
-    failureThreshold: 50
-    periodSeconds: 120
+  nodeSelector: {}
 
 tilecloudchainConfig:
   serviceName: tcc-hosts
@@ -306,19 +278,7 @@ tilecloudchain: &tilecloudchain
       TARGET:
         value: /config
     resources: {}
-  ingress:
-    enabled: false
-    annotations:
-      {}
-      # kubernetes.io/ingress.class: nginx
-      # kubernetes.io/tls-acme: "true"
-    paths: []
-    hosts:
-      []
-      #- name: main
-      #  host: chart-example.local
-      #  tls:
-      #    - secretName: main-tls
+  nodeSelector: {}
 
 tilecloudchainSlave:
   <<: *tilecloudchain
@@ -397,8 +357,6 @@ ingress:
     #  host: chart-example.local
     #  tls:
     #    - secretName: main-tls
-
-nodeSelector: {}
 
 tolerations: []
 

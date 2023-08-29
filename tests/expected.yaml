@@ -19,26 +19,6 @@ spec:
       app.kubernetes.io/instance: test
       app.kubernetes.io/component: home
 ---
-# Source: mutualize/templates/logs-pdb.yaml
-apiVersion: policy/v1
-kind: PodDisruptionBudget
-metadata:
-  name: test-mutualize-logs
-  labels:
-    helm.sh/chart: mutualize
-    app.kubernetes.io/version: "1.0"
-    app.kubernetes.io/managed-by: Helm
-    app.kubernetes.io/name: mutualize
-    app.kubernetes.io/instance: test
-    app.kubernetes.io/component: logs
-spec:
-  maxUnavailable: 1
-  selector:
-    matchLabels:
-      app.kubernetes.io/name: mutualize
-      app.kubernetes.io/instance: test
-      app.kubernetes.io/component: logs
----
 # Source: mutualize/templates/print-pdb.yaml
 apiVersion: policy/v1
 kind: PodDisruptionBudget
@@ -117,11 +97,9 @@ data:
   CONFIG_PATH: "/"
   CONFIG_IMAGE_TAG: "master"
   PRINT_IMAGE_TAG: "3.26"
-  PRINT_LOGS_IMAGE_TAG: "latest"
   TILECLOUDCHAIN_IMAGE_TAG: "master"
   CONFIG_SERVICE_NAME: test-mutualize-config
   PRINT_SERVICE_NAME: test-mutualize-print
-  PRINT_LOGS_SERVICE_NAME: test-mutualize-logs
   TILECLOUDCHAIN_SERVICE_NAME: test-mutualize-tcc
 ---
 # Source: mutualize/templates/home-configmap.yaml
@@ -218,7 +196,6 @@ data:
           <div style="text">
             <a href="https://example.com/print">Print maps</a><br />
             based on <a href="http://mapfish.github.io/mapfish-print-doc/">MapFish Print</a>.<br />
-            <a href="https://example.com/print/logs/">Access to the logs</a>.
           </div>
         </div>
         <div class="content">
@@ -502,30 +479,6 @@ spec:
     app.kubernetes.io/instance: test
     app.kubernetes.io/component: home
 ---
-# Source: mutualize/templates/logs-service.yaml
-apiVersion: v1
-kind: Service
-metadata:
-  name: test-mutualize-logs
-  labels:
-    helm.sh/chart: mutualize
-    app.kubernetes.io/version: "1.0"
-    app.kubernetes.io/managed-by: Helm
-    app.kubernetes.io/name: mutualize
-    app.kubernetes.io/instance: test
-    app.kubernetes.io/component: logs
-spec:
-  type: ClusterIP
-  ports:
-    - port: 80
-      targetPort: http
-      protocol: TCP
-      name: http
-  selector:
-    app.kubernetes.io/name: mutualize
-    app.kubernetes.io/instance: test
-    app.kubernetes.io/component: logs
----
 # Source: mutualize/templates/print-service.yaml
 apiVersion: v1
 kind: Service
@@ -644,7 +597,11 @@ spec:
           imagePullPolicy: IfNotPresent
           terminationMessagePolicy: FallbackToLogsOnError
           resources:
-            null
+            limits:
+              memory: 25Mi
+            requests:
+              cpu: .01m
+              memory: 12Mi
           volumeMounts:
             - name: html
               readOnly: true
@@ -677,94 +634,6 @@ spec:
             name: test-mutualize-home-config
         - name: tmp
           emptyDir: {}
----
-# Source: mutualize/templates/logs-deployment.yaml
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: test-mutualize-logs
-  labels:
-    helm.sh/chart: mutualize
-    app.kubernetes.io/version: "1.0"
-    app.kubernetes.io/managed-by: Helm
-    app.kubernetes.io/name: mutualize
-    app.kubernetes.io/instance: test
-    app.kubernetes.io/component: logs
-spec:
-  replicas: 1
-  revisionHistoryLimit: 3
-  strategy:
-    type: RollingUpdate
-  selector:
-    matchLabels:
-      app.kubernetes.io/name: mutualize
-      app.kubernetes.io/instance: test
-      app.kubernetes.io/component: logs
-  template:
-    metadata:
-      labels:
-        app.kubernetes.io/name: mutualize
-        app.kubernetes.io/instance: test
-        app.kubernetes.io/component: logs
-    spec:
-      serviceAccountName: default
-      securityContext:
-        {}
-      affinity:
-        {}
-      containers:
-        - name: logs
-          securityContext:
-            runAsNonRoot: true
-            runAsUser: 33
-          image: "camptocamp/mapfish-print-logs:latest"
-          imagePullPolicy: IfNotPresent
-          env:
-            - name: "C2C_SECRET"
-              value: secret
-            - name: "ES_INDEXES"
-              value: print
-            - name: "REDIS_DB"
-              value: "2"
-            - name: "SHARED_CONFIG_MASTER"
-              value: /master_config/master/shared_config_manager.yaml
-            - name: "SOURCES_KEY"
-              value: secret
-            - name: "SQLALCHEMY_SLAVE_URL"
-              value: postgresql://postgres:mySuperTestingPassword@test-pg-postgresql:5432/
-            - name: "SQLALCHEMY_URL"
-              value: postgresql://postgres:mySuperTestingPassword@test-pg-postgresql:5432/
-            - name: "C2C_BROADCAST_PREFIX"
-              value: broadcast_logs_$(REDIS_DB)_
-            - name: "C2C_REDIS_URL"
-              value: redis://test-redis-master/$(REDIS_DB)
-          terminationMessagePolicy: FallbackToLogsOnError
-          resources:
-            {}
-          volumeMounts:
-            - mountPath: /master_config
-              name: master-config
-          ports:
-            - name: http
-              containerPort: 8080
-              protocol: TCP
-          readinessProbe:
-            httpGet:
-              path: /logs/c2c/health_check
-              port: http
-            initialDelaySeconds: 15
-            periodSeconds: 30
-          livenessProbe:
-            failureThreshold: 50
-            httpGet:
-              path: /logs/c2c/health_check?max_level=0
-              port: http
-            initialDelaySeconds: 20
-            periodSeconds: 120
-      volumes:
-        - name: master-config
-          configMap:
-            name: test-mutualize-config
 ---
 # Source: mutualize/templates/print-deployment.yaml
 apiVersion: apps/v1
@@ -1417,13 +1286,6 @@ spec:
             backend:
               service:
                 name: test-mutualize-print
-                port:
-                  number: 80
-          - path: /print/logs
-            pathType: Prefix
-            backend:
-              service:
-                name: test-mutualize-logs
                 port:
                   number: 80
           - path: /config

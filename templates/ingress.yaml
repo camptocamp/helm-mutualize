@@ -1,7 +1,6 @@
 {{- if .Values.ingress.enabled }}
 {{- $fullName := include "common.fullname" ( dict "root" . "service" .Values ) }}
 {{- $svcPrintPort := .Values.print.service.port }}
-{{- $svcLogsPort := .Values.logs.service.port }}
 {{- $svcConfigPort := .Values.config.service.port }}
 {{- range $ingress_host := .Values.ingress.hosts }}
 ---
@@ -47,20 +46,6 @@ spec:
               {{- else }}
               serviceName: {{ $fullName }}-print
               servicePort: {{ $svcPrintPort }}
-              {{- end }}
-          - path: {{ . }}print/logs
-            {{- if semverCompare ">=1.14-0" $.Capabilities.KubeVersion.GitVersion }}
-            pathType: Prefix
-            {{- end }}
-            backend:
-              {{- if semverCompare ">=1.14-0" $.Capabilities.KubeVersion.GitVersion }}
-              service:
-                name: {{ $fullName }}-logs
-                port:
-                  number: {{ $svcLogsPort }}
-              {{- else }}
-              serviceName: {{ $fullName }}-logs
-              servicePort: {{ $svcLogsPort }}
               {{- end }}
           - path: {{ . }}config
             {{- if semverCompare ">=1.14-0" $.Capabilities.KubeVersion.GitVersion }}

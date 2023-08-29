@@ -47,7 +47,6 @@ acceptance:
 	kubectl wait --for=condition=Available=True --timeout=1m deployment operator-shared-config-manager
 	kubectl wait --for=condition=Available=True --timeout=3m deployment test-mutualize-config
 	kubectl wait --for=condition=Available=True --timeout=1m deployment test-mutualize-home
-	kubectl wait --for=condition=Available=True --timeout=1m deployment test-mutualize-logs
 
 acceptance-clean:
 	kubectl delete -f tests/expected.yaml || true
