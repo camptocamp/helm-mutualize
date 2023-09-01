@@ -128,7 +128,9 @@
           "type": ["null", "string"],
           "description": "Image sha"
         }
-      }
+      },
+      "required": ["repository"],
+      "anyOf": [{ "required": ["tag"] }, { "required": ["sha"] }]
     },
     "env": {
       "type": "object",
@@ -302,7 +304,8 @@
             "resources": {
               "$ref": "#/definitions/resources"
             }
-          }
+          },
+          "required": ["image"]
         },
         "probes": {
           "type": "object",
@@ -315,7 +318,8 @@
           "type": "object",
           "description": "The main configuration for TileCloud-chain"
         }
-      }
+      },
+      "required": ["image"]
     }
   },
   "additionalProperties": false,
@@ -418,7 +422,8 @@
           "type": "string",
           "description": "The entrypoint of the service"
         }
-      }
+      },
+      "required": ["image"]
     },
     "print": {
       "type": "object",
@@ -487,7 +492,8 @@
             "resources": {
               "$ref": "#/definitions/resources"
             }
-          }
+          },
+          "required": ["image"]
         },
         "webXml": {
           "type": "string",
@@ -542,9 +548,11 @@
               "type": "string",
               "description": "The configuration file to use by the JMX exporter"
             }
-          }
+          },
+          "required": ["image"]
         }
-      }
+      },
+      "required": ["image"]
     },
     "tilecloudchain": {
       "$ref": "#/definitions/tileCloud-chain"
@@ -613,7 +621,8 @@
           "type": "string",
           "description": "The URL of the home service"
         }
-      }
+      },
+      "required": ["image"]
     },
     "redirectConfig": {
       "nameOverride": {
@@ -699,7 +708,8 @@
           "type": "object",
           "description": "The readinessProbe and livenessProbe probes configuration"
         }
-      }
+      },
+      "required": ["image"]
     },
     "sshKey": {
       "type": "string",
