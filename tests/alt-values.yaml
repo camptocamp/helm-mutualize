@@ -14,7 +14,7 @@ rbacGroups:
   - group1
   - group2
 
-common:
+sharedAnchor:
   config-env-base: &config-env-base
     LOG_TYPE:
       value: console

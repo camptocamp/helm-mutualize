@@ -324,7 +324,6 @@
   },
   "additionalProperties": false,
   "properties": {
-    "common": {},
     "global": {
       "type": "object",
       "properties": {
@@ -335,6 +334,10 @@
           "$ref": "#/definitions/configMapNameOverride"
         }
       }
+    },
+    "common": {},
+    "sharedAnchor": {
+      "description": "Free space where we can defined anchor to be used later"
     },
     "nameOverride": {
       "$ref": "#/definitions/nameOverride"
