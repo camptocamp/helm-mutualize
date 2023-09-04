@@ -5,7 +5,7 @@ global:
 
 environment: int
 
-common:
+sharedAnchor:
   config-env-base: &config-env-base
     LOG_TYPE:
       value: console
