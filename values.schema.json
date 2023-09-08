@@ -557,6 +557,37 @@
       },
       "required": ["image"]
     },
+    "tilecloudchainInitMainConfig": {
+      "type": "object",
+      "description": "An init container for tilecloud chain used to generate the main config file",
+      "additionalProperties": true,
+      "properties": {
+        "image": {
+          "$ref": "#/definitions/image"
+        },
+        "env": {
+          "$ref": "#/definitions/env"
+        },
+        "resources": {
+          "$ref": "#/definitions/resources"
+        },
+        "command": {
+          "type": "array",
+          "description": "The command to pass to the container",
+          "items": {
+            "type": "string"
+          }
+        },
+        "arguments": {
+          "type": "array",
+          "description": "The arguments to pass to the container",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "required": ["image"]
+    },
     "tilecloudchain": {
       "$ref": "#/definitions/tileCloud-chain"
     },

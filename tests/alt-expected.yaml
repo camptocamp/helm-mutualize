@@ -1093,6 +1093,25 @@ spec:
         {}
       affinity:
         {}
+      initContainers:
+        - name: init-main-config
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: 33
+          image: "camptocamp/geomapfishdemo-config:prod-2-8"
+          imagePullPolicy: IfNotPresent
+          terminationMessagePolicy: FallbackToLogsOnError
+          resources:
+            null
+          command:
+            - cp
+            - /etc/tilecloudchain-main-original/config.yaml
+            - /etc/tilecloudchain-main/
+          volumeMounts:
+            - name: originalmainconfig
+              mountPath: /etc/tilecloudchain-main-original
+            - name: mainconfig
+              mountPath: /etc/tilecloudchain-main
       containers:
         - name: config
           securityContext:
@@ -1215,10 +1234,12 @@ spec:
           emptyDir: {}
         - name: tmp-volume
           emptyDir: {}
+        - name: mainconfig
+          emptyDir: {}
         - name: hosts
           configMap:
             name: test-mutualize-tcc-hosts
-        - name: mainconfig
+        - name: originalmainconfig
           configMap:
             name: test-mutualize-tcc-main-config
         - name: masterconfig
@@ -1260,6 +1281,25 @@ spec:
         {}
       affinity:
         {}
+      initContainers:
+        - name: init-main-config
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: 33
+          image: "camptocamp/geomapfishdemo-config:prod-2-8"
+          imagePullPolicy: IfNotPresent
+          terminationMessagePolicy: FallbackToLogsOnError
+          resources:
+            null
+          command:
+            - cp
+            - /etc/tilecloudchain-main-original/config.yaml
+            - /etc/tilecloudchain-main/
+          volumeMounts:
+            - name: originalmainconfig
+              mountPath: /etc/tilecloudchain-main-original
+            - name: mainconfig
+              mountPath: /etc/tilecloudchain-main
       containers:
         - name: config
           securityContext:
@@ -1366,10 +1406,12 @@ spec:
           emptyDir: {}
         - name: tmp-volume
           emptyDir: {}
+        - name: mainconfig
+          emptyDir: {}
         - name: hosts
           configMap:
             name: test-mutualize-tcc-hosts
-        - name: mainconfig
+        - name: originalmainconfig
           configMap:
             name: test-mutualize-tcc-main-config
         - name: masterconfig

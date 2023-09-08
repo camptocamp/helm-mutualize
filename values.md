@@ -71,6 +71,14 @@
     - **`env`**: Refer to _[#/definitions/env](#definitions/env)_.
     - **`resources`**: Refer to _[#/definitions/resources](#definitions/resources)_.
     - **`config`** _(string)_: The configuration file to use by the JMX exporter.
+- **`tilecloudchainInitMainConfig`** _(object)_: An init container for tilecloud chain used to generate the main config file. Can contain additional properties.
+  - **`image`**: Refer to _[#/definitions/image](#definitions/image)_.
+  - **`env`**: Refer to _[#/definitions/env](#definitions/env)_.
+  - **`resources`**: Refer to _[#/definitions/resources](#definitions/resources)_.
+  - **`command`** _(array)_: The command to pass to the container.
+    - **Items** _(string)_
+  - **`arguments`** _(array)_: The arguments to pass to the container.
+    - **Items** _(string)_
 - **`tilecloudchain`**: Refer to _[#/definitions/tileCloud-chain](#definitions/tileCloud-chain)_.
 - **`tilecloudchainSlave`**: Refer to _[#/definitions/tileCloud-chain](#definitions/tileCloud-chain)_.
 - **`home`** _(object)_: The home configuration (just a static page that present the services). Cannot contain additional properties.

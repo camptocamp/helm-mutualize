@@ -15,6 +15,22 @@ spec:
     metadata: {{- include "common.podMetadata" ( dict "root" . "service" .Values.tilecloudchain ) | nindent 6 }}
     spec:
       {{- include "common.podConfig" ( dict "root" . "service" .Values.tilecloudchain ) | nindent 6 }}
+      initContainers:
+        - name: init-main-config
+          {{- include "common.containerConfig" ( dict "root" . "container" .Values.tilecloudchainInitMainConfig ) | nindent 10 }}
+          {{- with .Values.tilecloudchainInitMainConfig.command }}
+          command:
+            {{- . | toYaml | nindent 12 }}
+          {{- end }}
+          {{- with .Values.tilecloudchainInitMainConfig.args }}
+          args:
+            {{- . | toYaml | nindent 12 }}
+          {{- end }}
+          volumeMounts:
+            - name: originalmainconfig
+              mountPath: /etc/tilecloudchain-main-original
+            - name: mainconfig
+              mountPath: /etc/tilecloudchain-main
       containers:
         - name: config
           {{- include "common.containerConfig" ( dict "root" . "container" .Values.tilecloudchain.config ) | nindent 10 }}
@@ -74,10 +90,12 @@ spec:
           emptyDir: {}
         - name: tmp-volume
           emptyDir: {}
+        - name: mainconfig
+          emptyDir: {}
         - name: hosts
           configMap:
             name: {{ include "common.fullname" ( dict "root" . "service" .Values.tilecloudchainConfig ) }}
-        - name: mainconfig
+        - name: originalmainconfig
           configMap:
             name: {{ include "common.fullname" ( dict "root" . "service" .Values.tilecloudchain ) }}-main-config
         - name: masterconfig
