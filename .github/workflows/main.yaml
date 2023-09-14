@@ -1,5 +1,8 @@
 name: Continuous integration
 
+permissions:
+  actions: write
+
 on:
   push:
     branches:
@@ -66,3 +69,8 @@ jobs:
 
       - name: Publish
         run: c2cciutils-publish
+
+      - run: npm install @octokit/action
+      - run: node .github/rerun-changelog.mjs
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
