@@ -243,6 +243,15 @@ tilecloudchainConfig:
   serviceName: tcc-hosts
   annotations: {}
 
+tilecloudchainInitMainConfig:
+  image:
+    repository: camptocamp/geomapfishdemo-config
+    tag: prod-2-8
+  command:
+    - cp
+    - /etc/tilecloudchain-main-original/config.yaml
+    - /etc/tilecloudchain-main/
+
 tilecloudchain: &tilecloudchain
   enabled: false
   serviceName: tcc
