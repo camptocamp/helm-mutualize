@@ -71,11 +71,7 @@ jobs:
       - name: Publish
         run: c2cciutils-publish
 
-      - name: Run changelog
-        run: >
-          curl --request POST --header "Content-Type: application/json"
-          --header 'Accept: application/vnd.github.v3+json'
-          --header "Authorization: token ${{ secrets.GOPASS_CI_GITHUB_TOKEN }}"
-          https://api.github.com/repos/camptocamp/helm-mutualize/dispatches
-          --data '{"event_type": "changelog", "client_payload": {}}'
-        if: startsWith(github.ref, 'refs/tags/')
+      - run: npm install @octokit/action
+      - run: node .github/run-changelog.mjs
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
