@@ -1,9 +1,5 @@
 name: Continuous integration
 
-permissions:
-  actions: write
-  contents: write
-
 on:
   push:
     branches:
@@ -12,6 +8,10 @@ on:
     tags:
       - '*'
   pull_request:
+
+permissions:
+  actions: write
+  contents: write
 
 env:
   HAS_SECRETS: ${{ secrets.HAS_SECRETS }}
