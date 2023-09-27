@@ -1,4 +1,4 @@
-# HELM mutualized configuration
+# HELM mutualize configuration
 
 ## Properties
 
@@ -52,7 +52,7 @@
   - **`replicaCount`**: Refer to _[#/definitions/replicaCount](#definitions/replicaCount)_.
   - **`image`**: Refer to _[#/definitions/image](#definitions/image)_.
   - **`env`**: Refer to _[#/definitions/env](#definitions/env)_.
-  - **`config`** _(object)_: the config container configuration. Can contain additional properties.
+  - **`config`** _(object)_: the configuration container configuration. Can contain additional properties.
     - **`image`**: Refer to _[#/definitions/image](#definitions/image)_.
     - **`env`**: Refer to _[#/definitions/env](#definitions/env)_.
     - **`resources`**: Refer to _[#/definitions/resources](#definitions/resources)_.
@@ -71,7 +71,7 @@
     - **`env`**: Refer to _[#/definitions/env](#definitions/env)_.
     - **`resources`**: Refer to _[#/definitions/resources](#definitions/resources)_.
     - **`config`** _(string)_: The configuration file to use by the JMX exporter.
-- **`tilecloudchainInitMainConfig`** _(object)_: An init container for tilecloud chain used to generate the main config file. Can contain additional properties.
+- **`tilecloudchainInitMainConfig`** _(object)_: An initialization container for TileCloud-chain, used to generate the main configuration file. Can contain additional properties.
   - **`image`**: Refer to _[#/definitions/image](#definitions/image)_.
   - **`env`**: Refer to _[#/definitions/env](#definitions/env)_.
   - **`resources`**: Refer to _[#/definitions/resources](#definitions/resources)_.
@@ -122,9 +122,9 @@
   - **`probes`** _(object)_: The readinessProbe and livenessProbe probes configuration.
 - **`sshKey`** _(string)_: The SSH key to use to clone the repository.
 - **`sharedConfig`**
-- **`additionalConfigs`** _(object)_: Additional configuration for the shared config manager. Can contain additional properties.
+- **`additionalConfigs`** _(object)_: Can contain additional properties.
   - **Additional Properties**
-- **`additionalWebhooks`** _(object)_: Additional webhooks used by the GitHub WegHook operator to create WehHood in the GitHub repository of the related project. Cannot contain additional properties.
+- **`additionalWebhooks`** _(object)_: Additional WebHooks used by the GitHub WebHook operator to create WebHook in the GitHub repository of the related project. Cannot contain additional properties.
   - **`nameOverride`**: Refer to _[#/definitions/nameOverride](#definitions/nameOverride)_.
   - **`fullnameOverride`**: Refer to _[#/definitions/fullnameOverride](#definitions/fullnameOverride)_.
   - **`serviceName`**: Refer to _[#/definitions/serviceName](#definitions/serviceName)_.
@@ -132,10 +132,10 @@
   - **`prefixTrunc`**: Refer to _[#/definitions/prefixTrunc](#definitions/prefixTrunc)_.
   - **`labels`**: Refer to _[#/definitions/labels](#definitions/labels)_.
   - **`annotations`**: Refer to _[#/definitions/annotations](#definitions/annotations)_.
-  - **`repositories`** _(object)_: The repositories definition to create the webhook in (<shared_config_source_name>: <github_organization>/<repository_name>). Can contain additional properties.
+  - **`repositories`** _(object)_: The repositories definition to create the WebHook in (<shared_config_source_name>: <github_organization>/<repository_name>). Can contain additional properties.
     - **Additional Properties** _(string)_
   - **`secret`** _(string)_: The secret used to create the WebHook.
-  - **`base_url`** _(string)_: The base URL of the shared config manager service.
+  - **`base_url`** _(string)_: The base URL of the shared configuration manager service.
 - **`ingress`** _(object)_: The Ingress configuration. Cannot contain additional properties.
   - **`enabled`** _(boolean)_: Enable the ingress.
   - **`annotations`**: Refer to _[#/definitions/annotations](#definitions/annotations)_.
@@ -151,10 +151,10 @@
   - **`enabled`** _(boolean)_: Enable the Prometheus configuration.
 - **`environment`** _(string)_: The the used operators environment (int or prod).
 - **`tilecloudchainConfig`**
-- **`rbac`** _(boolean)_: Generate the RBAC kubernetes objects.
+- **`rbac`** _(boolean)_: Generate the RBAC Kubernetes objects.
 - **`rbacGroups`** _(array)_: The Active directory groups to add to the RBAC configuration.
   - **Items** _(string)_
-- **`envConfigMap`** _(object)_: The annotations used in the env Config Map. Cannot contain additional properties.
+- **`envConfigMap`** _(object)_: The annotations used in the env ConfigMap. Cannot contain additional properties.
   - **`annotations`**: Refer to _[#/definitions/annotations](#definitions/annotations)_.
 
 ## Definitions
@@ -162,7 +162,7 @@
 - <a id="definitions/nameOverride"></a>**`nameOverride`** _(string)_: [helm-common] Override the name.
 - <a id="definitions/fullnameOverride"></a>**`fullnameOverride`** _(string)_: [helm-common] Override the fullname.
 - <a id="definitions/releaseTrunc"></a>**`releaseTrunc`** _(integer)_: [helm-common] The release trunk length. Default: `20`.
-- <a id="definitions/prefixTrunc"></a>**`prefixTrunc`** _(integer)_: [helm-common] The prefix trunk length (release anf chart name). Default: `40`.
+- <a id="definitions/prefixTrunc"></a>**`prefixTrunc`** _(integer)_: [helm-common] The prefix trunk length (release and chart name). Default: `40`.
 - <a id="definitions/serviceAccount"></a>**`serviceAccount`** _(object)_: [helm-common] Service account configuration.
   - **`create`** _(boolean)_: Create a service account.
   - **`name`** _(string)_: Name of the service account.
@@ -171,7 +171,7 @@
 - <a id="definitions/globalImage"></a>**`globalImage`** _(object)_: [helm-common] global image configuration.
   - **`pullPolicy`** _(string)_: Image pull policy.
   - **`pullSecrets`** _(array)_: Image pull secrets.
-- <a id="definitions/configMapNameOverride"></a>**`configMapNameOverride`** _(object)_: [helm-common] global: Used to be able to globally override the name of the config map. Can contain additional properties.
+- <a id="definitions/configMapNameOverride"></a>**`configMapNameOverride`** _(object)_: [helm-common] global: Used to be able to globally override the name of the ConfigMap. Can contain additional properties.
   - **Additional Properties** _(string)_
 - <a id="definitions/labels"></a>**`labels`** _(object)_: [helm-common] Pod labels. Can contain additional properties.
   - **Additional Properties** _(string)_
@@ -231,7 +231,7 @@
   - **`replicaCount`**: Refer to _[#/definitions/replicaCount](#definitions/replicaCount)_.
   - **`image`**: Refer to _[#/definitions/image](#definitions/image)_.
   - **`env`**: Refer to _[#/definitions/env](#definitions/env)_.
-  - **`config`** _(object)_: the config container configuration. Can contain additional properties.
+  - **`config`** _(object)_: the configuration container configuration. Can contain additional properties.
     - **`image`**: Refer to _[#/definitions/image](#definitions/image)_.
     - **`env`**: Refer to _[#/definitions/env](#definitions/env)_.
     - **`resources`**: Refer to _[#/definitions/resources](#definitions/resources)_.
