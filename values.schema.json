@@ -1,7 +1,7 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema",
   "type": "object",
-  "title": "HELM mutualized configuration",
+  "title": "HELM mutualize configuration",
   "definitions": {
     "nameOverride": {
       "type": "string",
@@ -18,7 +18,7 @@
     },
     "prefixTrunc": {
       "type": "integer",
-      "description": "[helm-common] The prefix trunk length (release anf chart name)",
+      "description": "[helm-common] The prefix trunk length (release and chart name)",
       "default": 40
     },
     "serviceAccount": {
@@ -59,7 +59,7 @@
     },
     "configMapNameOverride": {
       "type": "object",
-      "description": "[helm-common] global: Used to be able to globally override the name of the config map",
+      "description": "[helm-common] global: Used to be able to globally override the name of the ConfigMap",
       "additionalProperties": {
         "type": "string"
       }
@@ -292,7 +292,7 @@
         },
         "config": {
           "type": "object",
-          "description": "the config container configuration",
+          "description": "the configuration container configuration",
           "additionalProperties": true,
           "properties": {
             "image": {
@@ -483,7 +483,7 @@
         },
         "config": {
           "type": "object",
-          "description": "the config container configuration",
+          "description": "the configuration container configuration",
           "additionalProperties": true,
           "properties": {
             "image": {
@@ -559,7 +559,8 @@
     },
     "tilecloudchainInitMainConfig": {
       "type": "object",
-      "description": "An init container for tilecloud chain used to generate the main config file",
+      "title": "TileCloud-chain initialization container",
+      "description": "An initialization container for TileCloud-chain, used to generate the main configuration file",
       "additionalProperties": true,
       "properties": {
         "image": {
@@ -774,7 +775,7 @@
     },
     "additionalConfigs": {
       "type": "object",
-      "description": "Additional configuration for the shared config manager",
+      "title": "Additional configuration for the shared configuration manager",
       "additionalProperties": {
         "nameOverride": {
           "$ref": "#/definitions/nameOverride"
@@ -808,7 +809,7 @@
     },
     "additionalWebhooks": {
       "type": "object",
-      "description": "Additional webhooks used by the GitHub WegHook operator to create WehHood in the GitHub repository of the related project",
+      "description": "Additional WebHooks used by the GitHub WebHook operator to create WebHook in the GitHub repository of the related project",
       "additionalProperties": false,
       "properties": {
         "nameOverride": {
@@ -834,7 +835,7 @@
         },
         "repositories": {
           "type": "object",
-          "description": "The repositories definition to create the webhook in (<shared_config_source_name>: <github_organization>/<repository_name>)",
+          "description": "The repositories definition to create the WebHook in (<shared_config_source_name>: <github_organization>/<repository_name>)",
           "additionalProperties": {
             "type": "string"
           }
@@ -845,7 +846,7 @@
         },
         "base_url": {
           "type": "string",
-          "description": "The base URL of the shared config manager service"
+          "description": "The base URL of the shared configuration manager service"
         }
       }
     },
@@ -939,7 +940,7 @@
     },
     "rbac": {
       "type": "boolean",
-      "description": "Generate the RBAC kubernetes objects"
+      "description": "Generate the RBAC Kubernetes objects"
     },
     "rbacGroups": {
       "type": "array",
@@ -950,7 +951,7 @@
     },
     "envConfigMap": {
       "type": "object",
-      "description": "The annotations used in the env Config Map",
+      "description": "The annotations used in the env ConfigMap",
       "additionalProperties": false,
       "properties": {
         "annotations": {
