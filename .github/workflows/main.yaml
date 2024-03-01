@@ -52,7 +52,7 @@ jobs:
         run: c2cciutils-env
 
       - name: Install helm
-        uses: azure/setup-helm@v3
+        uses: azure/setup-helm@v4
       - run: helm dependency update .
       - run: helm lint .
       - run: helm template test .
