@@ -1,9 +1,9 @@
-{{- if .Values.tilecloudchain.enabled }}
+{{- if .Values.server.tilecloudchain.enabled }}
 apiVersion: camptocamp.com/v3
 kind: SharedConfigConfig{{ .Values.environment | title }}
 metadata:
-  name: {{ include "common.fullname" ( dict "root" . "service" .Values.tilecloudchainConfig ) }}
-  {{- include "common.metadata" ( dict "root" . "service" .Values.tilecloudchainConfig ) | nindent 2 }}
+  name: {{ include "common.fullname" ( dict "root" . "service" .Values.server.tilecloudchain ) }}
+  {{- include "common.metadata" ( dict "root" . "service" .Values.server.tilecloudchain ) | nindent 2 }}
 spec:
   matchLabels:
     mutualize-tilecloudchain-hosts: 'true'

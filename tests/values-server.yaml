@@ -1,0 +1,21 @@
+environment: int
+
+rbac: true
+rbacGroups:
+  - group1
+  - group2
+
+server:
+  enabled: true
+
+  home:
+    enabled: true
+
+  redirect:
+    enabled: true
+
+  print:
+    enabled: true
+
+  tilecloudchain:
+    enabled: true

@@ -68,10 +68,10 @@ repos:
             |^home/html/index\.html$
           )
         args:
-          - --values=tests/alt-values.yaml
+          - --values=tests/values-server.yaml
           - test
           - .
-          - tests/alt-expected.yaml
+          - tests/expected-server.yaml
   - repo: https://github.com/codespell-project/codespell
     rev: v2.3.0
     hooks:
@@ -85,6 +85,10 @@ repos:
           - prettier-plugin-sh@0.14.0 # npm
           - prettier-plugin-toml@2.0.1 # npm
           - '@prettier/plugin-xml@0.12.0' # npm
+        exclude: |-
+          (?x)^(
+            tests/expected.*\.yaml
+          )$
   - repo: https://github.com/shellcheck-py/shellcheck-py
     rev: v0.10.0.1
     hooks:

@@ -21,49 +21,6 @@
       "description": "[helm-common] The prefix trunk length (release and chart name)",
       "default": 40
     },
-    "serviceAccount": {
-      "type": "object",
-      "description": "[helm-common] Service account configuration",
-      "properties": {
-        "create": {
-          "type": "boolean",
-          "description": "Create a service account"
-        },
-        "name": {
-          "type": "string",
-          "description": "Name of the service account"
-        }
-      }
-    },
-    "podSecurityContext": {
-      "type": "object",
-      "description": "[helm-common] Pod security context"
-    },
-    "securityContext": {
-      "type": "object",
-      "description": "[helm-common] Container security context"
-    },
-    "globalImage": {
-      "type": "object",
-      "description": "[helm-common] global image configuration",
-      "properties": {
-        "pullPolicy": {
-          "type": "string",
-          "description": "Image pull policy"
-        },
-        "pullSecrets": {
-          "type": "array",
-          "description": "Image pull secrets"
-        }
-      }
-    },
-    "configMapNameOverride": {
-      "type": "object",
-      "description": "[helm-common] global: Used to be able to globally override the name of the ConfigMap",
-      "additionalProperties": {
-        "type": "string"
-      }
-    },
     "labels": {
       "type": "object",
       "description": "[helm-common] Pod labels",
@@ -78,164 +35,9 @@
         "type": "string"
       }
     },
-    "podLabels": {
-      "type": "object",
-      "description": "[helm-common] Labels used only in the Pod definition",
-      "additionalProperties": {
-        "type": "string"
-      }
-    },
-    "podAnnotations": {
-      "type": "object",
-      "description": "[helm-common] Annotations used only in the Pod definition",
-      "additionalProperties": {
-        "type": "string"
-      }
-    },
     "serviceName": {
       "type": "string",
       "description": "[helm-common] The name of the service (not Kubernetes service), this will postfix the name"
-    },
-    "affinity": {
-      "type": "object",
-      "description": "[helm-common] Pod: The used affinity"
-    },
-    "tolerations": {
-      "type": "array",
-      "description": "[helm-common] Pod: Tolerations"
-    },
-    "nodeSelector": {
-      "type": "object",
-      "description": "[helm-common] Pod: Node selector"
-    },
-    "replicaCount": {
-      "type": "integer",
-      "description": "The number of replicas"
-    },
-    "image": {
-      "type": "object",
-      "description": "[helm-common] Container: Image configuration",
-      "properties": {
-        "repository": {
-          "type": "string",
-          "description": "Image repository"
-        },
-        "tag": {
-          "type": "string",
-          "description": "Image tag, used if the sha is not defined"
-        },
-        "sha": {
-          "type": ["null", "string"],
-          "description": "Image sha"
-        }
-      },
-      "required": ["repository"],
-      "anyOf": [{ "required": ["tag"] }, { "required": ["sha"] }]
-    },
-    "env": {
-      "type": "object",
-      "description": "[helm-common] Container: Environment variables",
-      "additionalProperties": {
-        "oneOf": [
-          {
-            "type": "object",
-            "properties": {
-              "type": {
-                "type": "string",
-                "description": "Disable the environment variable",
-                "enum": ["none"]
-              }
-            },
-            "required": ["type"]
-          },
-          {
-            "type": "object",
-            "properties": {
-              "type": {
-                "type": "string",
-                "description": "Environment variable from a direct value",
-                "enum": ["value"],
-                "default": "value"
-              },
-              "order": {
-                "type": "integer",
-                "description": "Order of the environment variable",
-                "default": 0,
-                "enum": [0, 1]
-              },
-              "value": {
-                "type": "string",
-                "description": "Value of the environment variable"
-              }
-            },
-            "required": ["value"]
-          },
-          {
-            "type": "object",
-            "properties": {
-              "type": {
-                "type": "string",
-                "description": "Environment variable from a ConfigMap or a Secret",
-                "enum": ["configMap", "secret"]
-              },
-              "order": {
-                "type": "integer",
-                "description": "Order of the environment variable",
-                "default": 0,
-                "enum": [0, 1]
-              },
-              "name": {
-                "type": "string",
-                "description": "Name of the ConfigMap or Secret, if 'self', same name as the service"
-              },
-              "key": {
-                "type": "string",
-                "description": "Key of the ConfigMap or Secret"
-              }
-            },
-            "required": ["type", "name", "key"]
-          },
-          {
-            "type": "object",
-            "properties": {
-              "type": {
-                "type": "string",
-                "description": "Free valueFrom for an environment variable",
-                "enum": ["valueFrom"]
-              },
-              "order": {
-                "type": "integer",
-                "description": "Order of the environment variable",
-                "default": 0,
-                "enum": [0, 1]
-              },
-              "valueFrom": {
-                "type": "object"
-              }
-            },
-            "required": ["type", "valueFrom"]
-          }
-        ]
-      }
-    },
-    "resources": {
-      "type": "object",
-      "description": "[helm-common] Container: The container resources"
-    },
-    "service": {
-      "type": "object",
-      "description": "The service configuration",
-      "additionalProperties": false,
-      "properties": {
-        "type": {
-          "type": "string",
-          "description": "The type of service"
-        },
-        "port": {
-          "type": "integer",
-          "description": "The port of the service"
-        }
-      }
     },
     "tileCloud-chain": {
       "type": "object",
@@ -265,76 +67,12 @@
         },
         "annotations": {
           "$ref": "#/definitions/annotations"
-        },
-        "podLabels": {
-          "$ref": "#/definitions/podLabels"
-        },
-        "podAnnotations": {
-          "$ref": "#/definitions/podAnnotations"
-        },
-        "resources": {
-          "$ref": "#/definitions/resources"
-        },
-        "affinity": {
-          "$ref": "#/definitions/affinity"
-        },
-        "nodeSelector": {
-          "$ref": "#/definitions/nodeSelector"
-        },
-        "replicaCount": {
-          "$ref": "#/definitions/replicaCount"
-        },
-        "image": {
-          "$ref": "#/definitions/image"
-        },
-        "env": {
-          "$ref": "#/definitions/env"
-        },
-        "config": {
-          "type": "object",
-          "description": "the configuration container configuration",
-          "additionalProperties": true,
-          "properties": {
-            "image": {
-              "$ref": "#/definitions/image"
-            },
-            "env": {
-              "$ref": "#/definitions/env"
-            },
-            "resources": {
-              "$ref": "#/definitions/resources"
-            }
-          },
-          "required": ["image"]
-        },
-        "probes": {
-          "type": "object",
-          "description": "The readinessProbe and livenessProbe probes configuration"
-        },
-        "service": {
-          "$ref": "#/definitions/service"
-        },
-        "mainConfig": {
-          "type": "object",
-          "description": "The main configuration for TileCloud-chain"
         }
-      },
-      "required": ["image"]
+      }
     }
   },
   "additionalProperties": false,
   "properties": {
-    "global": {
-      "type": "object",
-      "properties": {
-        "image": {
-          "$ref": "#/definitions/globalImage"
-        },
-        "configMapNameOverride": {
-          "$ref": "#/definitions/configMapNameOverride"
-        }
-      }
-    },
     "common": {},
     "sharedAnchor": {
       "description": "Free space where we can defined anchor to be used later"
@@ -354,423 +92,167 @@
     "prefixTrunc": {
       "$ref": "#/definitions/prefixTrunc"
     },
-    "serviceAccount": {
-      "$ref": "#/definitions/serviceAccount"
-    },
-    "podSecurityContext": {
-      "$ref": "#/definitions/podSecurityContext"
-    },
-    "securityContext": {
-      "$ref": "#/definitions/securityContext"
-    },
-    "affinity": {
-      "$ref": "#/definitions/affinity"
-    },
-    "tolerations": {
-      "$ref": "#/definitions/tolerations"
-    },
-    "config": {
+    "server": {
       "type": "object",
-      "additionalProperties": false,
-      "properties": {
-        "nameOverride": {
-          "$ref": "#/definitions/nameOverride"
-        },
-        "fullnameOverride": {
-          "$ref": "#/definitions/fullnameOverride"
-        },
-        "serviceName": {
-          "$ref": "#/definitions/serviceName"
-        },
-        "releaseTrunc": {
-          "$ref": "#/definitions/releaseTrunc"
-        },
-        "prefixTrunc": {
-          "$ref": "#/definitions/prefixTrunc"
-        },
-        "labels": {
-          "$ref": "#/definitions/labels"
-        },
-        "annotations": {
-          "$ref": "#/definitions/annotations"
-        },
-        "podLabels": {
-          "$ref": "#/definitions/podLabels"
-        },
-        "podAnnotations": {
-          "$ref": "#/definitions/podAnnotations"
-        },
-        "resources": {
-          "$ref": "#/definitions/resources"
-        },
-        "affinity": {
-          "$ref": "#/definitions/affinity"
-        },
-        "nodeSelector": {
-          "$ref": "#/definitions/nodeSelector"
-        },
-        "replicaCount": {
-          "$ref": "#/definitions/replicaCount"
-        },
-        "image": {
-          "$ref": "#/definitions/image"
-        },
-        "env": {
-          "$ref": "#/definitions/env"
-        },
-        "service": {
-          "$ref": "#/definitions/service"
-        },
-        "path": {
-          "type": "string",
-          "description": "The entrypoint of the service"
-        }
-      },
-      "required": ["image"]
-    },
-    "print": {
-      "type": "object",
+      "description": "The server configuration",
       "additionalProperties": false,
       "properties": {
         "enabled": {
           "type": "boolean",
-          "description": "Enable the pod configuration"
-        },
-        "nameOverride": {
-          "$ref": "#/definitions/nameOverride"
-        },
-        "fullnameOverride": {
-          "$ref": "#/definitions/fullnameOverride"
-        },
-        "serviceName": {
-          "$ref": "#/definitions/serviceName"
-        },
-        "releaseTrunc": {
-          "$ref": "#/definitions/releaseTrunc"
-        },
-        "prefixTrunc": {
-          "$ref": "#/definitions/prefixTrunc"
-        },
-        "labels": {
-          "$ref": "#/definitions/labels"
-        },
-        "annotations": {
-          "$ref": "#/definitions/annotations"
-        },
-        "podLabels": {
-          "$ref": "#/definitions/podLabels"
-        },
-        "podAnnotations": {
-          "$ref": "#/definitions/podAnnotations"
-        },
-        "resources": {
-          "$ref": "#/definitions/resources"
-        },
-        "affinity": {
-          "$ref": "#/definitions/affinity"
-        },
-        "nodeSelector": {
-          "$ref": "#/definitions/nodeSelector"
-        },
-        "replicaCount": {
-          "$ref": "#/definitions/replicaCount"
-        },
-        "image": {
-          "$ref": "#/definitions/image"
-        },
-        "env": {
-          "$ref": "#/definitions/env"
+          "description": "Enable the server part"
         },
         "config": {
           "type": "object",
-          "description": "the configuration container configuration",
-          "additionalProperties": true,
-          "properties": {
-            "image": {
-              "$ref": "#/definitions/image"
-            },
-            "env": {
-              "$ref": "#/definitions/env"
-            },
-            "resources": {
-              "$ref": "#/definitions/resources"
-            }
-          },
-          "required": ["image"]
-        },
-        "webXml": {
-          "type": "string",
-          "description": "The web.xml file to use"
-        },
-        "command": {
-          "type": "array",
-          "description": "The command to pass to the container",
-          "items": {
-            "type": "string"
-          }
-        },
-        "args": {
-          "type": "array",
-          "description": "The arguments to pass to the container",
-          "items": {
-            "type": "string"
-          }
-        },
-        "service": {
-          "$ref": "#/definitions/service"
-        },
-        "volumes": {
-          "type": "object",
-          "description": "The volumes to mount",
-          "additionalProperties": {
-            "type": "string",
-            "description": "The path to mount"
-          }
-        },
-        "jmxExporter": {
-          "type": "object",
-          "description": "The JMX exporter configuration",
           "additionalProperties": false,
           "properties": {
+            "nameOverride": {
+              "$ref": "#/definitions/nameOverride"
+            },
+            "fullnameOverride": {
+              "$ref": "#/definitions/fullnameOverride"
+            },
+            "serviceName": {
+              "$ref": "#/definitions/serviceName"
+            },
+            "releaseTrunc": {
+              "$ref": "#/definitions/releaseTrunc"
+            },
+            "prefixTrunc": {
+              "$ref": "#/definitions/prefixTrunc"
+            },
             "labels": {
               "$ref": "#/definitions/labels"
             },
             "annotations": {
               "$ref": "#/definitions/annotations"
-            },
-            "image": {
-              "$ref": "#/definitions/image"
-            },
-            "env": {
-              "$ref": "#/definitions/env"
-            },
-            "resources": {
-              "$ref": "#/definitions/resources"
-            },
-            "config": {
-              "type": "string",
-              "description": "The configuration file to use by the JMX exporter"
             }
-          },
-          "required": ["image"]
-        }
-      },
-      "required": ["image"]
-    },
-    "tilecloudchainInitMainConfig": {
-      "type": "object",
-      "title": "TileCloud-chain initialization container",
-      "description": "An initialization container for TileCloud-chain, used to generate the main configuration file",
-      "additionalProperties": true,
-      "properties": {
-        "image": {
-          "$ref": "#/definitions/image"
-        },
-        "env": {
-          "$ref": "#/definitions/env"
-        },
-        "resources": {
-          "$ref": "#/definitions/resources"
-        },
-        "command": {
-          "type": "array",
-          "description": "The command to pass to the container",
-          "items": {
-            "type": "string"
           }
         },
-        "arguments": {
-          "type": "array",
-          "description": "The arguments to pass to the container",
-          "items": {
-            "type": "string"
-          }
-        }
-      },
-      "required": ["image"]
-    },
-    "tilecloudchain": {
-      "$ref": "#/definitions/tileCloud-chain"
-    },
-    "tilecloudchainSlave": {
-      "$ref": "#/definitions/tileCloud-chain"
-    },
-    "home": {
-      "type": "object",
-      "description": "The home configuration (just a static page that present the services)",
-      "additionalProperties": false,
-      "properties": {
-        "enabled": {
-          "type": "boolean",
-          "description": "Enable the service"
-        },
-        "nameOverride": {
-          "$ref": "#/definitions/nameOverride"
-        },
-        "fullnameOverride": {
-          "$ref": "#/definitions/fullnameOverride"
-        },
-        "serviceName": {
-          "$ref": "#/definitions/serviceName"
-        },
-        "releaseTrunc": {
-          "$ref": "#/definitions/releaseTrunc"
-        },
-        "prefixTrunc": {
-          "$ref": "#/definitions/prefixTrunc"
-        },
-        "labels": {
-          "$ref": "#/definitions/labels"
-        },
-        "annotations": {
-          "$ref": "#/definitions/annotations"
-        },
-        "podLabels": {
-          "$ref": "#/definitions/podLabels"
-        },
-        "podAnnotations": {
-          "$ref": "#/definitions/podAnnotations"
-        },
-        "resources": {
-          "$ref": "#/definitions/resources"
-        },
-        "affinity": {
-          "$ref": "#/definitions/affinity"
-        },
-        "nodeSelector": {
-          "$ref": "#/definitions/nodeSelector"
-        },
-        "replicaCount": {
-          "$ref": "#/definitions/replicaCount"
-        },
-        "image": {
-          "$ref": "#/definitions/image"
-        },
-        "env": {
-          "$ref": "#/definitions/env"
-        },
-        "service": {
-          "$ref": "#/definitions/service"
-        },
-        "serviceUrl": {
-          "type": "string",
-          "description": "The URL of the home service"
-        }
-      },
-      "required": ["image"]
-    },
-    "redirectConfig": {
-      "nameOverride": {
-        "$ref": "#/definitions/nameOverride"
-      },
-      "fullnameOverride": {
-        "$ref": "#/definitions/fullnameOverride"
-      },
-      "serviceName": {
-        "$ref": "#/definitions/serviceName"
-      },
-      "releaseTrunc": {
-        "$ref": "#/definitions/releaseTrunc"
-      },
-      "prefixTrunc": {
-        "$ref": "#/definitions/prefixTrunc"
-      },
-      "labels": {
-        "$ref": "#/definitions/labels"
-      },
-      "annotations": {
-        "$ref": "#/definitions/annotations"
-      }
-    },
-    "redirect": {
-      "type": "object",
-      "description": "The home configuration (just a static page that present the services)",
-      "additionalProperties": false,
-      "properties": {
-        "enabled": {
-          "type": "boolean",
-          "description": "Enable the service"
-        },
-        "nameOverride": {
-          "$ref": "#/definitions/nameOverride"
-        },
-        "fullnameOverride": {
-          "$ref": "#/definitions/fullnameOverride"
-        },
-        "serviceName": {
-          "$ref": "#/definitions/serviceName"
-        },
-        "releaseTrunc": {
-          "$ref": "#/definitions/releaseTrunc"
-        },
-        "prefixTrunc": {
-          "$ref": "#/definitions/prefixTrunc"
-        },
-        "labels": {
-          "$ref": "#/definitions/labels"
-        },
-        "annotations": {
-          "$ref": "#/definitions/annotations"
-        },
-        "podLabels": {
-          "$ref": "#/definitions/podLabels"
-        },
-        "podAnnotations": {
-          "$ref": "#/definitions/podAnnotations"
-        },
-        "resources": {
-          "$ref": "#/definitions/resources"
-        },
-        "affinity": {
-          "$ref": "#/definitions/affinity"
-        },
-        "nodeSelector": {
-          "$ref": "#/definitions/nodeSelector"
-        },
-        "replicaCount": {
-          "$ref": "#/definitions/replicaCount"
-        },
-        "image": {
-          "$ref": "#/definitions/image"
-        },
-        "env": {
-          "$ref": "#/definitions/env"
-        },
-        "service": {
-          "$ref": "#/definitions/service"
-        },
-        "probes": {
+        "print": {
           "type": "object",
-          "description": "The readinessProbe and livenessProbe probes configuration"
+          "additionalProperties": false,
+          "properties": {
+            "enabled": {
+              "type": "boolean",
+              "description": "Enable the pod configuration"
+            },
+            "nameOverride": {
+              "$ref": "#/definitions/nameOverride"
+            },
+            "fullnameOverride": {
+              "$ref": "#/definitions/fullnameOverride"
+            },
+            "serviceName": {
+              "$ref": "#/definitions/serviceName"
+            },
+            "releaseTrunc": {
+              "$ref": "#/definitions/releaseTrunc"
+            },
+            "prefixTrunc": {
+              "$ref": "#/definitions/prefixTrunc"
+            },
+            "labels": {
+              "$ref": "#/definitions/labels"
+            },
+            "annotations": {
+              "$ref": "#/definitions/annotations"
+            }
+          }
+        },
+        "tilecloudchain": {
+          "$ref": "#/definitions/tileCloud-chain"
+        },
+        "home": {
+          "type": "object",
+          "description": "The home configuration (just a static page that present the services)",
+          "additionalProperties": false,
+          "properties": {
+            "enabled": {
+              "type": "boolean",
+              "description": "Enable the service"
+            },
+            "nameOverride": {
+              "$ref": "#/definitions/nameOverride"
+            },
+            "fullnameOverride": {
+              "$ref": "#/definitions/fullnameOverride"
+            },
+            "serviceName": {
+              "$ref": "#/definitions/serviceName"
+            },
+            "releaseTrunc": {
+              "$ref": "#/definitions/releaseTrunc"
+            },
+            "prefixTrunc": {
+              "$ref": "#/definitions/prefixTrunc"
+            },
+            "labels": {
+              "$ref": "#/definitions/labels"
+            },
+            "annotations": {
+              "$ref": "#/definitions/annotations"
+            }
+          }
+        },
+        "redirect": {
+          "type": "object",
+          "description": "The home configuration (just a static page that present the services)",
+          "additionalProperties": false,
+          "properties": {
+            "enabled": {
+              "type": "boolean",
+              "description": "Enable the service"
+            },
+            "nameOverride": {
+              "$ref": "#/definitions/nameOverride"
+            },
+            "fullnameOverride": {
+              "$ref": "#/definitions/fullnameOverride"
+            },
+            "serviceName": {
+              "$ref": "#/definitions/serviceName"
+            },
+            "releaseTrunc": {
+              "$ref": "#/definitions/releaseTrunc"
+            },
+            "prefixTrunc": {
+              "$ref": "#/definitions/prefixTrunc"
+            },
+            "labels": {
+              "$ref": "#/definitions/labels"
+            },
+            "annotations": {
+              "$ref": "#/definitions/annotations"
+            }
+          }
+        },
+        "sshKey": {
+          "type": "string",
+          "description": "The SSH key to use to clone the repository"
+        },
+        "sharedConfig": {
+          "nameOverride": {
+            "$ref": "#/definitions/nameOverride"
+          },
+          "fullnameOverride": {
+            "$ref": "#/definitions/fullnameOverride"
+          },
+          "serviceName": {
+            "$ref": "#/definitions/serviceName"
+          },
+          "releaseTrunc": {
+            "$ref": "#/definitions/releaseTrunc"
+          },
+          "prefixTrunc": {
+            "$ref": "#/definitions/prefixTrunc"
+          },
+          "labels": {
+            "$ref": "#/definitions/labels"
+          },
+          "annotations": {
+            "$ref": "#/definitions/annotations"
+          }
         }
-      },
-      "required": ["image"]
-    },
-    "sshKey": {
-      "type": "string",
-      "description": "The SSH key to use to clone the repository"
-    },
-    "sharedConfig": {
-      "nameOverride": {
-        "$ref": "#/definitions/nameOverride"
-      },
-      "fullnameOverride": {
-        "$ref": "#/definitions/fullnameOverride"
-      },
-      "serviceName": {
-        "$ref": "#/definitions/serviceName"
-      },
-      "releaseTrunc": {
-        "$ref": "#/definitions/releaseTrunc"
-      },
-      "prefixTrunc": {
-        "$ref": "#/definitions/prefixTrunc"
-      },
-      "labels": {
-        "$ref": "#/definitions/labels"
-      },
-      "annotations": {
-        "$ref": "#/definitions/annotations"
       }
     },
     "additionalConfigs": {
@@ -850,93 +332,9 @@
         }
       }
     },
-    "ingress": {
-      "type": "object",
-      "description": "The Ingress configuration",
-      "additionalProperties": false,
-      "properties": {
-        "enabled": {
-          "type": "boolean",
-          "description": "Enable the ingress"
-        },
-        "annotations": {
-          "$ref": "#/definitions/annotations"
-        },
-        "hosts": {
-          "type": "array",
-          "description": "The hosts to use for the Ingress",
-          "items": {
-            "type": "object",
-            "additionalProperties": false,
-            "properties": {
-              "name": {
-                "type": "string",
-                "description": "The name of the host"
-              },
-              "host": {
-                "type": "string",
-                "description": "The host to use"
-              },
-              "tls": {
-                "type": "object",
-                "description": "TLS configuration for the host",
-                "additionalProperties": false,
-                "properties": {
-                  "secretName": {
-                    "type": "string",
-                    "description": "The name of the secret to use"
-                  }
-                }
-              }
-            }
-          }
-        },
-        "paths": {
-          "type": "array",
-          "description": "The path to use for the Ingress",
-          "items": {
-            "type": "string"
-          }
-        }
-      }
-    },
-    "prometheus": {
-      "type": "object",
-      "description": "The Prometheus configuration",
-      "additionalProperties": false,
-      "properties": {
-        "enabled": {
-          "type": "boolean",
-          "description": "Enable the Prometheus configuration"
-        }
-      }
-    },
     "environment": {
       "type": "string",
       "description": "The the used operators environment (int or prod)"
-    },
-    "tilecloudchainConfig": {
-      "nameOverride": {
-        "$ref": "#/definitions/nameOverride"
-      },
-      "fullnameOverride": {
-        "$ref": "#/definitions/fullnameOverride"
-      },
-      "serviceName": {
-        "$ref": "#/definitions/serviceName"
-      },
-      "releaseTrunc": {
-        "$ref": "#/definitions/releaseTrunc"
-      },
-      "prefixTrunc": {
-        "$ref": "#/definitions/prefixTrunc"
-      },
-      "labels": {
-        "$ref": "#/definitions/labels"
-      },
-      "annotations": {
-        "$ref": "#/definitions/annotations"
-      }
     },
     "rbac": {
       "type": "boolean",

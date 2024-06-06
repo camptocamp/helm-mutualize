@@ -1,10 +1,12 @@
+{{- if .Values.server.enabled }}
 apiVersion: camptocamp.com/v3
 kind: SharedConfigConfig{{ .Values.environment | title }}
 metadata:
-  name: {{ include "common.fullname" ( dict "root" . "service" .Values.sharedConfig ) }}
-  {{- include "common.metadata" ( dict "root" . "service" .Values.sharedConfig ) | nindent 2 }}
+  name: {{ include "common.fullname" ( dict "root" . "service" .Values.server.sharedConfig ) }}
+  {{- include "common.metadata" ( dict "root" . "service" .Values.server.sharedConfig ) | nindent 2 }}
 spec:
   matchLabels:
     mutualize-sharedconfig: 'true'
   property: sources
   configmapName: config.yaml
+{{- end }}

@@ -70,7 +70,8 @@ jobs:
         if: always()
 
       # Just test that we can apply it
-      - run: kubectl apply -f tests/alt-expected.yaml
+      - run: kubectl apply -f tests/expected.yaml
+      - run: kubectl apply -f tests/expected-server.yaml
 
       - run: make acceptance-clean
 
