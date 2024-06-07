@@ -252,7 +252,8 @@ metadata:
     app.kubernetes.io/component: config
 spec:
   matchLabels:
-    mutualize-sharedconfig: 'true'
+    mutualize-config: 'true'
+    mutualize-version: "2"
   property: sources
   configmapName: config.yaml
 ---

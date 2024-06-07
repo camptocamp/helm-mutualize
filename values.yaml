@@ -6,6 +6,7 @@ nameOverride: ''
 fullnameOverride: ''
 
 environment: ''
+version: '2'
 
 rbac: false
 rbacGroups: []
@@ -33,16 +34,26 @@ server:
   redirect:
     enabled: false
 
-additionalConfigs:
-  {}
-  # <config_name>:
-  #   labels: {}
-  #   content: {}
-  #   env: {} # facility to create the template engine configuration
+config:
+  printConfigs:
+    {}
+    # repo: <repository>
+    # branch: <branch>
+    # sub_dir: <sub_dir>
+    # template_engines:
+    #   - dest_sub_dir: <dest_sub_dir>
+    #     env:
+    #       <ENV>: <env_value>
 
-additionalWebhooks:
-  serviceName: webhooks
-  base_url: https://example.com/
-  secret: to be defined
-  repositories: {}
-  # source: repository
+  sharedConfigs:
+    {}
+    # <config_name>:
+    #   labels: {}
+    #   content: {}
+    #   env: {} # facility to create the template engine configuration
+
+  webhooks:
+    base_url: https://example.com/
+    secret: to be defined
+    repositories: {}
+    # source: repository

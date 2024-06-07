@@ -1,10 +1,10 @@
-{{- range $name, $value := .Values.additionalConfigs }}
+{{- range $name, $value := .Values.config.sharedConfigs }}
 ---
 apiVersion: camptocamp.com/v3
 kind: SharedConfigSource{{ $.Values.environment | title }}
 metadata:
-  name: {{ include "common.fullname" ( dict "root" $ "service" $.Values ) }}-{{ $name }}
-  labels: {{ include "common.labels" ( dict "root" $ "service" $.Values ) | nindent 4 }}
+  name: {{ include "common.fullname" ( dict "root" $ "service" $.Values "serviceName" $name ) }}
+  labels: {{ include "common.labels" ( dict "root" $ "service" $.Values "serviceName" $name ) | nindent 4 }}
   {{- range $name, $value := .labels }}
     {{ $name }}: {{ $value | quote }}
   {{- end }}
@@ -23,5 +23,44 @@ spec:
             value: {{ . | quote }}
           {{- end }}
         {{- end }}
+    {{- end }}
+{{- end }}
+{{- range $name, $value := $.Values.config.printConfigs }}
+---
+apiVersion: camptocamp.com/v3
+kind: SharedConfigSource{{ $.Values.environment | title }}
+metadata:
+  name: {{ include "common.fullname" ( dict "root" $ "service" $.Values "serviceName" $name ) }}
+  labels: {{ include "common.labels" ( dict "root" $ "service" $.Values "serviceName" $name ) | nindent 4 }}
+  {{- if eq $.Values.version "1" }}
+    mutualize-sharedconfig: 'true'
+  {{- else }}
+    mutualize-config: 'true'
+    mutualize-version: {{ $.Values.version | quote }}
+  {{- end }}
+spec:
+  name: {{ $name }}
+  content:
+    repo: {{ $value.repo }}
+    branch: {{ default "master" $value.branch }}
+    sub_dir: {{ default "" $value.sub_dir }}
+    tags:
+      - print
+    {{- if hasKey . "template_engines" }}
+    template_engines:
+    {{- range $value.template_engines }}
+      - type: shell
+        environment_variables: true
+        {{- with .dest_sub_dir }}
+        dest_sub_dir: {{ . | quote }}
+        {{- end }}
+        {{- with .env }}
+        data:
+          {{- range $name, $value := . }}
+          - name: {{ $name | quote }}
+            value: {{ . | quote }}
+          {{- end }}
+        {{- end }}
+    {{- end }}
     {{- end }}
 {{- end }}

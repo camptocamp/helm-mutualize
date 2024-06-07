@@ -28,7 +28,15 @@
     - **`prefixTrunc`**: Refer to _[#/definitions/prefixTrunc](#definitions/prefixTrunc)_.
     - **`labels`**: Refer to _[#/definitions/labels](#definitions/labels)_.
     - **`annotations`**: Refer to _[#/definitions/annotations](#definitions/annotations)_.
-  - **`tilecloudchain`**: Refer to _[#/definitions/tileCloud-chain](#definitions/tileCloud-chain)_.
+  - **`tilecloudchain`** _(object)_: Cannot contain additional properties.
+    - **`enabled`** _(boolean)_: Enable the pod configuration.
+    - **`nameOverride`**: Refer to _[#/definitions/nameOverride](#definitions/nameOverride)_.
+    - **`fullnameOverride`**: Refer to _[#/definitions/fullnameOverride](#definitions/fullnameOverride)_.
+    - **`serviceName`**: Refer to _[#/definitions/serviceName](#definitions/serviceName)_.
+    - **`releaseTrunc`**: Refer to _[#/definitions/releaseTrunc](#definitions/releaseTrunc)_.
+    - **`prefixTrunc`**: Refer to _[#/definitions/prefixTrunc](#definitions/prefixTrunc)_.
+    - **`labels`**: Refer to _[#/definitions/labels](#definitions/labels)_.
+    - **`annotations`**: Refer to _[#/definitions/annotations](#definitions/annotations)_.
   - **`home`** _(object)_: The home configuration (just a static page that present the services). Cannot contain additional properties.
     - **`enabled`** _(boolean)_: Enable the service.
     - **`nameOverride`**: Refer to _[#/definitions/nameOverride](#definitions/nameOverride)_.
@@ -49,21 +57,32 @@
     - **`annotations`**: Refer to _[#/definitions/annotations](#definitions/annotations)_.
   - **`sshKey`** _(string)_: The SSH key to use to clone the repository.
   - **`sharedConfig`**
-- **`additionalConfigs`** _(object)_: Can contain additional properties.
-  - **Additional properties**
-- **`additionalWebhooks`** _(object)_: Additional WebHooks used by the GitHub WebHook operator to create WebHook in the GitHub repository of the related project. Cannot contain additional properties.
-  - **`nameOverride`**: Refer to _[#/definitions/nameOverride](#definitions/nameOverride)_.
-  - **`fullnameOverride`**: Refer to _[#/definitions/fullnameOverride](#definitions/fullnameOverride)_.
-  - **`serviceName`**: Refer to _[#/definitions/serviceName](#definitions/serviceName)_.
-  - **`releaseTrunc`**: Refer to _[#/definitions/releaseTrunc](#definitions/releaseTrunc)_.
-  - **`prefixTrunc`**: Refer to _[#/definitions/prefixTrunc](#definitions/prefixTrunc)_.
-  - **`labels`**: Refer to _[#/definitions/labels](#definitions/labels)_.
-  - **`annotations`**: Refer to _[#/definitions/annotations](#definitions/annotations)_.
-  - **`repositories`** _(object)_: The repositories definition to create the WebHook in (<shared_config_source_name>: <github_organization>/<repository_name>). Can contain additional properties.
-    - **Additional properties** _(string)_
-  - **`secret`** _(string)_: The secret used to create the WebHook.
-  - **`base_url`** _(string)_: The base URL of the shared configuration manager service.
+- **`config`** _(object)_: The configuration of the shared configuration manager. Cannot contain additional properties.
+  - **`printConfigs`** _(object)_: The print configuration. Can contain additional properties.
+    - **Additional properties** _(object)_: Cannot contain additional properties.
+      - **`repo`** _(string)_: The repository to clone.
+      - **`branch`** _(string)_: The branch to clone.
+      - **`sub_dir`** _(string)_: The directory to clone.
+      - **`template_engines`** _(array)_: The template engines configuration.
+        - **Items** _(object)_: Cannot contain additional properties.
+          - **`dest_sub_dir`** _(string)_: The destination sub directory.
+          - **`env`** _(object)_: The environment variable used to interpret this configuration. Can contain additional properties.
+            - **Additional properties** _(string)_
+  - **`sharedConfigs`** _(object)_: Can contain additional properties.
+    - **Additional properties**
+  - **`webhooks`** _(object)_: Additional WebHooks used by the GitHub WebHook operator to create WebHook in the GitHub repository of the related project. Cannot contain additional properties.
+    - **`nameOverride`**: Refer to _[#/definitions/nameOverride](#definitions/nameOverride)_.
+    - **`fullnameOverride`**: Refer to _[#/definitions/fullnameOverride](#definitions/fullnameOverride)_.
+    - **`releaseTrunc`**: Refer to _[#/definitions/releaseTrunc](#definitions/releaseTrunc)_.
+    - **`prefixTrunc`**: Refer to _[#/definitions/prefixTrunc](#definitions/prefixTrunc)_.
+    - **`labels`**: Refer to _[#/definitions/labels](#definitions/labels)_.
+    - **`annotations`**: Refer to _[#/definitions/annotations](#definitions/annotations)_.
+    - **`repositories`** _(object)_: The repositories definition to create the WebHook in (<shared_config_source_name>: <github_organization>/<repository_name>). Can contain additional properties.
+      - **Additional properties** _(string)_
+    - **`secret`** _(string)_: The secret used to create the WebHook.
+    - **`base_url`** _(string)_: The base URL of the shared configuration manager service.
 - **`environment`** _(string)_: The the used operators environment (int or prod).
+- **`version`** _(string)_: The the used version.
 - **`rbac`** _(boolean)_: Generate the RBAC Kubernetes objects.
 - **`rbacGroups`** _(array)_: The Active directory groups to add to the RBAC configuration.
   - **Items** _(string)_
@@ -81,12 +100,3 @@
 - <a id="definitions/annotations"></a>**`annotations`** _(object)_: [helm-common] Pod annotations. Can contain additional properties.
   - **Additional properties** _(string)_
 - <a id="definitions/serviceName"></a>**`serviceName`** _(string)_: [helm-common] The name of the service (not Kubernetes service), this will postfix the name.
-- <a id="definitions/tileCloud-chain"></a>**`tileCloud-chain`** _(object)_: Cannot contain additional properties.
-  - **`enabled`** _(boolean)_: Enable the pod configuration.
-  - **`nameOverride`**: Refer to _[#/definitions/nameOverride](#definitions/nameOverride)_.
-  - **`fullnameOverride`**: Refer to _[#/definitions/fullnameOverride](#definitions/fullnameOverride)_.
-  - **`serviceName`**: Refer to _[#/definitions/serviceName](#definitions/serviceName)_.
-  - **`releaseTrunc`**: Refer to _[#/definitions/releaseTrunc](#definitions/releaseTrunc)_.
-  - **`prefixTrunc`**: Refer to _[#/definitions/prefixTrunc](#definitions/prefixTrunc)_.
-  - **`labels`**: Refer to _[#/definitions/labels](#definitions/labels)_.
-  - **`annotations`**: Refer to _[#/definitions/annotations](#definitions/annotations)_.

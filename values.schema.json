@@ -38,37 +38,6 @@
     "serviceName": {
       "type": "string",
       "description": "[helm-common] The name of the service (not Kubernetes service), this will postfix the name"
-    },
-    "tileCloud-chain": {
-      "type": "object",
-      "additionalProperties": false,
-      "properties": {
-        "enabled": {
-          "type": "boolean",
-          "description": "Enable the pod configuration"
-        },
-        "nameOverride": {
-          "$ref": "#/definitions/nameOverride"
-        },
-        "fullnameOverride": {
-          "$ref": "#/definitions/fullnameOverride"
-        },
-        "serviceName": {
-          "$ref": "#/definitions/serviceName"
-        },
-        "releaseTrunc": {
-          "$ref": "#/definitions/releaseTrunc"
-        },
-        "prefixTrunc": {
-          "$ref": "#/definitions/prefixTrunc"
-        },
-        "labels": {
-          "$ref": "#/definitions/labels"
-        },
-        "annotations": {
-          "$ref": "#/definitions/annotations"
-        }
-      }
     }
   },
   "additionalProperties": false,
@@ -160,7 +129,35 @@
           }
         },
         "tilecloudchain": {
-          "$ref": "#/definitions/tileCloud-chain"
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "enabled": {
+              "type": "boolean",
+              "description": "Enable the pod configuration"
+            },
+            "nameOverride": {
+              "$ref": "#/definitions/nameOverride"
+            },
+            "fullnameOverride": {
+              "$ref": "#/definitions/fullnameOverride"
+            },
+            "serviceName": {
+              "$ref": "#/definitions/serviceName"
+            },
+            "releaseTrunc": {
+              "$ref": "#/definitions/releaseTrunc"
+            },
+            "prefixTrunc": {
+              "$ref": "#/definitions/prefixTrunc"
+            },
+            "labels": {
+              "$ref": "#/definitions/labels"
+            },
+            "annotations": {
+              "$ref": "#/definitions/annotations"
+            }
+          }
         },
         "home": {
           "type": "object",
@@ -255,86 +252,134 @@
         }
       }
     },
-    "additionalConfigs": {
+    "config": {
       "type": "object",
-      "title": "Additional configuration for the shared configuration manager",
-      "additionalProperties": {
-        "nameOverride": {
-          "$ref": "#/definitions/nameOverride"
-        },
-        "fullnameOverride": {
-          "$ref": "#/definitions/fullnameOverride"
-        },
-        "serviceName": {
-          "$ref": "#/definitions/serviceName"
-        },
-        "releaseTrunc": {
-          "$ref": "#/definitions/releaseTrunc"
-        },
-        "prefixTrunc": {
-          "$ref": "#/definitions/prefixTrunc"
-        },
-        "labels": {
-          "$ref": "#/definitions/labels"
-        },
-        "annotations": {
-          "$ref": "#/definitions/annotations"
-        },
-        "env": {
-          "type": "object",
-          "description": "The environment variable used in this configuration",
-          "additionalProperties": {
-            "type": "string"
-          }
-        }
-      }
-    },
-    "additionalWebhooks": {
-      "type": "object",
-      "description": "Additional WebHooks used by the GitHub WebHook operator to create WebHook in the GitHub repository of the related project",
+      "description": "The configuration of the shared configuration manager",
       "additionalProperties": false,
       "properties": {
-        "nameOverride": {
-          "$ref": "#/definitions/nameOverride"
-        },
-        "fullnameOverride": {
-          "$ref": "#/definitions/fullnameOverride"
-        },
-        "serviceName": {
-          "$ref": "#/definitions/serviceName"
-        },
-        "releaseTrunc": {
-          "$ref": "#/definitions/releaseTrunc"
-        },
-        "prefixTrunc": {
-          "$ref": "#/definitions/prefixTrunc"
-        },
-        "labels": {
-          "$ref": "#/definitions/labels"
-        },
-        "annotations": {
-          "$ref": "#/definitions/annotations"
-        },
-        "repositories": {
+        "printConfigs": {
           "type": "object",
-          "description": "The repositories definition to create the WebHook in (<shared_config_source_name>: <github_organization>/<repository_name>)",
+          "description": "The print configuration",
           "additionalProperties": {
-            "type": "string"
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "repo": {
+                "type": "string",
+                "description": "The repository to clone"
+              },
+              "branch": {
+                "type": "string",
+                "description": "The branch to clone"
+              },
+              "sub_dir": {
+                "type": "string",
+                "description": "The directory to clone"
+              },
+              "template_engines": {
+                "type": "array",
+                "description": "The template engines configuration",
+                "items": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "dest_sub_dir": {
+                      "type": "string",
+                      "description": "The destination sub directory"
+                    },
+                    "env": {
+                      "type": "object",
+                      "description": "The environment variable used to interpret this configuration",
+                      "additionalProperties": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                }
+              }
+            }
           }
         },
-        "secret": {
-          "type": "string",
-          "description": "The secret used to create the WebHook"
+        "sharedConfigs": {
+          "type": "object",
+          "title": "Additional configuration for the shared configuration manager",
+          "additionalProperties": {
+            "nameOverride": {
+              "$ref": "#/definitions/nameOverride"
+            },
+            "fullnameOverride": {
+              "$ref": "#/definitions/fullnameOverride"
+            },
+            "releaseTrunc": {
+              "$ref": "#/definitions/releaseTrunc"
+            },
+            "prefixTrunc": {
+              "$ref": "#/definitions/prefixTrunc"
+            },
+            "labels": {
+              "$ref": "#/definitions/labels"
+            },
+            "annotations": {
+              "$ref": "#/definitions/annotations"
+            },
+            "env": {
+              "type": "object",
+              "description": "The environment variable used in this configuration",
+              "additionalProperties": {
+                "type": "string"
+              }
+            }
+          }
         },
-        "base_url": {
-          "type": "string",
-          "description": "The base URL of the shared configuration manager service"
+        "webhooks": {
+          "type": "object",
+          "description": "Additional WebHooks used by the GitHub WebHook operator to create WebHook in the GitHub repository of the related project",
+          "additionalProperties": false,
+          "properties": {
+            "nameOverride": {
+              "$ref": "#/definitions/nameOverride"
+            },
+            "fullnameOverride": {
+              "$ref": "#/definitions/fullnameOverride"
+            },
+            "releaseTrunc": {
+              "$ref": "#/definitions/releaseTrunc"
+            },
+            "prefixTrunc": {
+              "$ref": "#/definitions/prefixTrunc"
+            },
+            "labels": {
+              "$ref": "#/definitions/labels"
+            },
+            "annotations": {
+              "$ref": "#/definitions/annotations"
+            },
+            "repositories": {
+              "type": "object",
+              "description": "The repositories definition to create the WebHook in (<shared_config_source_name>: <github_organization>/<repository_name>)",
+              "additionalProperties": {
+                "type": "string"
+              }
+            },
+            "secret": {
+              "type": "string",
+              "description": "The secret used to create the WebHook"
+            },
+            "base_url": {
+              "type": "string",
+              "description": "The base URL of the shared configuration manager service"
+            }
+          }
         }
       }
     },
     "environment": {
       "type": "string",
       "description": "The the used operators environment (int or prod)"
+    },
+    "version": {
+      "type": "string",
+      "description": "The the used version"
     },
     "rbac": {
       "type": "boolean",
