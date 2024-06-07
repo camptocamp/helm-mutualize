@@ -35,6 +35,8 @@ server:
     enabled: false
 
 config:
+  secret: to be defined
+
   printConfigs:
     {}
     # repo: <repository>
