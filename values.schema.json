@@ -42,6 +42,7 @@
   },
   "additionalProperties": false,
   "properties": {
+    "global": {},
     "common": {},
     "sharedAnchor": {
       "description": "Free space where we can defined anchor to be used later"
