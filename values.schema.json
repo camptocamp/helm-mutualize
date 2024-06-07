@@ -257,6 +257,10 @@
       "description": "The configuration of the shared configuration manager",
       "additionalProperties": false,
       "properties": {
+        "secret": {
+          "type": "string",
+          "description": "The secret used to create the WebHook"
+        },
         "printConfigs": {
           "type": "object",
           "description": "The print configuration",

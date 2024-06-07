@@ -221,6 +221,7 @@ spec:
     repo: git@github.com:print/repo.git
     branch: print-example
     sub_dir: examples/src/test/resources/examples
+    key: "to be defined"
     tags:
       - print
 ---
@@ -244,6 +245,7 @@ spec:
     repo: git@github.com:print/repo-multi.git
     branch: print-multi
     sub_dir: examples/src/test/resources/multi
+    key: "to be defined"
     tags:
       - print
     template_engines:
