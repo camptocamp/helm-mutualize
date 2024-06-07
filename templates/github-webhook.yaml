@@ -1,13 +1,26 @@
-{{- range $source, $repository := $.Values.additionalWebhooks.repositories }}
+{{- range $source, $repository := $.Values.config.webhooks.repositories }}
 ---
 apiVersion: camptocamp.com/v4
 kind: GitHubWebhook{{ $.Values.environment | title }}
 metadata:
-  name: {{ include "common.fullname" ( dict "root" $ "service" $.Values.additionalWebhooks ) }}-{{ $source }}
-  {{- include "common.metadata" ( dict "root" $ "service" $.Values.additionalWebhooks ) | nindent 2 }}
+  name: {{ include "common.fullname" ( dict "root" $ "service" $.Values.config.webhooks "serviceName" $source ) }}
+  {{- include "common.metadata" ( dict "root" $ "service" $.Values.config.webhooks "serviceName" $source ) | nindent 2 }}
 spec:
   contentType: json
   repository: {{ $repository }}
-  secret: {{ $.Values.additionalWebhooks.secret }}
-  url: {{ $.Values.additionalWebhooks.base_url }}{{ $source }}
+  secret: {{ $.Values.config.webhooks.secret }}
+  url: {{ $.Values.config.webhooks.base_url }}{{ $source }}
+{{- end }}
+{{- range $source, $definition := $.Values.config.printConfigs }}
+---
+apiVersion: camptocamp.com/v4
+kind: GitHubWebhook{{ $.Values.environment | title }}
+metadata:
+  name: {{ include "common.fullname" ( dict "root" $ "service" $.Values.config.webhooks "serviceName" $source ) }}-{{ $source  }}
+  {{- include "common.metadata" ( dict "root" $ "service" $.Values.config.webhooks "serviceName" $source ) | nindent 2 }}
+spec:
+  contentType: json
+  repository: {{ $definition.repo }}
+  secret: {{ $.Values.config.webhooks.secret }}
+  url: {{ $.Values.config.webhooks.base_url }}{{ $source }}
 {{- end }}

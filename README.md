@@ -2,7 +2,7 @@
 
 ## Introduction
 
-Provide mutualize applications with Kubernetes, currently the print service and the TileCloud-chain service.
+Provide specific object for the mutualize application, the application itself will be created by the `helm-custom-pod`.
 
 ## Infrastructure components
 
@@ -23,7 +23,8 @@ Main data workflow is:
   metadata:
     name: test-geomapfish-test-print
     labels: ...
-      mutualize-sharedconfig: 'true'
+      mutualize-config: 'true'
+      mutualize-version: '1'
   spec:
     name: test-print
     environment: (int|prod)
@@ -47,7 +48,8 @@ Main data workflow is:
   metadata:
     name: test-geomapfish-test-tilecloudchain
     labels: ...
-      mutualize-sharedconfig: 'true'
+      mutualize-config: 'true'
+      mutualize-version: '1'
   spec:
     name: test-tilecloudchain
     environment: (int|prod)

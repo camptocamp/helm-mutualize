@@ -1,76 +1,92 @@
 environment: int
 
-additionalConfigs:
-  examples:
-    content:
-      type: git
-      repo: git@github.com:mapfish/mapfish-print.git
-    env: {}
-
-  examples2:
-    labels:
-      mutualize-sharedconfig: 'true'
-    content:
-      type: git
-      repo: git@github.com:mapfish/mapfish-print.git
-      branch: master
+config:
+  printConfigs:
+    print-example:
+      repo: git@github.com:print/repo.git
+      branch: print-example
       sub_dir: examples/src/test/resources/examples
-      tags:
-        - print
-    env:
-      TOTO: toto
-  no-env:
-    content: {}
-
-  print:
-    labels:
-      mutualize-sharedconfig: 'true'
-    content:
-      type: git
-      branch: prod-2-7
-      repo: 'https://github.com/camptocamp/demo_geomapfish.git'
-      sub_dir: print/print-apps/geomapfish
-      tags:
-        - print
+    print-multi-example:
+      repo: git@github.com:print/repo-multi.git
+      branch: print-multi
+      sub_dir: examples/src/test/resources/multi
       template_engines:
-        - environment_variables: true
-          type: shell
-          data:
-            AWS_ACCESS_KEY_ID: secret
-            AWS_SECRET_ACCESS_KEY: secret
-            SMTP_PASSWORD: secret
-            SMTP_USER: secret
+        - dest_sub_dir: p1
+          env:
+            ENV: e1
+        - dest_sub_dir: p2
+          env:
+            ENV: e2
+  sharedConfigs:
+    examples:
+      content:
+        type: git
+        repo: git@github.com:mapfish/mapfish-print.git
+      env: {}
 
-  tilecloudchain:
-    labels:
-      mutualize-sharedconfig: 'true'
-    content:
-      type: git
-      branch: prod-2-7
-      repo: 'https://github.com/camptocamp/demo_geomapfish.git'
-      sub_dir: tilegeneration
-      tags:
-        - tilecloudchain
-      template_engines:
-        - environment_variables: true
-          type: shell
-          data:
-            MAPSERVER_URL: >-
-              https://host/mapserv_proxy?ogcserver=source for image/png
-            TILEGENERATION_AZURE_CONTAINER: secret
-            VISIBLE_ENTRY_POINT: /
-            VISIBLE_WEB_HOST: host.com
-            VISIBLE_WEB_PROTOCOL: https
+    examples2:
+      labels:
+        mutualize-sharedconfig: 'true'
+      content:
+        type: git
+        repo: git@github.com:mapfish/mapfish-print.git
+        branch: master
+        sub_dir: examples/src/test/resources/examples
+        tags:
+          - print
+      env:
+        TOTO: toto
+    no-env:
+      content: {}
 
-  redirecthosts:
-    labels:
-      mutualize-tilecloudchain-hosts: 'true'
-    content:
-      example.com: /etc/tilecloudchain-configs/example/config.yaml
+    print:
+      labels:
+        mutualize-sharedconfig: 'true'
+      content:
+        type: git
+        branch: prod-2-7
+        repo: 'https://github.com/camptocamp/demo_geomapfish.git'
+        sub_dir: print/print-apps/geomapfish
+        tags:
+          - print
+        template_engines:
+          - environment_variables: true
+            type: shell
+            data:
+              AWS_ACCESS_KEY_ID: secret
+              AWS_SECRET_ACCESS_KEY: secret
+              SMTP_PASSWORD: secret
+              SMTP_USER: secret
 
-additionalWebhooks:
-  serviceName: webhooks
-  base_url: https://example.com/
-  secret: to be defined
-  repositories:
-    test: camptocamp/demo
+    tilecloudchain:
+      labels:
+        mutualize-sharedconfig: 'true'
+      content:
+        type: git
+        branch: prod-2-7
+        repo: 'https://github.com/camptocamp/demo_geomapfish.git'
+        sub_dir: tilegeneration
+        tags:
+          - tilecloudchain
+        template_engines:
+          - environment_variables: true
+            type: shell
+            data:
+              MAPSERVER_URL: >-
+                https://host/mapserv_proxy?ogcserver=source for image/png
+              TILEGENERATION_AZURE_CONTAINER: secret
+              VISIBLE_ENTRY_POINT: /
+              VISIBLE_WEB_HOST: host.com
+              VISIBLE_WEB_PROTOCOL: https
+
+    redirecthosts:
+      labels:
+        mutualize-tilecloudchain-hosts: 'true'
+      content:
+        example.com: /etc/tilecloudchain-configs/example/config.yaml
+
+  webhooks:
+    base_url: https://example.com/
+    secret: to be defined
+    repositories:
+      test: camptocamp/demo
