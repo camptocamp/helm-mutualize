@@ -1,0 +1,275 @@
+---
+# Source: mutualize/templates/home-configmap.yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: test-mutualize-html
+  labels:
+    helm.sh/chart: mutualize
+    app.kubernetes.io/version: "1.0"
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: mutualize
+    app.kubernetes.io/instance: test
+    app.kubernetes.io/component: html
+data:
+  index.html: |
+    <!DOCTYPE html>
+    <html lang="en">
+      <head>
+        <title>Geospatial mutualize services</title>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <link
+          rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.3/css/bootstrap.min.css"
+          integrity="sha512-jnSuA4Ss2PkkikSOLtYs8BlYIeeIK1h99ty4YfvRPAlzr377vr3CXDb7sb7eEEBYjDtcYj+AjBH3FLv5uSJuXg=="
+          crossorigin="anonymous"
+          referrerpolicy="no-referrer"
+        />
+        <link
+          rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+          integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A=="
+          crossorigin="anonymous"
+          referrerpolicy="no-referrer"
+        />
+        <link
+          rel="icon"
+          type="image/png"
+          sizes="32x32"
+          href="https://www.camptocamp.com/favicon/favicon-32x32.png"
+        />
+        <link
+          rel="icon"
+          type="image/png"
+          sizes="16x16"
+          href="https://www.camptocamp.com/favicon/favicon-16x16.png"
+        />
+        <style>
+          h1 {
+            margin-bottom: 2.5rem;
+          }
+          a {
+            text-decoration: none;
+            color: #7f8c8d;
+          }
+          a:hover {
+            text-decoration: underline;
+            color: #6a7478;
+          }
+          .content {
+            display: flex;
+            margin-top: 1.5rem;
+            margin-bottom: 1.5rem;
+          }
+          .icon {
+            font-size: 4rem;
+            margin-right: 1rem;
+          }
+          .text {
+            flex: 1;
+          }
+        </style>
+      </head>
+      <body class="px-5 py-4">
+        <script>
+          (() => {
+            'use strict'
+            if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+              document.documentElement.setAttribute('data-bs-theme', 'dark');
+            }
+          })()
+        </script>
+        <h1>
+          Geospatial mutualize services provided by
+          <a href="https://www.camptocamp.com/fr/geospatial_solutions">Camptocamp</a>
+        </h1>
+
+        <p>This will provide the following services:</p>
+        <div class="content">
+          <div class="icon fa-solid fa-print"></div>
+          <div style="text">
+            <a href="/print">Print maps</a><br />
+            based on <a href="http://mapfish.github.io/mapfish-print-doc/">MapFish Print</a>.<br />
+          </div>
+        </div>
+        <div class="content">
+          <div class="icon fa-solid fa-layer-group"></div>
+          <div style="text">
+            Generate and publish WMTS tiles<br />
+            based on
+            <a href="https://github.com/camptocamp/tilecloud-chain/#tilecloud-chain">TileCloud Chain</a><br />
+            It will be available on your domain,
+            <a href="https://geomapfish-demo-2-7.camptocamp.com/tiles/admin/">example</a>.
+          </div>
+        </div>
+        <div class="content">
+          <div class="icon fa-solid fa-share-nodes"></div>
+          <div style="text">
+            <a href="/config/">Config Manager</a><br />
+            based on <a href="https://github.com/camptocamp/shared_config_manager/">Shared Config Manager</a>.
+          </div>
+        </div>
+        <p>
+          If you are interested, contact us at
+          <a href="mailto:info@camptocamp.com">info@camptocamp.com</a>.
+        </p>
+      </body>
+    </html>
+---
+# Source: mutualize/templates/home-configmap.yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: test-mutualize-config
+  labels:
+    helm.sh/chart: mutualize
+    app.kubernetes.io/version: "1.0"
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: mutualize
+    app.kubernetes.io/instance: test
+    app.kubernetes.io/component: config
+data:
+  nginx.conf: |
+    worker_processes  auto;
+
+    error_log  /var/log/nginx/error.log notice;
+    pid        /tmp/nginx.pid;
+
+
+    events {
+        worker_connections  1024;
+    }
+
+
+    http {
+        proxy_temp_path /tmp/proxy_temp;
+        client_body_temp_path /tmp/client_temp;
+        fastcgi_temp_path /tmp/fastcgi_temp;
+        uwsgi_temp_path /tmp/uwsgi_temp;
+        scgi_temp_path /tmp/scgi_temp;
+
+        include       /etc/nginx/mime.types;
+        default_type  application/octet-stream;
+
+        log_format  main  '$remote_addr - $remote_user [$time_local] "$request" '
+                          '$status $body_bytes_sent "$http_referer" '
+                          '"$http_user_agent" "$http_x_forwarded_for"';
+
+        access_log  /var/log/nginx/access.log  main;
+
+        sendfile        on;
+        #tcp_nopush     on;
+
+        keepalive_timeout  65;
+
+        #gzip  on;
+
+        include /etc/nginx/conf.d/*.conf;
+    }
+---
+# Source: mutualize/templates/role.yaml
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: test-mutualize
+  labels:
+    helm.sh/chart: mutualize
+    app.kubernetes.io/version: "1.0"
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: mutualize
+    app.kubernetes.io/instance: test
+    app.kubernetes.io/component: main
+rules:
+- apiGroups:
+    - camptocamp.com
+  resources:
+    - sharedconfigconfigsint
+    - sharedconfigsourcesint
+    - githubwebhooksint
+  verbs:
+    - get
+    - watch
+    - list
+    - create
+    - update
+    - patch
+    - delete
+---
+# Source: mutualize/templates/rolebinding.yaml
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: test-mutualize
+  labels:
+    helm.sh/chart: mutualize
+    app.kubernetes.io/version: "1.0"
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: mutualize
+    app.kubernetes.io/instance: test
+    app.kubernetes.io/component: main
+subjects:
+- kind: Group
+  name: group1
+  apiGroup: rbac.authorization.k8s.io
+- kind: Group
+  name: group2
+  apiGroup: rbac.authorization.k8s.io
+roleRef:
+  kind: Role
+  name: test-mutualize
+  apiGroup: rbac.authorization.k8s.io
+---
+# Source: mutualize/templates/redirect-config.yaml
+apiVersion: camptocamp.com/v3
+kind: SharedConfigConfigInt
+metadata:
+  name: test-mutualize
+  labels:
+    helm.sh/chart: mutualize
+    app.kubernetes.io/version: "1.0"
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: mutualize
+    app.kubernetes.io/instance: test
+    app.kubernetes.io/component: main
+spec:
+  matchLabels:
+    mutualize-redirect-hosts: 'true'
+  configmapName: hosts.yaml
+  property: sources
+---
+# Source: mutualize/templates/shared-config-config.yaml
+apiVersion: camptocamp.com/v3
+kind: SharedConfigConfigInt
+metadata:
+  name: test-mutualize-config
+  labels:
+    helm.sh/chart: mutualize
+    app.kubernetes.io/version: "1.0"
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: mutualize
+    app.kubernetes.io/instance: test
+    app.kubernetes.io/component: config
+spec:
+  matchLabels:
+    mutualize-sharedconfig: 'true'
+  property: sources
+  configmapName: config.yaml
+---
+# Source: mutualize/templates/tilecloudchain-config-hosts.yaml
+apiVersion: camptocamp.com/v3
+kind: SharedConfigConfigInt
+metadata:
+  name: test-mutualize
+  labels:
+    helm.sh/chart: mutualize
+    app.kubernetes.io/version: "1.0"
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: mutualize
+    app.kubernetes.io/instance: test
+    app.kubernetes.io/component: main
+spec:
+  matchLabels:
+    mutualize-tilecloudchain-hosts: 'true'
+  configmapName: hosts.yaml
+  property: sources

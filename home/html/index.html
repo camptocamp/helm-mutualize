@@ -71,16 +71,16 @@
     </h1>
 
     <p>This will provide the following services:</p>
-    {{- if .Values.print.enabled }}
+    {{- if .Values.server.print.enabled }}
     <div class="content">
       <div class="icon fa-solid fa-print"></div>
       <div style="text">
-        <a href="{{ .Values.home.serviceUrl }}/print">Print maps</a><br />
+        <a href="{{ .Values.server.home.serviceUrl }}/print">Print maps</a><br />
         based on <a href="http://mapfish.github.io/mapfish-print-doc/">MapFish Print</a>.<br />
       </div>
     </div>
     {{- end }}
-    {{- if .Values.tilecloudchain.enabled }}
+    {{- if .Values.server.tilecloudchain.enabled }}
     <div class="content">
       <div class="icon fa-solid fa-layer-group"></div>
       <div style="text">
@@ -95,7 +95,7 @@
     <div class="content">
       <div class="icon fa-solid fa-share-nodes"></div>
       <div style="text">
-        <a href="{{ .Values.home.serviceUrl }}/config/">Config Manager</a><br />
+        <a href="{{ .Values.server.home.serviceUrl }}/config/">Config Manager</a><br />
         based on <a href="https://github.com/camptocamp/shared_config_manager/">Shared Config Manager</a>.
       </div>
     </div>

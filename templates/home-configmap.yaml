@@ -1,11 +1,10 @@
-{{- if .Values.home.enabled }}
-{{ $fullname := include "common.fullname" ( dict "root" . "service" .Values.home ) }}
+{{- if .Values.server.home.enabled }}
+{{ $fullname := include "common.fullname" ( dict "root" . "service" .Values.server.home ) }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: {{ include "common.fullname" ( dict "root" . "service" .Values.home ) }}-html
-  labels: {{ include "common.labels" ( dict "root" . "service" .Values.home ) | nindent 4 }}
-  annotations: {{- toYaml .Values.envConfigMap.annotations | nindent 4 }}
+  name: {{ include "common.fullname" ( dict "root" . "service" .Values.server.home "serviceName" "html" ) }}
+  {{- include "common.metadata" ( dict "root" . "service" .Values.server.home "serviceName" "html" ) | nindent 2 }}
 data:
   {{- $currentScope := .}}
   {{- range $path, $p2 := .Files.Glob "home/html/**" }}
@@ -18,9 +17,8 @@ data:
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: {{ include "common.fullname" ( dict "root" . "service" .Values.home ) }}-config
-  labels: {{ include "common.labels" ( dict "root" . "service" .Values.home ) | nindent 4 }}
-  annotations: {{- toYaml .Values.envConfigMap.annotations | nindent 4 }}
+  name: {{ include "common.fullname" ( dict "root" . "service" .Values.server.home "serviceName" "config" ) }}
+  {{- include "common.metadata" ( dict "root" . "service" .Values.server.home "serviceName" "config" ) | nindent 2 }}
 data:
   {{- ( .Files.Glob "home/config/**" ).AsConfig | nindent 2 }}
 {{- end }}

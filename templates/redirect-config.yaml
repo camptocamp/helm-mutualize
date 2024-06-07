@@ -1,9 +1,9 @@
-{{- if .Values.redirect.enabled }}
+{{- if .Values.server.redirect.enabled }}
 apiVersion: camptocamp.com/v3
 kind: SharedConfigConfig{{ .Values.environment | title }}
 metadata:
-  name: {{ include "common.fullname" ( dict "root" . "service" .Values.redirectConfig ) }}
-  {{- include "common.metadata" ( dict "root" . "service" .Values.redirectConfig ) | nindent 2 }}
+  name: {{ include "common.fullname" ( dict "root" . "service" .Values.server.redirect ) }}
+  {{- include "common.metadata" ( dict "root" . "service" .Values.server.redirect ) | nindent 2 }}
 spec:
   matchLabels:
     mutualize-redirect-hosts: 'true'

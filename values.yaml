@@ -2,18 +2,10 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
-global:
-  image:
-    pullSecrets: []
-    pullPolicy: IfNotPresent
-  configMapNameOverride: {}
-  revisionHistoryLimit: 3
-
 nameOverride: ''
 fullnameOverride: ''
 
 environment: ''
-sshKey: to be defined
 
 rbac: false
 rbacGroups: []
@@ -21,304 +13,25 @@ rbacGroups: []
 envConfigMap:
   annotations: {}
 
-prometheus:
-  enabled: true
-
-sharedConfig:
-  serviceName: config
-  annotations: {}
-
-config:
-  serviceName: config
-  replicaCount: 1
-  image: &config-image
-    repository: camptocamp/shared_config_manager
-    tag: latest
-    sha:
-  # Path where the application is available
-  path: /
-  env: {}
-  annotations: {}
-  podLabels: {}
-  podAnnotations: {}
-  resources: {}
-  service:
-    type: ClusterIP
-    port: 80
-  nodeSelector: {}
-
-home:
-  enabled: true
-  serviceName: home
-  replicaCount: 1
-  serviceUrl: https://example.com
-  image:
-    repository: nginxinc/nginx-unprivileged
-    tag: latest
-    sha:
-  service:
-    type: ClusterIP
-    port: 80
-  nodeSelector: {}
-
-print:
-  enabled: true
-  serviceName: print
-  replicaCount: 1
-  image:
-    repository: camptocamp/mapfish_print
-    tag: latest
-    hash:
-  env: {}
-  command: []
-  args: []
-  annotations: {}
-  podLabels: {}
-  podAnnotations: {}
-  resources: {}
-  volumes: {}
-  service:
-    type: ClusterIP
-    port: 80
-  config:
-    image: *config-image
-    env:
-      TAG_FILTER:
-        value: print
-      TARGET:
-        value: /config
-    resources: {}
-  jmxExporter:
-    image:
-      repository: bitnami/jmx-exporter
-      tag: 0.20.0
-      sha:
-    resources: {}
-    config: |
-      startDelaySeconds: 30
-      username:
-      password:
-      ssl: false
-      lowercaseOutputLabelNames: true
-      lowercaseOutputName: true
-
-  webXml: |
-    <?xml version="1.0" encoding="UTF-8"?>
-
-    <web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-            version="3.0"
-            xmlns="http://java.sun.com/xml/ns/javaee"
-            xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd"
-            metadata-complete="true">
-
-        <absolute-ordering/>
-
-        <context-param>
-            <param-name>contextConfigLocation</param-name>
-            <param-value>
-                classpath*:mapfish-spring-application-context.xml,classpath:mapfish-spring-security.xml,/WEB-INF/mapfish-print-printer-factory.xml,classpath*:mapfish-spring-application-context-override.xml
-            </param-value>
-        </context-param>
-
-        <listener>
-            <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
-        </listener>
-
-        <listener>
-            <listener-class>org.mapfish.print.metrics.MetricsRegistryContextListener</listener-class>
-        </listener>
-
-        <listener>
-            <listener-class>org.mapfish.print.metrics.HealthCheckRegistryContextListener</listener-class>
-        </listener>
-
-        <listener>
-            <listener-class>org.mapfish.print.metrics.MapfishPrintInstrumentedFilterContextListener
-            </listener-class>
-        </listener>
-
-        <filter>
-            <filter-name>requestSizeFilter</filter-name>
-            <filter-class>org.mapfish.print.servlet.RequestSizeFilter</filter-class>
-            <init-param>
-                <!-- The maximum request size in bytes (default: 1 MB). -->
-                <param-name>maxContentLength</param-name>
-                <param-value>1048576</param-value>
-            </init-param>
-        </filter>
-        <filter-mapping>
-            <filter-name>requestSizeFilter</filter-name>
-            <url-pattern>/print/*</url-pattern>
-        </filter-mapping>
-
-        <filter>
-            <filter-name>characterEncodingFilter</filter-name>
-            <filter-class>org.springframework.web.filter.CharacterEncodingFilter</filter-class>
-            <init-param>
-                <param-name>encoding</param-name>
-                <param-value>UTF-8</param-value>
-            </init-param>
-        </filter>
-        <filter-mapping>
-            <filter-name>characterEncodingFilter</filter-name>
-            <url-pattern>/print/*</url-pattern>
-        </filter-mapping>
-
-        <filter>
-            <filter-name>springSecurityFilterChain</filter-name>
-            <filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
-        </filter>
-
-        <filter-mapping>
-            <filter-name>springSecurityFilterChain</filter-name>
-            <url-pattern>/print/*</url-pattern>
-        </filter-mapping>
-
-        <filter>
-            <filter-name>instrumentedFilter</filter-name>
-            <filter-class>com.codahale.metrics.servlet.InstrumentedFilter</filter-class>
-        </filter>
-        <filter-mapping>
-            <filter-name>instrumentedFilter</filter-name>
-            <url-pattern>/print/*</url-pattern>
-        </filter-mapping>
-
-        <filter>
-            <filter-name>CORS</filter-name>
-            <filter-class>com.thetransactioncompany.cors.CORSFilter</filter-class>
-            <init-param>
-                <param-name>cors.supportedMethods</param-name>
-                <param-value>GET, POST, DELETE, HEAD, OPTIONS</param-value>
-            </init-param>
-            <init-param>
-                <param-name>cors.maxAge</param-name>
-                <param-value>86400</param-value>
-            </init-param>
-            <init-param>
-                <param-name>cors.supportsCredentials</param-name>
-                <param-value>false</param-value>
-            </init-param>
-        </filter>
-        <filter-mapping>
-            <filter-name>CORS</filter-name>
-            <url-pattern>/print/*</url-pattern>
-        </filter-mapping>
-
-        <servlet>
-            <servlet-name>metrics-servlet</servlet-name>
-            <servlet-class>com.codahale.metrics.servlets.AdminServlet</servlet-class>
-        </servlet>
-
-        <!-- single mapping to spring, this only works properly if the advanced dispatch filter is
-            active -->
-        <servlet-mapping>
-            <servlet-name>metrics-servlet</servlet-name>
-            <url-pattern>/print/metrics</url-pattern>
-        </servlet-mapping>
-        <servlet-mapping>
-            <servlet-name>metrics-servlet</servlet-name>
-            <url-pattern>/print/metrics/*</url-pattern>
-        </servlet-mapping>
-
-        <servlet>
-            <servlet-name>mapfish-print</servlet-name>
-            <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
-            <load-on-startup>1</load-on-startup>
-        </servlet>
-
-        <servlet-mapping>
-            <servlet-name>mapfish-print</servlet-name>
-            <url-pattern>/print/print/*</url-pattern>
-        </servlet-mapping>
-
-        <servlet-mapping>
-            <servlet-name>mapfish-print</servlet-name>
-            <url-pattern>/print/sec/print/*</url-pattern>
-        </servlet-mapping>
-
-    </web-app>
-  nodeSelector: {}
-
-tilecloudchainConfig:
-  serviceName: tcc-hosts
-  annotations: {}
-
-tilecloudchainInitMainConfig:
-  image:
-    repository: camptocamp/geomapfishdemo-config
-    tag: prod-2-8
-  command:
-    - cp
-    - /etc/tilecloudchain-main-original/config.yaml
-    - /etc/tilecloudchain-main/
-
-tilecloudchain: &tilecloudchain
+server:
   enabled: false
-  serviceName: tcc
-  replicaCount: 1
-  image:
-    repository: camptocamp/tilecloud-chain
-    tag: latest
-    sha:
-  env:
-    TILEGENERATION_MAIN_CONFIGFILE:
-      value: /etc/tilecloudchain-main/config.yaml
-    TILEGENERATION_HOSTSFILE:
-      value: /etc/tilecloudchain-hosts/hosts.yaml
-  mainConfig: {}
-  annotations: {}
-  podLabels: {}
-  podAnnotations: {}
-  resources: {}
-  probes:
-    httpGet:
-      path: /tiles/c2c/health_check
-      port: http
-    initialDelaySeconds: 5
-    timeoutSeconds: 10
-  service:
-    type: ClusterIP
-    port: 80
-  config:
-    image: *config-image
-    env:
-      TAG_FILTER:
-        value: tilecloudchain
-      TARGET:
-        value: /config
-    resources: {}
-  nodeSelector: {}
 
-tilecloudchainSlave:
-  <<: *tilecloudchain
-  serviceName: tcc-slave
+  sharedConfig:
+    serviceName: config
+    annotations: {}
 
-redirectConfig:
-  serviceName: redirect-hosts
-  annotations: {}
+  home:
+    enabled: false
 
-# Redirect for OAuth2 from GitHub
-redirect:
-  enabled: false
-  serviceName: redirect
-  replicaCount: 1
-  image:
-    repository: camptocamp/redirect
-    tag: latest
-    sha:
-  annotations: {}
-  podLabels: {}
-  podAnnotations: {}
-  resources: {}
-  probes:
-    httpGet:
-      path: /redirect/c2c/health_check
-      port: http
-    initialDelaySeconds: 5
-    timeoutSeconds: 10
-  service:
-    type: ClusterIP
-    port: 80
+  print:
+    enabled: false
+
+  tilecloudchain:
+    enabled: false
+
+  # Redirect for OAuth2 from GitHub
+  redirect:
+    enabled: false
 
 additionalConfigs:
   {}
@@ -333,40 +46,3 @@ additionalWebhooks:
   secret: to be defined
   repositories: {}
   # source: repository
-
-serviceAccount:
-  # Specifies whether a service account should be created
-  create: false
-  # The name of the service account to use.
-  # If not set and create is true, a name is generated using the full name template
-  name: default
-
-podSecurityContext:
-  {}
-  # fsGroup: 2000
-
-securityContext:
-  {}
-  # runAsNonRoot: true
-  # runAsUser: 33 # www-data
-  # capabilities:
-  #   drop:
-  #   - ALL
-
-ingress:
-  enabled: false
-  annotations:
-    {}
-    # kubernetes.io/ingress.class: nginx
-    # kubernetes.io/tls-acme: "true"
-  paths: []
-  hosts:
-    []
-    #- name: main
-    #  host: chart-example.local
-    #  tls:
-    #    - secretName: main-tls
-
-tolerations: []
-
-affinity: {}

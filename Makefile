@@ -44,9 +44,6 @@ acceptance:
 	kubectl apply -f /tmp/podmonitors-crd.json
 
 	kubectl apply -f tests/expected.yaml
-	kubectl wait --for=condition=Available=True --timeout=1m deployment operator-shared-config-manager
-	kubectl wait --for=condition=Available=True --timeout=3m deployment test-mutualize-config
-	kubectl wait --for=condition=Available=True --timeout=1m deployment test-mutualize-home
 
 acceptance-clean:
 	kubectl delete -f tests/expected.yaml || true
