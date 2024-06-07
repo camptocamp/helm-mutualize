@@ -2,6 +2,7 @@
 
 ## Properties
 
+- **`global`**
 - **`common`**
 - **`sharedAnchor`**: Free space where we can defined anchor to be used later.
 - **`nameOverride`**: Refer to _[#/definitions/nameOverride](#definitions/nameOverride)_.
