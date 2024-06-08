@@ -21,6 +21,6 @@ metadata:
 spec:
   contentType: json
   repository: {{ $definition.repo }}
-  secret: {{ $.Values.config.secret }}
+  secret: {{ $.Values.config.webhooks.secret }}
   url: {{ $.Values.config.webhooks.base_url }}{{ $source }}
 {{- end }}

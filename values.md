@@ -59,7 +59,6 @@
   - **`sshKey`** _(string)_: The SSH key to use to clone the repository.
   - **`sharedConfig`**
 - **`config`** _(object)_: The configuration of the shared configuration manager. Cannot contain additional properties.
-  - **`secret`** _(string)_: The secret used to create the WebHook.
   - **`printConfigs`** _(object)_: The print configuration. Can contain additional properties.
     - **Additional properties** _(object)_: Cannot contain additional properties.
       - **`repo`** _(string)_: The repository to clone.
