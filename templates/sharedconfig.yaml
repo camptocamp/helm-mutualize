@@ -45,7 +45,6 @@ spec:
     repo: {{ $value.repo }}
     branch: {{ default "master" $value.branch }}
     sub_dir: {{ default "" $value.sub_dir }}
-    key: {{ $.Values.config.secret | quote }}
     tags:
       - print
     {{- if hasKey . "template_engines" }}
