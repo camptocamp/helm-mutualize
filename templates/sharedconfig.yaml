@@ -41,6 +41,7 @@ metadata:
 spec:
   name: {{ $name }}
   content:
+    type: git
     repo: {{ $value.repo }}
     branch: {{ default "master" $value.branch }}
     sub_dir: {{ default "" $value.sub_dir }}

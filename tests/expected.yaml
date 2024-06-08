@@ -218,6 +218,7 @@ metadata:
 spec:
   name: print-example
   content:
+    type: git
     repo: git@github.com:print/repo.git
     branch: print-example
     sub_dir: examples/src/test/resources/examples
@@ -242,6 +243,7 @@ metadata:
 spec:
   name: print-multi-example
   content:
+    type: git
     repo: git@github.com:print/repo-multi.git
     branch: print-multi
     sub_dir: examples/src/test/resources/multi
