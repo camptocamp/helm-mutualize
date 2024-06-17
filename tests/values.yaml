@@ -3,11 +3,11 @@ environment: int
 config:
   printConfigs:
     print-example:
-      repo: git@github.com:print/repo.git
+      repo: print/repo
       branch: print-example
       sub_dir: examples/src/test/resources/examples
     print-multi-example:
-      repo: git@github.com:print/repo-multi.git
+      repo: print/repo-multi
       branch: print-multi
       sub_dir: examples/src/test/resources/multi
       template_engines:

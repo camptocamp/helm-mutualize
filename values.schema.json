@@ -267,7 +267,7 @@
             "properties": {
               "repo": {
                 "type": "string",
-                "description": "The repository to clone"
+                "description": "The repository to use in format <org>/<repo>"
               },
               "branch": {
                 "type": "string",

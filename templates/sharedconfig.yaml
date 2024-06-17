@@ -42,7 +42,7 @@ spec:
   name: {{ $name }}
   content:
     type: git
-    repo: {{ $value.repo }}
+    repo: git@github.com:{{ $value.repo }}.git
     branch: {{ default "master" $value.branch }}
     sub_dir: {{ default "" $value.sub_dir }}
     tags:

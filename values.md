@@ -61,7 +61,7 @@
 - **`config`** _(object)_: The configuration of the shared configuration manager. Cannot contain additional properties.
   - **`printConfigs`** _(object)_: The print configuration. Can contain additional properties.
     - **Additional properties** _(object)_: Cannot contain additional properties.
-      - **`repo`** _(string)_: The repository to clone.
+      - **`repo`** _(string)_: The repository to use in format <org>/<repo>.
       - **`branch`** _(string)_: The branch to clone.
       - **`sub_dir`** _(string)_: The directory to clone.
       - **`template_engines`** _(array)_: The template engines configuration.
