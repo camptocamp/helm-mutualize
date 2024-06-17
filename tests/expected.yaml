@@ -31,7 +31,7 @@ metadata:
     app.kubernetes.io/component: print-example
 spec:
   contentType: json
-  repository: git@github.com:print/repo.git
+  repository: print/repo
   secret: to be defined
   url: https://example.com/print-example
 ---
@@ -49,7 +49,7 @@ metadata:
     app.kubernetes.io/component: print-multi-example
 spec:
   contentType: json
-  repository: git@github.com:print/repo-multi.git
+  repository: print/repo-multi
   secret: to be defined
   url: https://example.com/print-multi-example
 ---
