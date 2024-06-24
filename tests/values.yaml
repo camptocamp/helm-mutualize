@@ -2,21 +2,53 @@ environment: int
 
 config:
   printConfigs:
-    print-example:
-      repo: print/repo
-      branch: print-example
-      sub_dir: examples/src/test/resources/examples
-    print-multi-example:
-      repo: print/repo-multi
-      branch: print-multi
-      sub_dir: examples/src/test/resources/multi
-      template_engines:
-        - dest_sub_dir: p1
-          env:
-            ENV: e1
-        - dest_sub_dir: p2
-          env:
-            ENV: e2
+    sources:
+      print-example:
+        repo: print/repo
+        branch: print-example
+        sub_dir: examples/src/test/resources/examples
+      print-multi-example:
+        repo: print/repo-multi
+        branch: print-multi
+        sub_dir: examples/src/test/resources/multi
+        template_engines:
+          - dest_sub_dir: p1
+            data:
+              ENV: e1
+          - dest_sub_dir: p2
+            data:
+              ENV: e2
+  tileCloudChainConfigs:
+    sources:
+      tilecloudchain-example:
+        repo: tilecloudchain/repo
+        branch: tilecloudchain-example
+        sub_dir: examples/src/test/resources/examples
+        hosts:
+          - host: host1.example.com
+            name: host1
+          - host: host2.example.com
+            name: host2
+      tilecloudchain-multi-example:
+        repo: tilecloudchain/repo-multi
+        branch: tilecloudchain-multi
+        sub_dir: examples/src/test/resources/multi
+        template_engines:
+          - dest_sub_dir: p1
+            data:
+              ENV: e1
+          - dest_sub_dir: p2
+            data:
+              ENV: e2
+        hosts:
+          - host: host3.example.com
+            name: host3
+  redirectConfigs:
+    hosts:
+      - host1.example.com
+      - host2.example.com
+      - host3.example.com
+
   sharedConfigs:
     examples:
       content:

@@ -21,7 +21,7 @@ spec:
 apiVersion: camptocamp.com/v4
 kind: GitHubWebhookInt
 metadata:
-  name: test-mutualize-print-example-print-example
+  name: test-mutualize-print-example
   labels:
     helm.sh/chart: mutualize
     app.kubernetes.io/version: "1.0"
@@ -39,7 +39,7 @@ spec:
 apiVersion: camptocamp.com/v4
 kind: GitHubWebhookInt
 metadata:
-  name: test-mutualize-print-multi-example-print-multi-example
+  name: test-mutualize-print-multi-example
   labels:
     helm.sh/chart: mutualize
     app.kubernetes.io/version: "1.0"
@@ -52,6 +52,42 @@ spec:
   repository: print/repo-multi
   secret: to be defined
   url: https://example.com/print-multi-example
+---
+# Source: mutualize/templates/github-webhook.yaml
+apiVersion: camptocamp.com/v4
+kind: GitHubWebhookInt
+metadata:
+  name: test-mutualize-tilecloudchain-example
+  labels:
+    helm.sh/chart: mutualize
+    app.kubernetes.io/version: "1.0"
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: mutualize
+    app.kubernetes.io/instance: test
+    app.kubernetes.io/component: tilecloudchain-example
+spec:
+  contentType: json
+  repository: tilecloudchain/repo
+  secret: to be defined
+  url: https://example.com/tilecloudchain-example
+---
+# Source: mutualize/templates/github-webhook.yaml
+apiVersion: camptocamp.com/v4
+kind: GitHubWebhookInt
+metadata:
+  name: test-mutualize-tilecloudchain-multi-example
+  labels:
+    helm.sh/chart: mutualize
+    app.kubernetes.io/version: "1.0"
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: mutualize
+    app.kubernetes.io/instance: test
+    app.kubernetes.io/component: tilecloudchain-multi-example
+spec:
+  contentType: json
+  repository: tilecloudchain/repo-multi
+  secret: to be defined
+  url: https://example.com/tilecloudchain-multi-example
 ---
 # Source: mutualize/templates/sharedconfig.yaml
 apiVersion: camptocamp.com/v3
@@ -261,3 +297,118 @@ spec:
         data:
           - name: "ENV"
             value: "e2"
+---
+# Source: mutualize/templates/sharedconfig.yaml
+apiVersion: camptocamp.com/v3
+kind: SharedConfigSourceInt
+metadata:
+  name: test-mutualize-tilecloudchain-example
+  labels:
+    helm.sh/chart: mutualize
+    app.kubernetes.io/version: "1.0"
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: mutualize
+    app.kubernetes.io/instance: test
+    app.kubernetes.io/component: tilecloudchain-example
+    mutualize-config: 'true'
+    mutualize-version: "2"
+spec:
+  name: tilecloudchain-example
+  content:
+    type: git
+    repo: git@github.com:tilecloudchain/repo.git
+    branch: tilecloudchain-example
+    sub_dir: examples/src/test/resources/examples
+    tags:
+      - print
+---
+# Source: mutualize/templates/sharedconfig.yaml
+apiVersion: camptocamp.com/v3
+kind: SharedConfigSourceInt
+metadata:
+  name: test-mutualize-tilecloudchain-example-host1
+  labels:
+    helm.sh/chart: mutualize
+    app.kubernetes.io/version: "1.0"
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: mutualize
+    app.kubernetes.io/instance: test
+    app.kubernetes.io/component: tilecloudchain-example-host1
+    mutualize-tilecloudchain-hosts: 'true'
+spec:
+  name: tilecloudchain-example-host1
+  content:
+    host1.example.com: /etc/tilecloudchain-configs/tilecloudchain-example/config.yaml
+---
+# Source: mutualize/templates/sharedconfig.yaml
+apiVersion: camptocamp.com/v3
+kind: SharedConfigSourceInt
+metadata:
+  name: test-mutualize-tilecloudchain-example-host2
+  labels:
+    helm.sh/chart: mutualize
+    app.kubernetes.io/version: "1.0"
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: mutualize
+    app.kubernetes.io/instance: test
+    app.kubernetes.io/component: tilecloudchain-example-host2
+    mutualize-tilecloudchain-hosts: 'true'
+spec:
+  name: tilecloudchain-example-host2
+  content:
+    host2.example.com: /etc/tilecloudchain-configs/tilecloudchain-example/config.yaml
+---
+# Source: mutualize/templates/sharedconfig.yaml
+apiVersion: camptocamp.com/v3
+kind: SharedConfigSourceInt
+metadata:
+  name: test-mutualize-tilecloudchain-multi-example
+  labels:
+    helm.sh/chart: mutualize
+    app.kubernetes.io/version: "1.0"
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: mutualize
+    app.kubernetes.io/instance: test
+    app.kubernetes.io/component: tilecloudchain-multi-example
+    mutualize-config: 'true'
+    mutualize-version: "2"
+spec:
+  name: tilecloudchain-multi-example
+  content:
+    type: git
+    repo: git@github.com:tilecloudchain/repo-multi.git
+    branch: tilecloudchain-multi
+    sub_dir: examples/src/test/resources/multi
+    tags:
+      - print
+    template_engines:
+      - type: shell
+        environment_variables: true
+        dest_sub_dir: "p1"
+        data:
+          - name: "ENV"
+            value: "e1"
+      - type: shell
+        environment_variables: true
+        dest_sub_dir: "p2"
+        data:
+          - name: "ENV"
+            value: "e2"
+---
+# Source: mutualize/templates/sharedconfig.yaml
+apiVersion: camptocamp.com/v3
+kind: SharedConfigSourceInt
+metadata:
+  name: test-mutualize-tilecloudchain-multi-example-host3
+  labels:
+    helm.sh/chart: mutualize
+    app.kubernetes.io/version: "1.0"
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: mutualize
+    app.kubernetes.io/instance: test
+    app.kubernetes.io/component: tilecloudchain-multi-example-host3
+    mutualize-tilecloudchain-hosts: 'true'
+spec:
+  name: tilecloudchain-multi-example-host3
+  content:
+    host3.example.com: /etc/tilecloudchain-configs/tilecloudchain-multi-example/config.yaml
