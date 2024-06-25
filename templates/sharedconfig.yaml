@@ -25,7 +25,8 @@ spec:
         {{- end }}
     {{- end }}
 {{- end }}
-{{- range $name, $value := $.Values.config.printConfigs }}
+{{- with $.Values.config.printConfigs }}
+{{- range $name, $value := .sources }}
 ---
 apiVersion: camptocamp.com/v3
 kind: SharedConfigSource{{ $.Values.environment | title }}
@@ -55,7 +56,7 @@ spec:
         {{- with .dest_sub_dir }}
         dest_sub_dir: {{ . | quote }}
         {{- end }}
-        {{- with .env }}
+        {{- with .data }}
         data:
           {{- range $name, $value := . }}
           - name: {{ $name | quote }}
@@ -64,4 +65,78 @@ spec:
         {{- end }}
     {{- end }}
     {{- end }}
+{{- end }}
+{{- end }}
+{{- with $.Values.config.tileCloudChainConfigs }}
+{{- range $name, $value := .sources }}
+---
+apiVersion: camptocamp.com/v3
+kind: SharedConfigSource{{ $.Values.environment | title }}
+metadata:
+  name: {{ include "common.fullname" ( dict "root" $ "service" $.Values "serviceName" $name ) }}
+  labels: {{ include "common.labels" ( dict "root" $ "service" $.Values "serviceName" $name ) | nindent 4 }}
+  {{- if eq $.Values.version "1" }}
+    mutualize-sharedconfig: 'true'
+  {{- else }}
+    mutualize-config: 'true'
+    mutualize-version: {{ $.Values.version | quote }}
+  {{- end }}
+spec:
+  name: {{ $name }}
+  content:
+    type: git
+    repo: git@github.com:{{ $value.repo }}.git
+    branch: {{ default "master" $value.branch }}
+    sub_dir: {{ default "" $value.sub_dir }}
+    tags:
+      - print
+    {{- if hasKey . "template_engines" }}
+    template_engines:
+    {{- range $value.template_engines }}
+      - type: shell
+        environment_variables: true
+        {{- with .dest_sub_dir }}
+        dest_sub_dir: {{ . | quote }}
+        {{- end }}
+        {{- with .data }}
+        data:
+          {{- range $name, $value := . }}
+          - name: {{ $name | quote }}
+            value: {{ . | quote }}
+          {{- end }}
+        {{- end }}
+    {{- end }}
+    {{- end }}
+{{- range $host := $value.hosts }}
+---
+{{- $used_name := printf "%s-%s" $name $host.name }}
+apiVersion: camptocamp.com/v3
+kind: SharedConfigSource{{ $.Values.environment | title }}
+metadata:
+  name: {{ include "common.fullname" ( dict "root" $ "service" $.Values "serviceName" $used_name ) }}
+  labels: {{ include "common.labels" ( dict "root" $ "service" $.Values "serviceName" $used_name ) | nindent 4 }}
+    mutualize-tilecloudchain-hosts: 'true'
+spec:
+  name: {{ $name }}-{{ $host.name }}
+  content:
+    {{ $host.host }}: /etc/tilecloudchain-configs/{{ $name }}/config.yaml
+{{- end }}
+{{- end }}
+{{- end }}
+{{- with $.Values.config.redireftConfigs }}
+{{- if .hosts }}
+---
+apiVersion: camptocamp.com/v3
+kind: SharedConfigSource{{ .Values.mutualize.environment | title }}
+metadata:
+  name: {{ include "common.fullname" ( dict "root" . "service" .Values.mutualize.redirect "serviceName" "redirect" ) }}
+  {{- include "common.metadata" ( dict "root" . "service" .Values.mutualize.redirect "serviceName" "redirect"  ) | nindent 2 }}
+    mutualize-redirect-hosts: 'true'
+spec:
+  name: {{ include "common.fullname" ( dict "root" . "service" .Values.mutualize.redirect "serviceName" "redirect" ) }}
+  content:
+{{- range $host := .Values.mutualize.redirect.hosts }}
+   {{ $host }}: {{ $host }}
+{{- end }}
+{{- end }}
 {{- end }}

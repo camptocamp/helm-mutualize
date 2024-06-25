@@ -38,6 +38,48 @@
     "serviceName": {
       "type": "string",
       "description": "[helm-common] The name of the service (not Kubernetes service), this will postfix the name"
+    },
+    "source": {
+      "repo": {
+        "type": "string",
+        "description": "The repository to use in format <org>/<repo>"
+      },
+      "branch": {
+        "type": "string",
+        "description": "The branch to clone"
+      },
+      "sub_dir": {
+        "type": "string",
+        "description": "The directory to clone"
+      },
+      "template_engines": {
+        "type": "array",
+        "description": "The template engines configuration",
+        "items": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "dest_sub_dir": {
+              "type": "string",
+              "description": "The destination sub directory"
+            },
+            "data": {
+              "type": "object",
+              "description": "The environment variable used to interpret this configuration",
+              "additionalProperties": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      }
+    },
+    "sources": {
+      "type": "object",
+      "description": "The sources configuration",
+      "additionalProperties": {
+        "$ref": "#/definitions/source"
+      }
     }
   },
   "additionalProperties": false,
@@ -261,42 +303,58 @@
         "printConfigs": {
           "type": "object",
           "description": "The print configuration",
-          "additionalProperties": {
-            "type": "object",
-            "additionalProperties": false,
-            "properties": {
-              "repo": {
-                "type": "string",
-                "description": "The repository to use in format <org>/<repo>"
-              },
-              "branch": {
-                "type": "string",
-                "description": "The branch to clone"
-              },
-              "sub_dir": {
-                "type": "string",
-                "description": "The directory to clone"
-              },
-              "template_engines": {
-                "type": "array",
-                "description": "The template engines configuration",
-                "items": {
-                  "type": "object",
-                  "additionalProperties": false,
-                  "properties": {
-                    "dest_sub_dir": {
-                      "type": "string",
-                      "description": "The destination sub directory"
-                    },
-                    "env": {
-                      "type": "object",
-                      "description": "The environment variable used to interpret this configuration",
-                      "additionalProperties": {
-                        "type": "string"
+          "properties": {
+            "sources": {
+              "$ref": "#/definitions/sources"
+            }
+          }
+        },
+        "tileCloudChainConfigs": {
+          "type": "object",
+          "description": "The TileCloud-chain configuration",
+          "properties": {
+            "sources": {
+              "type": "object",
+              "description": "The sources configuration",
+              "additionalProperties": {
+                "allOf": [
+                  {
+                    "$ref": "#/definitions/source"
+                  },
+                  {
+                    "hosts": {
+                      "type": "array",
+                      "description": "The hosts to use",
+                      "items": {
+                        "type": "object",
+                        "additionalProperties": false,
+                        "properties": {
+                          "host": {
+                            "type": "string",
+                            "description": "The host to use"
+                          },
+                          "name": {
+                            "type": "string",
+                            "description": "The name of the host"
+                          }
+                        }
                       }
                     }
                   }
-                }
+                ]
+              }
+            }
+          }
+        },
+        "redirectConfigs": {
+          "type": "object",
+          "description": "The redirect configuration",
+          "properties": {
+            "hosts": {
+              "type": "array",
+              "description": "The hosts to use",
+              "items": {
+                "type": "string"
               }
             }
           }
