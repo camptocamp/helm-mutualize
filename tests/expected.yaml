@@ -412,3 +412,23 @@ spec:
   name: tilecloudchain-multi-example-host3
   content:
     host3.example.com: /etc/tilecloudchain-configs/tilecloudchain-multi-example/config.yaml
+---
+# Source: mutualize/templates/sharedconfig.yaml
+apiVersion: camptocamp.com/v3
+kind: SharedConfigSourceInt
+metadata:
+  name: test-mutualize-redirect
+  labels:
+    helm.sh/chart: mutualize
+    app.kubernetes.io/version: "1.0"
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: mutualize
+    app.kubernetes.io/instance: test
+    app.kubernetes.io/component: redirect
+    mutualize-redirect-hosts: 'true'
+spec:
+  name: test-mutualize-redirect
+  content:
+   host1.example.com: host1.example.com
+   host2.example.com: host2.example.com
+   host3.example.com: host3.example.com
