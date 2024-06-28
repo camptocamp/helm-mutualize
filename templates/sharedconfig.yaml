@@ -123,19 +123,19 @@ spec:
 {{- end }}
 {{- end }}
 {{- end }}
-{{- with $.Values.config.redireftConfigs }}
-{{- if .hosts }}
+{{- with $.Values.config.redirectConfigs }}
+{{- if ( .hosts | default false ) }}
 ---
 apiVersion: camptocamp.com/v3
-kind: SharedConfigSource{{ .Values.mutualize.environment | title }}
+kind: SharedConfigSource{{ $.Values.environment | title }}
 metadata:
-  name: {{ include "common.fullname" ( dict "root" . "service" .Values.mutualize.redirect "serviceName" "redirect" ) }}
-  {{- include "common.metadata" ( dict "root" . "service" .Values.mutualize.redirect "serviceName" "redirect"  ) | nindent 2 }}
+  name: {{ include "common.fullname" ( dict "root" $ "service" $.Values "serviceName" "redirect" ) }}
+  {{- include "common.metadata" ( dict "root" $ "service" $.Values "serviceName" "redirect"  ) | nindent 2 }}
     mutualize-redirect-hosts: 'true'
 spec:
-  name: {{ include "common.fullname" ( dict "root" . "service" .Values.mutualize.redirect "serviceName" "redirect" ) }}
+  name: {{ include "common.fullname" ( dict "root" $ "service" $.Values "serviceName" "redirect" ) }}
   content:
-{{- range $host := .Values.mutualize.redirect.hosts }}
+{{- range $host := .hosts }}
    {{ $host }}: {{ $host }}
 {{- end }}
 {{- end }}
