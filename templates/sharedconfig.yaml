@@ -107,19 +107,24 @@ spec:
         {{- end }}
     {{- end }}
     {{- end }}
-{{- range $host := $value.hosts }}
+{{- range $host_name, $host := $value.hosts }}
 ---
-{{- $used_name := printf "%s-%s" $name $host.name }}
+{{- $used_name := printf "%s-%s" $name $host_name }}
 apiVersion: camptocamp.com/v3
 kind: SharedConfigSource{{ $.Values.environment | title }}
 metadata:
   name: {{ include "common.fullname" ( dict "root" $ "service" $.Values "serviceName" $used_name ) }}
   labels: {{ include "common.labels" ( dict "root" $ "service" $.Values "serviceName" $used_name ) | nindent 4 }}
+  {{- if eq $.Values.version "1" }}
     mutualize-tilecloudchain-hosts: 'true'
+  {{- else }}
+    mutualize-tilecloudchain-hosts: 'true'
+    mutualize-version: {{ $.Values.version | quote }}
+  {{- end }}
 spec:
-  name: {{ $name }}-{{ $host.name }}
+  name: {{ $name }}-{{ $host_name }}
   content:
-    {{ $host.host }}: /etc/tilecloudchain-configs/{{ $name }}/config.yaml
+    {{ $host }}: /etc/tilecloudchain-configs/{{ $name }}/config.yaml
 {{- end }}
 {{- end }}
 {{- end }}
@@ -131,12 +136,15 @@ kind: SharedConfigSource{{ $.Values.environment | title }}
 metadata:
   name: {{ include "common.fullname" ( dict "root" $ "service" $.Values "serviceName" "redirect" ) }}
   {{- include "common.metadata" ( dict "root" $ "service" $.Values "serviceName" "redirect"  ) | nindent 2 }}
+  {{- if eq $.Values.version "1" }}
     mutualize-redirect-hosts: 'true'
+  {{- else }}
+    mutualize-redirect-hosts: 'true'
+    mutualize-version: {{ $.Values.version | quote }}
+  {{- end }}
 spec:
   name: {{ include "common.fullname" ( dict "root" $ "service" $.Values "serviceName" "redirect" ) }}
   content:
-{{- range $host := .hosts }}
-   {{ $host }}: {{ $host }}
-{{- end }}
+    {{- toYaml .hosts | nindent 4 }}
 {{- end }}
 {{- end }}

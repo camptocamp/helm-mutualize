@@ -184,6 +184,7 @@ metadata:
 spec:
   matchLabels:
     mutualize-redirect-hosts: 'true'
+    mutualize-version: "2"
   configmapName: hosts.yaml
   property: sources
 ---
@@ -221,5 +222,6 @@ metadata:
 spec:
   matchLabels:
     mutualize-tilecloudchain-hosts: 'true'
+    mutualize-version: "2"
   configmapName: hosts.yaml
   property: sources

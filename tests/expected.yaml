@@ -335,6 +335,7 @@ metadata:
     app.kubernetes.io/instance: test
     app.kubernetes.io/component: tilecloudchain-example-host1
     mutualize-tilecloudchain-hosts: 'true'
+    mutualize-version: "2"
 spec:
   name: tilecloudchain-example-host1
   content:
@@ -353,6 +354,7 @@ metadata:
     app.kubernetes.io/instance: test
     app.kubernetes.io/component: tilecloudchain-example-host2
     mutualize-tilecloudchain-hosts: 'true'
+    mutualize-version: "2"
 spec:
   name: tilecloudchain-example-host2
   content:
@@ -408,6 +410,7 @@ metadata:
     app.kubernetes.io/instance: test
     app.kubernetes.io/component: tilecloudchain-multi-example-host3
     mutualize-tilecloudchain-hosts: 'true'
+    mutualize-version: "2"
 spec:
   name: tilecloudchain-multi-example-host3
   content:
@@ -426,9 +429,10 @@ metadata:
     app.kubernetes.io/instance: test
     app.kubernetes.io/component: redirect
     mutualize-redirect-hosts: 'true'
+    mutualize-version: "2"
 spec:
   name: test-mutualize-redirect
   content:
-   host1.example.com: host1.example.com
-   host2.example.com: host2.example.com
-   host3.example.com: host3.example.com
+    host1: host1.example.com
+    host2: host2.example.com
+    host3: host3.example.com
