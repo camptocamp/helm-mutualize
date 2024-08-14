@@ -40,34 +40,37 @@
       "description": "[helm-common] The name of the service (not Kubernetes service), this will postfix the name"
     },
     "source": {
-      "repo": {
-        "type": "string",
-        "description": "The repository to use in format <org>/<repo>"
-      },
-      "branch": {
-        "type": "string",
-        "description": "The branch to clone"
-      },
-      "sub_dir": {
-        "type": "string",
-        "description": "The directory to clone"
-      },
-      "template_engines": {
-        "type": "array",
-        "description": "The template engines configuration",
-        "items": {
-          "type": "object",
-          "additionalProperties": false,
-          "properties": {
-            "dest_sub_dir": {
-              "type": "string",
-              "description": "The destination sub directory"
-            },
-            "data": {
-              "type": "object",
-              "description": "The environment variable used to interpret this configuration",
-              "additionalProperties": {
-                "type": "string"
+      "type": "object",
+      "properties": {
+        "repo": {
+          "type": "string",
+          "description": "The repository to use in format <org>/<repo>"
+        },
+        "branch": {
+          "type": "string",
+          "description": "The branch to clone"
+        },
+        "sub_dir": {
+          "type": "string",
+          "description": "The directory to clone"
+        },
+        "template_engines": {
+          "type": "array",
+          "description": "The template engines configuration",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "dest_sub_dir": {
+                "type": "string",
+                "description": "The destination sub directory"
+              },
+              "data": {
+                "type": "object",
+                "description": "The environment variable used to interpret this configuration",
+                "additionalProperties": {
+                  "type": "string"
+                }
               }
             }
           }
@@ -322,21 +325,14 @@
                     "$ref": "#/definitions/source"
                   },
                   {
-                    "hosts": {
-                      "type": "array",
-                      "description": "The hosts to use",
-                      "items": {
+                    "type": "object",
+                    "properties": {
+                      "hosts": {
                         "type": "object",
-                        "additionalProperties": false,
-                        "properties": {
-                          "host": {
-                            "type": "string",
-                            "description": "The host to use"
-                          },
-                          "name": {
-                            "type": "string",
-                            "description": "The name of the host"
-                          }
+                        "description": "The hosts to use by name",
+                        "additionalProperties": {
+                          "type": "string",
+                          "description": "The host to use"
                         }
                       }
                     }
@@ -351,10 +347,11 @@
           "description": "The redirect configuration",
           "properties": {
             "hosts": {
-              "type": "array",
-              "description": "The hosts to use",
-              "items": {
-                "type": "string"
+              "type": "object",
+              "description": "The hosts to use by name",
+              "additionalProperties": {
+                "type": "string",
+                "description": "The hosts to use"
               }
             }
           }

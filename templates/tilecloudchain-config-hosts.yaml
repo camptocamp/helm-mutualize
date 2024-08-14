@@ -6,7 +6,12 @@ metadata:
   {{- include "common.metadata" ( dict "root" . "service" .Values.server.tilecloudchain ) | nindent 2 }}
 spec:
   matchLabels:
+  {{- if eq $.Values.version "1" }}
     mutualize-tilecloudchain-hosts: 'true'
+  {{- else }}
+    mutualize-tilecloudchain-hosts: 'true'
+    mutualize-version: {{ $.Values.version | quote }}
+  {{- end }}
   configmapName: hosts.yaml
   property: sources
 {{- end }}

@@ -66,10 +66,12 @@
       - **Additional properties**
         - **All of**
           - : Refer to _[#/definitions/source](#definitions/source)_.
-          -
+          - _object_
+            - **`hosts`** _(object)_: The hosts to use by name. Can contain additional properties.
+              - **Additional properties** _(string)_: The host to use.
   - **`redirectConfigs`** _(object)_: The redirect configuration.
-    - **`hosts`** _(array)_: The hosts to use.
-      - **Items** _(string)_
+    - **`hosts`** _(object)_: The hosts to use by name. Can contain additional properties.
+      - **Additional properties** _(string)_: The hosts to use.
   - **`sharedConfigs`** _(object)_: Can contain additional properties.
     - **Additional properties**
   - **`webhooks`** _(object)_: Additional WebHooks used by the GitHub WebHook operator to create WebHook in the GitHub repository of the related project. Cannot contain additional properties.
@@ -102,6 +104,14 @@
 - <a id="definitions/annotations"></a>**`annotations`** _(object)_: [helm-common] Pod annotations. Can contain additional properties.
   - **Additional properties** _(string)_
 - <a id="definitions/serviceName"></a>**`serviceName`** _(string)_: [helm-common] The name of the service (not Kubernetes service), this will postfix the name.
-- <a id="definitions/source"></a>**`source`**
+- <a id="definitions/source"></a>**`source`** _(object)_
+  - **`repo`** _(string)_: The repository to use in format <org>/<repo>.
+  - **`branch`** _(string)_: The branch to clone.
+  - **`sub_dir`** _(string)_: The directory to clone.
+  - **`template_engines`** _(array)_: The template engines configuration.
+    - **Items** _(object)_: Cannot contain additional properties.
+      - **`dest_sub_dir`** _(string)_: The destination sub directory.
+      - **`data`** _(object)_: The environment variable used to interpret this configuration. Can contain additional properties.
+        - **Additional properties** _(string)_
 - <a id="definitions/sources"></a>**`sources`** _(object)_: The sources configuration. Can contain additional properties.
   - **Additional properties**: Refer to _[#/definitions/source](#definitions/source)_.

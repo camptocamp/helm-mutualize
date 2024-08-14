@@ -25,10 +25,8 @@ config:
         branch: tilecloudchain-example
         sub_dir: examples/src/test/resources/examples
         hosts:
-          - host: host1.example.com
-            name: host1
-          - host: host2.example.com
-            name: host2
+          host1: host1.example.com
+          host2: host2.example.com
       tilecloudchain-multi-example:
         repo: tilecloudchain/repo-multi
         branch: tilecloudchain-multi
@@ -41,13 +39,12 @@ config:
             data:
               ENV: e2
         hosts:
-          - host: host3.example.com
-            name: host3
+          host3: host3.example.com
   redirectConfigs:
     hosts:
-      - host1.example.com
-      - host2.example.com
-      - host3.example.com
+      host1: host1.example.com
+      host2: host2.example.com
+      host3: host3.example.com
 
   sharedConfigs:
     examples:

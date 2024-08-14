@@ -6,7 +6,12 @@ metadata:
   {{- include "common.metadata" ( dict "root" . "service" .Values.server.redirect ) | nindent 2 }}
 spec:
   matchLabels:
+  {{- if eq $.Values.version "1" }}
     mutualize-redirect-hosts: 'true'
+  {{- else }}
+    mutualize-redirect-hosts: 'true'
+    mutualize-version: {{ $.Values.version | quote }}
+  {{- end }}
   configmapName: hosts.yaml
   property: sources
 {{- end }}
