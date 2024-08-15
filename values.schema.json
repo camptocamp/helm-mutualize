@@ -150,27 +150,6 @@
             "enabled": {
               "type": "boolean",
               "description": "Enable the pod configuration"
-            },
-            "nameOverride": {
-              "$ref": "#/definitions/nameOverride"
-            },
-            "fullnameOverride": {
-              "$ref": "#/definitions/fullnameOverride"
-            },
-            "serviceName": {
-              "$ref": "#/definitions/serviceName"
-            },
-            "releaseTrunc": {
-              "$ref": "#/definitions/releaseTrunc"
-            },
-            "prefixTrunc": {
-              "$ref": "#/definitions/prefixTrunc"
-            },
-            "labels": {
-              "$ref": "#/definitions/labels"
-            },
-            "annotations": {
-              "$ref": "#/definitions/annotations"
             }
           }
         },
@@ -446,16 +425,6 @@
       "description": "The Active directory groups to add to the RBAC configuration",
       "items": {
         "type": "string"
-      }
-    },
-    "envConfigMap": {
-      "type": "object",
-      "description": "The annotations used in the env ConfigMap",
-      "additionalProperties": false,
-      "properties": {
-        "annotations": {
-          "$ref": "#/definitions/annotations"
-        }
       }
     }
   }

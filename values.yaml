@@ -11,9 +11,6 @@ postfix: ''
 rbac: false
 rbacGroups: []
 
-envConfigMap:
-  annotations: {}
-
 server:
   enabled: false
 
@@ -22,17 +19,17 @@ server:
     annotations: {}
 
   home:
-    enabled: false
+    enabled: true
 
   print:
-    enabled: false
+    enabled: true
 
   tilecloudchain:
-    enabled: false
+    enabled: true
 
   # Redirect for OAuth2 from GitHub
   redirect:
-    enabled: false
+    enabled: true
 
 config:
   printConfigs:
