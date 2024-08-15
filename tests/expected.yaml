@@ -249,8 +249,7 @@ metadata:
     app.kubernetes.io/name: mutualize
     app.kubernetes.io/instance: test
     app.kubernetes.io/component: print-example
-    mutualize-config: 'true'
-    mutualize-version: "2"
+    mutualize-sharedconfig: 'true'
 spec:
   name: print-example
   content:
@@ -273,8 +272,7 @@ metadata:
     app.kubernetes.io/name: mutualize
     app.kubernetes.io/instance: test
     app.kubernetes.io/component: print-multi-example
-    mutualize-config: 'true'
-    mutualize-version: "2"
+    mutualize-sharedconfig: 'true'
 spec:
   name: print-multi-example
   content:
@@ -310,8 +308,7 @@ metadata:
     app.kubernetes.io/name: mutualize
     app.kubernetes.io/instance: test
     app.kubernetes.io/component: tilecloudchain-example
-    mutualize-config: 'true'
-    mutualize-version: "2"
+    mutualize-sharedconfig: 'true'
 spec:
   name: tilecloudchain-example
   content:
@@ -335,7 +332,6 @@ metadata:
     app.kubernetes.io/instance: test
     app.kubernetes.io/component: tilecloudchain-example-host1
     mutualize-tilecloudchain-hosts: 'true'
-    mutualize-version: "2"
 spec:
   name: tilecloudchain-example-host1
   content:
@@ -354,7 +350,6 @@ metadata:
     app.kubernetes.io/instance: test
     app.kubernetes.io/component: tilecloudchain-example-host2
     mutualize-tilecloudchain-hosts: 'true'
-    mutualize-version: "2"
 spec:
   name: tilecloudchain-example-host2
   content:
@@ -372,8 +367,7 @@ metadata:
     app.kubernetes.io/name: mutualize
     app.kubernetes.io/instance: test
     app.kubernetes.io/component: tilecloudchain-multi-example
-    mutualize-config: 'true'
-    mutualize-version: "2"
+    mutualize-sharedconfig: 'true'
 spec:
   name: tilecloudchain-multi-example
   content:
@@ -410,7 +404,6 @@ metadata:
     app.kubernetes.io/instance: test
     app.kubernetes.io/component: tilecloudchain-multi-example-host3
     mutualize-tilecloudchain-hosts: 'true'
-    mutualize-version: "2"
 spec:
   name: tilecloudchain-multi-example-host3
   content:
@@ -429,7 +422,6 @@ metadata:
     app.kubernetes.io/instance: test
     app.kubernetes.io/component: redirect
     mutualize-redirect-hosts: 'true'
-    mutualize-version: "2"
 spec:
   name: test-mutualize-redirect
   content:

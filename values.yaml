@@ -6,7 +6,7 @@ nameOverride: ''
 fullnameOverride: ''
 
 environment: ''
-version: '2'
+postfix: ''
 
 rbac: false
 rbacGroups: []

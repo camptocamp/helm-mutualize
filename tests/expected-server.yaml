@@ -183,8 +183,7 @@ metadata:
     app.kubernetes.io/component: main
 spec:
   matchLabels:
-    mutualize-redirect-hosts: 'true'
-    mutualize-version: "2"
+    mutualize-redirect-hosts-test: 'true'
   configmapName: hosts.yaml
   property: sources
 ---
@@ -202,8 +201,7 @@ metadata:
     app.kubernetes.io/component: config
 spec:
   matchLabels:
-    mutualize-config: 'true'
-    mutualize-version: "2"
+    mutualize-sharedconfig-test: 'true'
   property: sources
   configmapName: config.yaml
 ---
@@ -221,7 +219,6 @@ metadata:
     app.kubernetes.io/component: main
 spec:
   matchLabels:
-    mutualize-tilecloudchain-hosts: 'true'
-    mutualize-version: "2"
+    mutualize-tilecloudchain-hosts-test: 'true'
   configmapName: hosts.yaml
   property: sources
