@@ -86,7 +86,7 @@
     - **`secret`** _(string)_: The secret used to create the WebHook.
     - **`base_url`** _(string)_: The base URL of the shared configuration manager service.
 - **`environment`** _(string)_: The the used operators environment (int or prod).
-- **`version`** _(string)_: The the used version.
+- **`postfix`** _(string)_: Label postfix used to test.
 - **`rbac`** _(boolean)_: Generate the RBAC Kubernetes objects.
 - **`rbacGroups`** _(array)_: The Active directory groups to add to the RBAC configuration.
   - **Items** _(string)_

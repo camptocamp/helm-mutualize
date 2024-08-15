@@ -433,9 +433,9 @@
       "type": "string",
       "description": "The the used operators environment (int or prod)"
     },
-    "version": {
+    "postfix": {
       "type": "string",
-      "description": "The the used version"
+      "description": "Label postfix used to test"
     },
     "rbac": {
       "type": "boolean",

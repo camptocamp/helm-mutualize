@@ -6,12 +6,7 @@ metadata:
   {{- include "common.metadata" ( dict "root" . "service" .Values.server.sharedConfig ) | nindent 2 }}
 spec:
   matchLabels:
-  {{- if eq $.Values.version "1" }}
-    mutualize-sharedconfig: 'true'
-  {{- else }}
-    mutualize-config: 'true'
-    mutualize-version: {{ $.Values.version | quote }}
-  {{- end }}
+    mutualize-sharedconfig{{ $.Values.postfix }}: 'true'
   property: sources
   configmapName: config.yaml
 {{- end }}
