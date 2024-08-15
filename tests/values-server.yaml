@@ -8,15 +8,3 @@ rbacGroups:
 
 server:
   enabled: true
-
-  home:
-    enabled: true
-
-  redirect:
-    enabled: true
-
-  print:
-    enabled: true
-
-  tilecloudchain:
-    enabled: true

@@ -1,3 +1,4 @@
+{{- if .Values.server.enabled }}
 {{- if .Values.server.home.enabled }}
 {{ $fullname := include "common.fullname" ( dict "root" . "service" .Values.server.home ) }}
 apiVersion: v1
@@ -13,4 +14,5 @@ data:
     {{- tpl ( .Files.Get $path ) . | nindent 4 }}
   {{- end }}
   {{- end }}
+{{- end }}
 {{- end }}

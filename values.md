@@ -22,13 +22,6 @@
     - **`annotations`**: Refer to _[#/definitions/annotations](#definitions/annotations)_.
   - **`print`** _(object)_: Cannot contain additional properties.
     - **`enabled`** _(boolean)_: Enable the pod configuration.
-    - **`nameOverride`**: Refer to _[#/definitions/nameOverride](#definitions/nameOverride)_.
-    - **`fullnameOverride`**: Refer to _[#/definitions/fullnameOverride](#definitions/fullnameOverride)_.
-    - **`serviceName`**: Refer to _[#/definitions/serviceName](#definitions/serviceName)_.
-    - **`releaseTrunc`**: Refer to _[#/definitions/releaseTrunc](#definitions/releaseTrunc)_.
-    - **`prefixTrunc`**: Refer to _[#/definitions/prefixTrunc](#definitions/prefixTrunc)_.
-    - **`labels`**: Refer to _[#/definitions/labels](#definitions/labels)_.
-    - **`annotations`**: Refer to _[#/definitions/annotations](#definitions/annotations)_.
   - **`tilecloudchain`** _(object)_: Cannot contain additional properties.
     - **`enabled`** _(boolean)_: Enable the pod configuration.
     - **`nameOverride`**: Refer to _[#/definitions/nameOverride](#definitions/nameOverride)_.
@@ -90,8 +83,6 @@
 - **`rbac`** _(boolean)_: Generate the RBAC Kubernetes objects.
 - **`rbacGroups`** _(array)_: The Active directory groups to add to the RBAC configuration.
   - **Items** _(string)_
-- **`envConfigMap`** _(object)_: The annotations used in the env ConfigMap. Cannot contain additional properties.
-  - **`annotations`**: Refer to _[#/definitions/annotations](#definitions/annotations)_.
 
 ## Definitions
 

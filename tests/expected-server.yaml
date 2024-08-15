@@ -173,14 +173,14 @@ roleRef:
 apiVersion: camptocamp.com/v3
 kind: SharedConfigConfigInt
 metadata:
-  name: test-mutualize
+  name: test-mutualize-redirect
   labels:
     helm.sh/chart: mutualize
     app.kubernetes.io/version: "1.0"
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: mutualize
     app.kubernetes.io/instance: test
-    app.kubernetes.io/component: main
+    app.kubernetes.io/component: redirect
 spec:
   matchLabels:
     mutualize-redirect-hosts-test: 'true'
@@ -209,14 +209,14 @@ spec:
 apiVersion: camptocamp.com/v3
 kind: SharedConfigConfigInt
 metadata:
-  name: test-mutualize
+  name: test-mutualize-tcc-hosts
   labels:
     helm.sh/chart: mutualize
     app.kubernetes.io/version: "1.0"
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: mutualize
     app.kubernetes.io/instance: test
-    app.kubernetes.io/component: main
+    app.kubernetes.io/component: tcc-hosts
 spec:
   matchLabels:
     mutualize-tilecloudchain-hosts-test: 'true'

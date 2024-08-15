@@ -1,12 +1,14 @@
+{{- if .Values.server.enabled }}
 {{- if .Values.server.tilecloudchain.enabled }}
 apiVersion: camptocamp.com/v3
 kind: SharedConfigConfig{{ .Values.environment | title }}
 metadata:
-  name: {{ include "common.fullname" ( dict "root" . "service" .Values.server.tilecloudchain ) }}
-  {{- include "common.metadata" ( dict "root" . "service" .Values.server.tilecloudchain ) | nindent 2 }}
+  name: {{ include "common.fullname" ( dict "root" . "service" .Values.server.tilecloudchain "serviceName" "tcc-hosts" ) }}
+  {{- include "common.metadata" ( dict "root" . "service" .Values.server.tilecloudchain "serviceName" "tcc-hosts" ) | nindent 2 }}
 spec:
   matchLabels:
     mutualize-tilecloudchain-hosts{{ $.Values.postfix }}: 'true'
   configmapName: hosts.yaml
   property: sources
+{{- end }}
 {{- end }}
