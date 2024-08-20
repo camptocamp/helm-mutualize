@@ -39,8 +39,12 @@ spec:
   content:
     type: git
     repo: git@github.com:{{ $value.repo }}.git
-    branch: {{ default "master" $value.branch }}
-    sub_dir: {{ default "" $value.sub_dir }}
+    {{- with $value.branch }}
+    branch: {{ . | quote }}
+    {{- end }}
+    {{- with $value.sub_dir }}
+    sub_dir: {{ . | quote }}
+    {{- end }}
     tags:
       - print
     {{- if hasKey . "template_engines" }}
@@ -76,10 +80,14 @@ spec:
   content:
     type: git
     repo: git@github.com:{{ $value.repo }}.git
-    branch: {{ default "master" $value.branch }}
-    sub_dir: {{ default "" $value.sub_dir }}
+    {{- with $value.branch }}
+    branch: {{ . | quote }}
+    {{- end }}
+    {{- with $value.sub_dir }}
+    sub_dir: {{ . | quote }}
+    {{- end }}
     tags:
-      - print
+      - tilecloudchain
     {{- if hasKey . "template_engines" }}
     template_engines:
     {{- range $value.template_engines }}
