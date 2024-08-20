@@ -136,8 +136,7 @@ spec:
       - type: shell
         environment_variables: true
         data:
-          - name: "TOTO"
-            value: "toto"
+          TOTO: toto
 ---
 # Source: mutualize/templates/sharedconfig.yaml
 apiVersion: camptocamp.com/v3
@@ -287,14 +286,12 @@ spec:
         environment_variables: true
         dest_sub_dir: "p1"
         data:
-          - name: "ENV"
-            value: "e1"
+          ENV: e1
       - type: shell
         environment_variables: true
         dest_sub_dir: "p2"
         data:
-          - name: "ENV"
-            value: "e2"
+          ENV: e2
 ---
 # Source: mutualize/templates/sharedconfig.yaml
 apiVersion: camptocamp.com/v3
@@ -382,14 +379,12 @@ spec:
         environment_variables: true
         dest_sub_dir: "p1"
         data:
-          - name: "ENV"
-            value: "e1"
+          ENV: e1
       - type: shell
         environment_variables: true
         dest_sub_dir: "p2"
         data:
-          - name: "ENV"
-            value: "e2"
+          ENV: e2
 ---
 # Source: mutualize/templates/sharedconfig.yaml
 apiVersion: camptocamp.com/v3
