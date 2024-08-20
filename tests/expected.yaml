@@ -255,8 +255,8 @@ spec:
   content:
     type: git
     repo: git@github.com:print/repo.git
-    branch: print-example
-    sub_dir: examples/src/test/resources/examples
+    branch: "print-example"
+    sub_dir: "examples/src/test/resources/examples"
     tags:
       - print
 ---
@@ -278,8 +278,8 @@ spec:
   content:
     type: git
     repo: git@github.com:print/repo-multi.git
-    branch: print-multi
-    sub_dir: examples/src/test/resources/multi
+    branch: "print-multi"
+    sub_dir: "examples/src/test/resources/multi"
     tags:
       - print
     template_engines:
@@ -314,10 +314,10 @@ spec:
   content:
     type: git
     repo: git@github.com:tilecloudchain/repo.git
-    branch: tilecloudchain-example
-    sub_dir: examples/src/test/resources/examples
+    branch: "tilecloudchain-example"
+    sub_dir: "examples/src/test/resources/examples"
     tags:
-      - print
+      - tilecloudchain
 ---
 # Source: mutualize/templates/sharedconfig.yaml
 apiVersion: camptocamp.com/v3
@@ -373,10 +373,10 @@ spec:
   content:
     type: git
     repo: git@github.com:tilecloudchain/repo-multi.git
-    branch: tilecloudchain-multi
-    sub_dir: examples/src/test/resources/multi
+    branch: "tilecloudchain-multi"
+    sub_dir: "examples/src/test/resources/multi"
     tags:
-      - print
+      - tilecloudchain
     template_engines:
       - type: shell
         environment_variables: true
