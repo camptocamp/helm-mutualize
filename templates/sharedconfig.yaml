@@ -18,10 +18,7 @@ spec:
         environment_variables: true
         {{- with .env }}
         data:
-          {{- range $name, $value := . }}
-          - name: {{ $name | quote }}
-            value: {{ . | quote }}
-          {{- end }}
+          {{- toYaml . | nindent 10 }}
         {{- end }}
     {{- end }}
 {{- end }}
@@ -57,10 +54,7 @@ spec:
         {{- end }}
         {{- with .data }}
         data:
-          {{- range $name, $value := . }}
-          - name: {{ $name | quote }}
-            value: {{ . | quote }}
-          {{- end }}
+          {{- toYaml . | nindent 10 }}
         {{- end }}
     {{- end }}
     {{- end }}
@@ -98,10 +92,7 @@ spec:
         {{- end }}
         {{- with .data }}
         data:
-          {{- range $name, $value := . }}
-          - name: {{ $name | quote }}
-            value: {{ . | quote }}
-          {{- end }}
+          {{- toYaml . | nindent 10 }}
         {{- end }}
     {{- end }}
     {{- end }}
