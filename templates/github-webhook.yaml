@@ -8,7 +8,9 @@ metadata:
 spec:
   contentType: json
   repository: {{ $repository }}
-  secret: {{ $.Values.config.webhooks.secret }}
+  {{- with $.Values.config.webhooks.secret }}
+  secret: {{ . }}
+  {{- end }}
   url: {{ $.Values.config.webhooks.base_url }}{{ $source }}
 {{- end }}
 {{- with $.Values.config.printConfigs }}
@@ -22,7 +24,9 @@ metadata:
 spec:
   contentType: json
   repository: {{ $definition.repo }}
-  secret: {{ $.Values.config.webhooks.secret }}
+  {{- with $.Values.config.webhooks.secret }}
+  secret: {{ . }}
+  {{- end }}
   url: {{ $.Values.config.webhooks.base_url }}{{ $source }}
 {{- end }}
 {{- end }}
@@ -37,7 +41,9 @@ metadata:
 spec:
   contentType: json
   repository: {{ $definition.repo }}
-  secret: {{ $.Values.config.webhooks.secret }}
+  {{- with $.Values.config.webhooks.secret }}
+  secret: {{ . }}
+  {{- end }}
   url: {{ $.Values.config.webhooks.base_url }}{{ $source }}
 {{- end }}
 {{- end }}
