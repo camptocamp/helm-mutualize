@@ -14,7 +14,6 @@ metadata:
 spec:
   contentType: json
   repository: camptocamp/demo
-  secret: to be defined
   url: https://example.com/test
 ---
 # Source: mutualize/templates/github-webhook.yaml
@@ -32,7 +31,6 @@ metadata:
 spec:
   contentType: json
   repository: print/repo
-  secret: to be defined
   url: https://example.com/print-example
 ---
 # Source: mutualize/templates/github-webhook.yaml
@@ -50,7 +48,6 @@ metadata:
 spec:
   contentType: json
   repository: print/repo-multi
-  secret: to be defined
   url: https://example.com/print-multi-example
 ---
 # Source: mutualize/templates/github-webhook.yaml
@@ -68,7 +65,6 @@ metadata:
 spec:
   contentType: json
   repository: tilecloudchain/repo
-  secret: to be defined
   url: https://example.com/tilecloudchain-example
 ---
 # Source: mutualize/templates/github-webhook.yaml
@@ -86,7 +82,6 @@ metadata:
 spec:
   contentType: json
   repository: tilecloudchain/repo-multi
-  secret: to be defined
   url: https://example.com/tilecloudchain-multi-example
 ---
 # Source: mutualize/templates/sharedconfig.yaml

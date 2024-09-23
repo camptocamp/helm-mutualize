@@ -23,16 +23,16 @@ acceptance:
 	# Install shared config manager operator
 	helm repo add operator-shared-config-manager https://camptocamp.github.io/operator-shared-config-manager
 	VERSION=`ci/get-version camptocamp/operator-shared-config-manager` helm install \
-		operator-shared-config-manager --set=image.tag=${VERSION} --set=crd.suffix=int \
-		--set=crd.shortSuffix=i --set=env.ENVIRONMENT=int --version=${VERSION} \
-		operator-shared-config-manager/operator-shared-config-manager
+		operator-shared-config-manager --set=crd.suffix=int --set=crd.shortSuffix=i \
+		--set=clusterrole=false --set=clusterrolebinding=false --set=deployment=false \
+		--version=${VERSION} operator-shared-config-manager/operator-shared-config-manager
 
       # Install Github webhook operator
 	helm repo add operator-github-webhook https://camptocamp.github.io/operator-github-webhook
 	VERSION=`ci/get-version camptocamp/operator-github-webhook` helm install \
-		operator-github-webhook --set=image.tag=${VERSION} --set=crd.suffix=int \
-		--set=crd.shortSuffix=i --set=env.ENVIRONMENT=int --version=${VERSION} \
-		operator-github-webhook/operator-github-webhook
+		operator-github-webhook --set=crd.suffix=int --set=crd.shortSuffix=i \
+		--set=clusterrole=false --set=clusterrolebinding=false --set=deployment=false \
+		--version=${VERSION} operator-github-webhook/operator-github-webhook
 
 	helm repo add bitnami https://charts.bitnami.com/bitnami
 	VERSION=`ci/get-version bitnami/redis` helm install test-redis --set=auth.enabled=false --set=replica.replicaCount=0 \

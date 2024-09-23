@@ -51,6 +51,5 @@ config:
 
   webhooks:
     base_url: https://example.com/
-    secret: to be defined
     repositories: {}
     # source: repository
