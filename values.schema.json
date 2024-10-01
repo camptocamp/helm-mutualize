@@ -273,6 +273,19 @@
           },
           "annotations": {
             "$ref": "#/definitions/annotations"
+          },
+          "refreshInterval": {
+            "type": "string",
+            "default": "1h",
+            "description": "The refresh interval of the external secret"
+          },
+          "secretStoreRef": {
+            "type": "object"
+          },
+          "externalSecretPrefix": {
+            "type": "string",
+            "default": "config",
+            "description": "Prefix for the external secret remote keys"
           }
         }
       }

@@ -204,6 +204,11 @@ spec:
   property: sources
   configmapName: config.yaml
   outputKind: ExternalSecret
+  refreshInterval: 1h
+  secretStoreRef:
+    name: secret-store
+    namespace: default
+  externalSecretPrefix: config
 ---
 # Source: mutualize/templates/tilecloudchain-config-hosts.yaml
 apiVersion: camptocamp.com/v4
