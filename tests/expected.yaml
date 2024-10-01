@@ -85,7 +85,7 @@ spec:
   url: https://example.com/tilecloudchain-multi-example
 ---
 # Source: mutualize/templates/sharedconfig.yaml
-apiVersion: camptocamp.com/v3
+apiVersion: camptocamp.com/v4
 kind: SharedConfigSourceInt
 metadata:
   name: test-mutualize-examples
@@ -106,7 +106,7 @@ spec:
         environment_variables: true
 ---
 # Source: mutualize/templates/sharedconfig.yaml
-apiVersion: camptocamp.com/v3
+apiVersion: camptocamp.com/v4
 kind: SharedConfigSourceInt
 metadata:
   name: test-mutualize-examples2
@@ -134,7 +134,7 @@ spec:
           TOTO: toto
 ---
 # Source: mutualize/templates/sharedconfig.yaml
-apiVersion: camptocamp.com/v3
+apiVersion: camptocamp.com/v4
 kind: SharedConfigSourceInt
 metadata:
   name: test-mutualize-no-env
@@ -151,7 +151,7 @@ spec:
     {}
 ---
 # Source: mutualize/templates/sharedconfig.yaml
-apiVersion: camptocamp.com/v3
+apiVersion: camptocamp.com/v4
 kind: SharedConfigSourceInt
 metadata:
   name: test-mutualize-print
@@ -182,7 +182,7 @@ spec:
     type: git
 ---
 # Source: mutualize/templates/sharedconfig.yaml
-apiVersion: camptocamp.com/v3
+apiVersion: camptocamp.com/v4
 kind: SharedConfigSourceInt
 metadata:
   name: test-mutualize-redirecthosts
@@ -200,7 +200,7 @@ spec:
     example.com: /etc/tilecloudchain-configs/example/config.yaml
 ---
 # Source: mutualize/templates/sharedconfig.yaml
-apiVersion: camptocamp.com/v3
+apiVersion: camptocamp.com/v4
 kind: SharedConfigSourceInt
 metadata:
   name: test-mutualize-tilecloudchain
@@ -232,7 +232,7 @@ spec:
     type: git
 ---
 # Source: mutualize/templates/sharedconfig.yaml
-apiVersion: camptocamp.com/v3
+apiVersion: camptocamp.com/v4
 kind: SharedConfigSourceInt
 metadata:
   name: test-mutualize-print-example
@@ -255,7 +255,7 @@ spec:
       - print
 ---
 # Source: mutualize/templates/sharedconfig.yaml
-apiVersion: camptocamp.com/v3
+apiVersion: camptocamp.com/v4
 kind: SharedConfigSourceInt
 metadata:
   name: test-mutualize-print-multi-example
@@ -289,7 +289,7 @@ spec:
           ENV: e2
 ---
 # Source: mutualize/templates/sharedconfig.yaml
-apiVersion: camptocamp.com/v3
+apiVersion: camptocamp.com/v4
 kind: SharedConfigSourceInt
 metadata:
   name: test-mutualize-tilecloudchain-example
@@ -312,7 +312,7 @@ spec:
       - tilecloudchain
 ---
 # Source: mutualize/templates/sharedconfig.yaml
-apiVersion: camptocamp.com/v3
+apiVersion: camptocamp.com/v4
 kind: SharedConfigSourceInt
 metadata:
   name: test-mutualize-tilecloudchain-example-host1
@@ -330,7 +330,7 @@ spec:
     host1.example.com: /etc/tilecloudchain-configs/tilecloudchain-example/config.yaml
 ---
 # Source: mutualize/templates/sharedconfig.yaml
-apiVersion: camptocamp.com/v3
+apiVersion: camptocamp.com/v4
 kind: SharedConfigSourceInt
 metadata:
   name: test-mutualize-tilecloudchain-example-host2
@@ -348,7 +348,7 @@ spec:
     host2.example.com: /etc/tilecloudchain-configs/tilecloudchain-example/config.yaml
 ---
 # Source: mutualize/templates/sharedconfig.yaml
-apiVersion: camptocamp.com/v3
+apiVersion: camptocamp.com/v4
 kind: SharedConfigSourceInt
 metadata:
   name: test-mutualize-tilecloudchain-multi-example
@@ -382,7 +382,7 @@ spec:
           ENV: e2
 ---
 # Source: mutualize/templates/sharedconfig.yaml
-apiVersion: camptocamp.com/v3
+apiVersion: camptocamp.com/v4
 kind: SharedConfigSourceInt
 metadata:
   name: test-mutualize-tilecloudchain-multi-example-host3
@@ -400,7 +400,7 @@ spec:
     host3.example.com: /etc/tilecloudchain-configs/tilecloudchain-multi-example/config.yaml
 ---
 # Source: mutualize/templates/sharedconfig.yaml
-apiVersion: camptocamp.com/v3
+apiVersion: camptocamp.com/v4
 kind: SharedConfigSourceInt
 metadata:
   name: test-mutualize-redirect

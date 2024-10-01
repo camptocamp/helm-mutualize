@@ -1,6 +1,6 @@
 {{- range $name, $value := .Values.config.sharedConfigs }}
 ---
-apiVersion: camptocamp.com/v3
+apiVersion: camptocamp.com/v4
 kind: SharedConfigSource{{ $.Values.environment | title }}
 metadata:
   name: {{ include "common.fullname" ( dict "root" $ "service" $.Values "serviceName" $name ) }}
@@ -25,7 +25,7 @@ spec:
 {{- with $.Values.config.printConfigs }}
 {{- range $name, $value := .sources }}
 ---
-apiVersion: camptocamp.com/v3
+apiVersion: camptocamp.com/v4
 kind: SharedConfigSource{{ $.Values.environment | title }}
 metadata:
   name: {{ include "common.fullname" ( dict "root" $ "service" $.Values "serviceName" $name ) }}
@@ -63,7 +63,7 @@ spec:
 {{- with $.Values.config.tileCloudChainConfigs }}
 {{- range $name, $value := .sources }}
 ---
-apiVersion: camptocamp.com/v3
+apiVersion: camptocamp.com/v4
 kind: SharedConfigSource{{ $.Values.environment | title }}
 metadata:
   name: {{ include "common.fullname" ( dict "root" $ "service" $.Values "serviceName" $name ) }}
@@ -99,7 +99,7 @@ spec:
 {{- range $host_name, $host := $value.hosts }}
 ---
 {{- $used_name := printf "%s-%s" $name $host_name }}
-apiVersion: camptocamp.com/v3
+apiVersion: camptocamp.com/v4
 kind: SharedConfigSource{{ $.Values.environment | title }}
 metadata:
   name: {{ include "common.fullname" ( dict "root" $ "service" $.Values "serviceName" $used_name ) }}
@@ -115,7 +115,7 @@ spec:
 {{- with $.Values.config.redirectConfigs }}
 {{- if ( .hosts | default false ) }}
 ---
-apiVersion: camptocamp.com/v3
+apiVersion: camptocamp.com/v4
 kind: SharedConfigSource{{ $.Values.environment | title }}
 metadata:
   name: {{ include "common.fullname" ( dict "root" $ "service" $.Values "serviceName" "redirect" ) }}
