@@ -169,7 +169,7 @@ roleRef:
   apiGroup: rbac.authorization.k8s.io
 ---
 # Source: mutualize/templates/redirect-config.yaml
-apiVersion: camptocamp.com/v3
+apiVersion: camptocamp.com/v4
 kind: SharedConfigConfigInt
 metadata:
   name: test-mutualize-redirect
@@ -187,7 +187,7 @@ spec:
   property: sources
 ---
 # Source: mutualize/templates/shared-config-config.yaml
-apiVersion: camptocamp.com/v3
+apiVersion: camptocamp.com/v4
 kind: SharedConfigConfigInt
 metadata:
   name: test-mutualize-config
@@ -203,9 +203,10 @@ spec:
     mutualize-sharedconfig-test: 'true'
   property: sources
   configmapName: config.yaml
+  outputKind: ExternalSecret
 ---
 # Source: mutualize/templates/tilecloudchain-config-hosts.yaml
-apiVersion: camptocamp.com/v3
+apiVersion: camptocamp.com/v4
 kind: SharedConfigConfigInt
 metadata:
   name: test-mutualize-tcc-hosts

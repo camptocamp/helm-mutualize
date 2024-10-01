@@ -1,5 +1,5 @@
 {{- if .Values.server.enabled }}
-apiVersion: camptocamp.com/v3
+apiVersion: camptocamp.com/v4
 kind: SharedConfigConfig{{ .Values.environment | title }}
 metadata:
   name: {{ include "common.fullname" ( dict "root" . "service" .Values.server.sharedConfig "serviceName" "config" ) }}
@@ -9,4 +9,5 @@ spec:
     mutualize-sharedconfig{{ $.Values.postfix }}: 'true'
   property: sources
   configmapName: config.yaml
+  outputKind: ExternalSecret
 {{- end }}

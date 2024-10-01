@@ -1,6 +1,6 @@
 {{- if .Values.server.enabled }}
 {{- if .Values.server.tilecloudchain.enabled }}
-apiVersion: camptocamp.com/v3
+apiVersion: camptocamp.com/v4
 kind: SharedConfigConfig{{ .Values.environment | title }}
 metadata:
   name: {{ include "common.fullname" ( dict "root" . "service" .Values.server.tilecloudchain "serviceName" "tcc-hosts" ) }}
