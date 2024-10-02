@@ -10,4 +10,9 @@ spec:
   property: sources
   configmapName: config.yaml
   outputKind: ExternalSecret
+  refreshInterval: {{ .Values.server.sharedConfig.refreshInterval | default "1h" }}
+  {{- with .Values.server.sharedConfig.secretStoreRef }}
+  secretStoreRef: {{ . | toYaml | nindent 4 }}
+  {{- end }}
+  externalSecretPrefix: {{ .Values.server.sharedConfig.externalSecretPrefix | default "config" }}
 {{- end }}

@@ -8,3 +8,7 @@ rbacGroups:
 
 server:
   enabled: true
+  sharedConfig:
+    secretStoreRef:
+      name: secret-store
+      namespace: default
