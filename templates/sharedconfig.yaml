@@ -10,6 +10,10 @@ metadata:
   {{- end }}
 spec:
   name: {{ $name }}
+  {{- with $value.external_secret }}
+  external_secret:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
   content:
     {{- toYaml .content | nindent 4 }}
     {{- if hasKey . "env" }}
@@ -33,6 +37,10 @@ metadata:
     mutualize-sharedconfig{{ $.Values.postfix }}: 'true'
 spec:
   name: {{ $name }}
+  {{- with $value.external_secret }}
+  external_secret:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
   content:
     type: git
     repo: git@github.com:{{ $value.repo }}.git
@@ -71,6 +79,10 @@ metadata:
     mutualize-sharedconfig{{ $.Values.postfix }}: 'true'
 spec:
   name: {{ $name }}
+  {{- with $value.external_secret }}
+  external_secret:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
   content:
     type: git
     repo: git@github.com:{{ $value.repo }}.git

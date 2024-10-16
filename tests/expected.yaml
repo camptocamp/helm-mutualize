@@ -165,6 +165,8 @@ metadata:
     mutualize-sharedconfig: "true"
 spec:
   name: print
+  external_secret:
+    secret_key: secret-value
   content:
     branch: prod-2-7
     repo: https://github.com/camptocamp/demo_geomapfish.git
@@ -175,6 +177,7 @@ spec:
     - data:
         AWS_ACCESS_KEY_ID: secret
         AWS_SECRET_ACCESS_KEY: secret
+        ENV: '{secret_key}'
         SMTP_PASSWORD: secret
         SMTP_USER: secret
       environment_variables: true
@@ -269,6 +272,8 @@ metadata:
     mutualize-sharedconfig: 'true'
 spec:
   name: print-multi-example
+  external_secret:
+    secret_key: secret-value
   content:
     type: git
     repo: git@github.com:print/repo-multi.git
@@ -286,7 +291,7 @@ spec:
         environment_variables: true
         dest_sub_dir: "p2"
         data:
-          ENV: e2
+          ENV: '{secret_key}'
 ---
 # Source: mutualize/templates/sharedconfig.yaml
 apiVersion: camptocamp.com/v4
@@ -362,6 +367,8 @@ metadata:
     mutualize-sharedconfig: 'true'
 spec:
   name: tilecloudchain-multi-example
+  external_secret:
+    secret_key: secret-value
   content:
     type: git
     repo: git@github.com:tilecloudchain/repo-multi.git
@@ -379,7 +386,7 @@ spec:
         environment_variables: true
         dest_sub_dir: "p2"
         data:
-          ENV: e2
+          ENV: '{secret_key}'
 ---
 # Source: mutualize/templates/sharedconfig.yaml
 apiVersion: camptocamp.com/v4
