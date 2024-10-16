@@ -17,7 +17,9 @@ config:
               ENV: e1
           - dest_sub_dir: p2
             data:
-              ENV: e2
+              ENV: '{secret_key}'
+        external_secret:
+          secret_key: secret-value
   tileCloudChainConfigs:
     sources:
       tilecloudchain-example:
@@ -37,7 +39,9 @@ config:
               ENV: e1
           - dest_sub_dir: p2
             data:
-              ENV: e2
+              ENV: '{secret_key}'
+        external_secret:
+          secret_key: secret-value
         hosts:
           host3: host3.example.com
   redirectConfigs:
@@ -86,6 +90,9 @@ config:
               AWS_SECRET_ACCESS_KEY: secret
               SMTP_PASSWORD: secret
               SMTP_USER: secret
+              ENV: '{secret_key}'
+      external_secret:
+        secret_key: secret-value
 
     tilecloudchain:
       labels:
