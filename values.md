@@ -2,21 +2,29 @@
 
 ## Properties
 
-- **`global`**
+- **`global`** _(object)_: Can contain additional properties.
+  - **`releaseNameOverride`**: Refer to _[#/definitions/releaseNameOverride](#definitions/releaseNameOverride)_.
+  - **`releaseTrunc`**: Refer to _[#/definitions/releaseTrunc](#definitions/releaseTrunc)_.
+  - **`nameTrunc`**: Refer to _[#/definitions/nameTrunc](#definitions/nameTrunc)_.
+  - **`prefixTrunc`**: Refer to _[#/definitions/prefixTrunc](#definitions/prefixTrunc)_.
 - **`common`**
 - **`sharedAnchor`**: Free space where we can defined anchor to be used later.
 - **`nameOverride`**: Refer to _[#/definitions/nameOverride](#definitions/nameOverride)_.
 - **`fullnameOverride`**: Refer to _[#/definitions/fullnameOverride](#definitions/fullnameOverride)_.
+- **`releaseNameOverride`**: Refer to _[#/definitions/releaseNameOverride](#definitions/releaseNameOverride)_.
 - **`serviceName`**: Refer to _[#/definitions/serviceName](#definitions/serviceName)_.
 - **`releaseTrunc`**: Refer to _[#/definitions/releaseTrunc](#definitions/releaseTrunc)_.
+- **`nameTrunc`**: Refer to _[#/definitions/nameTrunc](#definitions/nameTrunc)_.
 - **`prefixTrunc`**: Refer to _[#/definitions/prefixTrunc](#definitions/prefixTrunc)_.
 - **`server`** _(object)_: The server configuration. Cannot contain additional properties.
   - **`enabled`** _(boolean)_: Enable the server part.
   - **`config`** _(object)_: Cannot contain additional properties.
     - **`nameOverride`**: Refer to _[#/definitions/nameOverride](#definitions/nameOverride)_.
     - **`fullnameOverride`**: Refer to _[#/definitions/fullnameOverride](#definitions/fullnameOverride)_.
+    - **`releaseNameOverride`**: Refer to _[#/definitions/releaseNameOverride](#definitions/releaseNameOverride)_.
     - **`serviceName`**: Refer to _[#/definitions/serviceName](#definitions/serviceName)_.
     - **`releaseTrunc`**: Refer to _[#/definitions/releaseTrunc](#definitions/releaseTrunc)_.
+    - **`nameTrunc`**: Refer to _[#/definitions/nameTrunc](#definitions/nameTrunc)_.
     - **`prefixTrunc`**: Refer to _[#/definitions/prefixTrunc](#definitions/prefixTrunc)_.
     - **`labels`**: Refer to _[#/definitions/labels](#definitions/labels)_.
     - **`annotations`**: Refer to _[#/definitions/annotations](#definitions/annotations)_.
@@ -26,8 +34,10 @@
     - **`enabled`** _(boolean)_: Enable the pod configuration.
     - **`nameOverride`**: Refer to _[#/definitions/nameOverride](#definitions/nameOverride)_.
     - **`fullnameOverride`**: Refer to _[#/definitions/fullnameOverride](#definitions/fullnameOverride)_.
+    - **`releaseNameOverride`**: Refer to _[#/definitions/releaseNameOverride](#definitions/releaseNameOverride)_.
     - **`serviceName`**: Refer to _[#/definitions/serviceName](#definitions/serviceName)_.
     - **`releaseTrunc`**: Refer to _[#/definitions/releaseTrunc](#definitions/releaseTrunc)_.
+    - **`nameTrunc`**: Refer to _[#/definitions/nameTrunc](#definitions/nameTrunc)_.
     - **`prefixTrunc`**: Refer to _[#/definitions/prefixTrunc](#definitions/prefixTrunc)_.
     - **`labels`**: Refer to _[#/definitions/labels](#definitions/labels)_.
     - **`annotations`**: Refer to _[#/definitions/annotations](#definitions/annotations)_.
@@ -35,8 +45,10 @@
     - **`enabled`** _(boolean)_: Enable the service.
     - **`nameOverride`**: Refer to _[#/definitions/nameOverride](#definitions/nameOverride)_.
     - **`fullnameOverride`**: Refer to _[#/definitions/fullnameOverride](#definitions/fullnameOverride)_.
+    - **`releaseNameOverride`**: Refer to _[#/definitions/releaseNameOverride](#definitions/releaseNameOverride)_.
     - **`serviceName`**: Refer to _[#/definitions/serviceName](#definitions/serviceName)_.
     - **`releaseTrunc`**: Refer to _[#/definitions/releaseTrunc](#definitions/releaseTrunc)_.
+    - **`nameTrunc`**: Refer to _[#/definitions/nameTrunc](#definitions/nameTrunc)_.
     - **`prefixTrunc`**: Refer to _[#/definitions/prefixTrunc](#definitions/prefixTrunc)_.
     - **`labels`**: Refer to _[#/definitions/labels](#definitions/labels)_.
     - **`annotations`**: Refer to _[#/definitions/annotations](#definitions/annotations)_.
@@ -44,8 +56,10 @@
     - **`enabled`** _(boolean)_: Enable the service.
     - **`nameOverride`**: Refer to _[#/definitions/nameOverride](#definitions/nameOverride)_.
     - **`fullnameOverride`**: Refer to _[#/definitions/fullnameOverride](#definitions/fullnameOverride)_.
+    - **`releaseNameOverride`**: Refer to _[#/definitions/releaseNameOverride](#definitions/releaseNameOverride)_.
     - **`serviceName`**: Refer to _[#/definitions/serviceName](#definitions/serviceName)_.
     - **`releaseTrunc`**: Refer to _[#/definitions/releaseTrunc](#definitions/releaseTrunc)_.
+    - **`nameTrunc`**: Refer to _[#/definitions/nameTrunc](#definitions/nameTrunc)_.
     - **`prefixTrunc`**: Refer to _[#/definitions/prefixTrunc](#definitions/prefixTrunc)_.
     - **`labels`**: Refer to _[#/definitions/labels](#definitions/labels)_.
     - **`annotations`**: Refer to _[#/definitions/annotations](#definitions/annotations)_.
@@ -70,7 +84,9 @@
   - **`webhooks`** _(object)_: Additional WebHooks used by the GitHub WebHook operator to create WebHook in the GitHub repository of the related project. Cannot contain additional properties.
     - **`nameOverride`**: Refer to _[#/definitions/nameOverride](#definitions/nameOverride)_.
     - **`fullnameOverride`**: Refer to _[#/definitions/fullnameOverride](#definitions/fullnameOverride)_.
+    - **`releaseNameOverride`**: Refer to _[#/definitions/releaseNameOverride](#definitions/releaseNameOverride)_.
     - **`releaseTrunc`**: Refer to _[#/definitions/releaseTrunc](#definitions/releaseTrunc)_.
+    - **`nameTrunc`**: Refer to _[#/definitions/nameTrunc](#definitions/nameTrunc)_.
     - **`prefixTrunc`**: Refer to _[#/definitions/prefixTrunc](#definitions/prefixTrunc)_.
     - **`labels`**: Refer to _[#/definitions/labels](#definitions/labels)_.
     - **`annotations`**: Refer to _[#/definitions/annotations](#definitions/annotations)_.
@@ -86,10 +102,12 @@
 
 ## Definitions
 
-- <a id="definitions/nameOverride"></a>**`nameOverride`** _(string)_: [helm-common] Override the name.
-- <a id="definitions/fullnameOverride"></a>**`fullnameOverride`** _(string)_: [helm-common] Override the fullname.
-- <a id="definitions/releaseTrunc"></a>**`releaseTrunc`** _(integer)_: [helm-common] The release trunk length. Default: `20`.
-- <a id="definitions/prefixTrunc"></a>**`prefixTrunc`** _(integer)_: [helm-common] The prefix trunk length (release and chart name). Default: `40`.
+- <a id="definitions/nameOverride"></a>**`nameOverride`** _(string)_: [helm-common] Override the name (can be in the service or values).
+- <a id="definitions/fullnameOverride"></a>**`fullnameOverride`** _(string)_: [helm-common] Override the fullname (can be in the service or values).
+- <a id="definitions/releaseNameOverride"></a>**`releaseNameOverride`** _(string)_: [helm-common] Override the the release name (can be in the service, values or global).
+- <a id="definitions/releaseTrunc"></a>**`releaseTrunc`** _(integer)_: [helm-common] The release name trunk length (can be in the service, values or global). Default: `20`.
+- <a id="definitions/nameTrunc"></a>**`nameTrunc`** _(integer)_: [helm-common] The chart name trunk length (can be in the service, values or global). Default: `63`.
+- <a id="definitions/prefixTrunc"></a>**`prefixTrunc`** _(integer)_: [helm-common] The prefix trunk length (release and chart name) (can be in the service, values or global). Default: `40`.
 - <a id="definitions/labels"></a>**`labels`** _(object)_: [helm-common] Pod labels. Can contain additional properties.
   - **Additional properties** _(string)_
 - <a id="definitions/annotations"></a>**`annotations`** _(object)_: [helm-common] Pod annotations. Can contain additional properties.
