@@ -32,7 +32,7 @@ repos:
       - id: helm-lock
 
   - repo: https://github.com/camptocamp/helm-common
-    rev: 2.0.1
+    rev: 2.1.1
     hooks:
       - id: helm-template-gen
         files: |-
@@ -141,6 +141,6 @@ repos:
           - --fields=description,title
           - --spelling=.github/spell-ignore-words.txt
   - repo: https://github.com/renovatebot/pre-commit-hooks
-    rev: 39.42.4
+    rev: 39.86.3
     hooks:
       - id: renovate-config-validator
