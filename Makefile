@@ -22,21 +22,21 @@ acceptance:
 
 	# Install shared config manager operator
 	helm repo add operator-shared-config-manager https://camptocamp.github.io/operator-shared-config-manager
-	VERSION=`ci/get-version camptocamp/operator-shared-config-manager` helm install \
+	VERSION=`ci/get-version camptocamp/operator-shared-config-manager` helm template \
 		operator-shared-config-manager --set=crd.suffix=int --set=crd.shortSuffix=i \
 		--set=clusterrole=false --set=clusterrolebinding=false --set=deployment=false \
-		--version=${VERSION} operator-shared-config-manager/operator-shared-config-manager
+		--version=${VERSION} operator-shared-config-manager/operator-shared-config-manager | kubectl apply -f -
 
       # Install Github webhook operator
 	helm repo add operator-github-webhook https://camptocamp.github.io/operator-github-webhook
-	VERSION=`ci/get-version camptocamp/operator-github-webhook` helm install \
+	VERSION=`ci/get-version camptocamp/operator-github-webhook` helm template \
 		operator-github-webhook --set=crd.suffix=int --set=crd.shortSuffix=i \
 		--set=clusterrole=false --set=clusterrolebinding=false --set=deployment=false \
-		--version=${VERSION} operator-github-webhook/operator-github-webhook
+		--version=${VERSION} operator-github-webhook/operator-github-webhook | kubectl apply -f -
 
 	helm repo add bitnami https://charts.bitnami.com/bitnami
-	VERSION=`ci/get-version bitnami/redis` helm install test-redis --set=auth.enabled=false --set=replica.replicaCount=0 \
-		--set=master.persistence.enabled=false --version=${VERSION} bitnami/redis
+	VERSION=`ci/get-version bitnami/redis` helm template test-redis --set=auth.enabled=false --set=replica.replicaCount=0 \
+		--set=master.persistence.enabled=false --version=${VERSION} bitnami/redis | kubectl apply -f -
 
 	# Install prometheus CRD
 	curl https://raw.githubusercontent.com/prometheus-operator/prometheus-operator/main/jsonnet/prometheus-operator/podmonitors-crd.json \
