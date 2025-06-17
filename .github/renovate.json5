@@ -8,15 +8,17 @@
     'github>camptocamp/gs-renovate-config-preset:own.json5#1.1.2',
     'github>camptocamp/gs-renovate-config-preset:json-schema.json5#1.1.2',
     'github>camptocamp/gs-renovate-config-preset:shellcheck.json5#1.1.2',
+    'github>camptocamp/gs-renovate-config-preset:python.json5#1.0.1',
+    'github>camptocamp/gs-renovate-config-preset:security.json5#1.0.1',
   ],
   kubernetes: {
     fileMatch: ['templates/.+\\.yaml$', 'tests/.*expected\\.yaml$'],
   },
   customManagers: [
     {
-      fileMatch: ['^versions.yaml$'],
       matchStrings: ['(?<depName>.*): (?<currentValue>.*) # (?<datasource>.*)'],
       customType: 'regex',
+      managerFilePatterns: ['/^versions.yaml$/'],
     },
   ],
   $schema: 'https://docs.renovatebot.com/renovate-schema.json',
