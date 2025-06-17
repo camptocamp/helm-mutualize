@@ -1,9 +1,16 @@
-[tool.black]
+[tool.ruff]
+target-version = "py310"
 line-length = 110
-target-version = ['py38']
+
+[tool.ruff.lint.pydocstyle]
+convention = "numpy"
 
 [tool.poetry]
-name = "helm-mutualized"
 version = "0.0.0"
+
+[project]
+classifiers = []
+dynamic = ["dependencies", "version"]
+name = "helm-mutualized"
 description = "HELM chart to use the mutualized infrastructure"
-authors = ["Camptocamp <info@camptocamp.com>"]
+authors = [{name = "Camptocamp",email = "info@camptocamp.com"}]
