@@ -32,8 +32,7 @@ server:
     enabled: true
 
 config:
-  printConfigs:
-    {}
+  printConfigs: {}
     # repo: <repository>
     # branch: <branch>
     # sub_dir: <sub_dir>
@@ -42,8 +41,7 @@ config:
     #     env:
     #       <ENV>: <env_value>
 
-  sharedConfigs:
-    {}
+  sharedConfigs: {}
     # <config_name>:
     #   labels: {}
     #   content: {}
