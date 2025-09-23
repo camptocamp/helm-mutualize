@@ -83,6 +83,12 @@
               }
             }
           }
+        },
+        "github_access_type": {
+          "type": "string",
+          "description": "The type of access to check (admin|push|pull)",
+          "enum": ["admin", "push", "pull"],
+          "default": "push"
         }
       }
     },
@@ -444,6 +450,11 @@
               "additionalProperties": {
                 "type": "string"
               }
+            },
+            "auth": {
+              "type": "object",
+              "description": "The authentication to use to access the configuration, should have properties github_repository and github_access_type",
+              "additionalProperties": true
             }
           }
         },

@@ -56,6 +56,10 @@ config:
         type: git
         repo: git@github.com:mapfish/mapfish-print.git
       env: {}
+      auth:
+        github_repository: test
+        # The type of access to check (admin|push|pull).
+        github_access_type: admin
 
     examples2:
       labels:

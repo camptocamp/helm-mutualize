@@ -104,6 +104,10 @@ spec:
     template_engines:
       - type: shell
         environment_variables: true
+
+    auth:
+      github_access_type: admin
+      github_repository: test
 ---
 # Source: mutualize/templates/sharedconfig.yaml
 apiVersion: camptocamp.com/v4
@@ -256,6 +260,10 @@ spec:
     sub_dir: "examples/src/test/resources/examples"
     tags:
       - print
+    auth:
+      github_repository: print/repo
+      # The type of access to check (admin|push|pull).
+      github_access_type: push
 ---
 # Source: mutualize/templates/sharedconfig.yaml
 apiVersion: camptocamp.com/v4
@@ -292,6 +300,10 @@ spec:
         dest_sub_dir: "p2"
         data:
           ENV: '{secret_key}'
+    auth:
+      github_repository: print/repo-multi
+      # The type of access to check (admin|push|pull).
+      github_access_type: push
 ---
 # Source: mutualize/templates/sharedconfig.yaml
 apiVersion: camptocamp.com/v4
@@ -315,6 +327,10 @@ spec:
     sub_dir: "examples/src/test/resources/examples"
     tags:
       - tilecloudchain
+    auth:
+      github_repository: tilecloudchain/repo
+      # The type of access to check (admin|push|pull).
+      github_access_type: push
 ---
 # Source: mutualize/templates/sharedconfig.yaml
 apiVersion: camptocamp.com/v4
@@ -387,6 +403,10 @@ spec:
         dest_sub_dir: "p2"
         data:
           ENV: '{secret_key}'
+    auth:
+      github_repository: tilecloudchain/repo-multi
+      # The type of access to check (admin|push|pull).
+      github_access_type: push
 ---
 # Source: mutualize/templates/sharedconfig.yaml
 apiVersion: camptocamp.com/v4

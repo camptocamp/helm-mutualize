@@ -1,3 +1,4 @@
+{{/* start range over sharedConfigs */}}
 {{- range $name, $value := .Values.config.sharedConfigs }}
 ---
 apiVersion: camptocamp.com/v4
@@ -24,9 +25,14 @@ spec:
         data:
           {{- toYaml . | nindent 10 }}
         {{- end }}
+    {{- end }}  {{/* end if hasKey . "env" */}}
+    {{ with .auth }}
+    auth:
+      {{- toYaml . | nindent 6 }}
     {{- end }}
-{{- end }}
+{{- end }}  {{/* end range over sharedConfigs */}}
 {{- with $.Values.config.printConfigs }}
+{{/* start range over printConfigs.sources */}}
 {{- range $name, $value := .sources }}
 ---
 apiVersion: camptocamp.com/v4
@@ -64,10 +70,15 @@ spec:
         data:
           {{- toYaml . | nindent 10 }}
         {{- end }}
-    {{- end }}
-    {{- end }}
-{{- end }}
-{{- end }}
+    {{- end }}  {{/* end range over template_engines */}}
+    {{- end }}  {{/* end if hasKey . "template_engines" */}}
+    auth:
+      github_repository: {{ $value.repo }}
+      # The type of access to check (admin|push|pull).
+      github_access_type: {{ $value.github_access_type | default "push" }}
+{{- end }}  {{/* end range over printConfigs.sources */}}
+{{- end }}  {{/* end with printConfigs */}}
+{{/* range over tileCloudChainConfigs.sources */}}
 {{- with $.Values.config.tileCloudChainConfigs }}
 {{- range $name, $value := .sources }}
 ---
@@ -106,8 +117,12 @@ spec:
         data:
           {{- toYaml . | nindent 10 }}
         {{- end }}
-    {{- end }}
-    {{- end }}
+    {{- end }}  {{/* end range over template_engines */}}
+    {{- end }}  {{/* end if hasKey . "template_engines" */}}
+    auth:
+      github_repository: {{ $value.repo }}
+      # The type of access to check (admin|push|pull).
+      github_access_type: {{ $value.github_access_type | default "push" }}
 {{- range $host_name, $host := $value.hosts }}
 ---
 {{- $used_name := printf "%s-%s" $name $host_name }}
@@ -121,9 +136,10 @@ spec:
   name: {{ $name }}-{{ $host_name }}
   content:
     {{ $host }}: /etc/tilecloudchain-configs/{{ $name }}/config.yaml
-{{- end }}
-{{- end }}
-{{- end }}
+{{- end }}  {{/* end range over hosts */}}
+{{- end }}  {{/* end range over tileCloudChainConfigs.sources */}}
+{{- end }}  {{/* end with tileCloudChainConfigs */}}
+{{/* range over redirectConfigs.hosts */}}
 {{- with $.Values.config.redirectConfigs }}
 {{- if ( .hosts | default false ) }}
 ---
@@ -137,5 +153,5 @@ spec:
   name: {{ include "common.fullname" ( dict "root" $ "service" $.Values "serviceName" "redirect" ) }}
   content:
     {{- toYaml .hosts | nindent 4 }}
-{{- end }}
-{{- end }}
+{{- end }}  {{/* end if ( .hosts | default false ) */}}
+{{- end }}  {{/* end range over redirectConfigs.hosts */}}
