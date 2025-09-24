@@ -122,5 +122,6 @@
       - <a id="definitions/source/properties/template_engines/items/properties/dest_sub_dir"></a>**`dest_sub_dir`** _(string)_: The destination sub directory.
       - <a id="definitions/source/properties/template_engines/items/properties/data"></a>**`data`** _(object)_: The environment variable used to interpret this configuration. Can contain additional properties.
         - <a id="definitions/source/properties/template_engines/items/properties/data/additionalProperties"></a>**Additional properties** _(string)_
+  - <a id="definitions/source/properties/github_access_type"></a>**`github_access_type`** _(string)_: The type of access to check (admin|push|pull). Must be one of: `["admin", "push", "pull"]`. Default: `"push"`.
 - <a id="definitions/sources"></a>**`sources`** _(object)_: The sources configuration. Can contain additional properties.
   - <a id="definitions/sources/additionalProperties"></a>**Additional properties**: Refer to _[#/definitions/source](#definitions/source)_.

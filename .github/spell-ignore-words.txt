@@ -18,3 +18,5 @@ WebHooks
 shared_config_source_name
 github_organization
 repository_name
+github_repository
+github_access_type
