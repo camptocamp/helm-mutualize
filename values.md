@@ -7,7 +7,6 @@
   - <a id="properties/global/properties/releaseTrunc"></a>**`releaseTrunc`**: Refer to _[#/definitions/releaseTrunc](#definitions/releaseTrunc)_.
   - <a id="properties/global/properties/nameTrunc"></a>**`nameTrunc`**: Refer to _[#/definitions/nameTrunc](#definitions/nameTrunc)_.
   - <a id="properties/global/properties/prefixTrunc"></a>**`prefixTrunc`**: Refer to _[#/definitions/prefixTrunc](#definitions/prefixTrunc)_.
-- <a id="properties/common"></a>**`common`**
 - <a id="properties/sharedAnchor"></a>**`sharedAnchor`**: Free space where we can defined anchor to be used later.
 - <a id="properties/nameOverride"></a>**`nameOverride`**: Refer to _[#/definitions/nameOverride](#definitions/nameOverride)_.
 - <a id="properties/fullnameOverride"></a>**`fullnameOverride`**: Refer to _[#/definitions/fullnameOverride](#definitions/fullnameOverride)_.
@@ -64,7 +63,6 @@
     - <a id="properties/server/properties/redirect/properties/labels"></a>**`labels`**: Refer to _[#/definitions/labels](#definitions/labels)_.
     - <a id="properties/server/properties/redirect/properties/annotations"></a>**`annotations`**: Refer to _[#/definitions/annotations](#definitions/annotations)_.
   - <a id="properties/server/properties/sshKey"></a>**`sshKey`** _(string)_: The SSH key to use to clone the repository.
-  - <a id="properties/server/properties/sharedConfig"></a>**`sharedConfig`**
 - <a id="properties/config"></a>**`config`** _(object)_: The configuration of the shared configuration manager. Cannot contain additional properties.
   - <a id="properties/config/properties/printConfigs"></a>**`printConfigs`** _(object)_: The print configuration.
     - <a id="properties/config/properties/printConfigs/properties/sources"></a>**`sources`**: Refer to _[#/definitions/sources](#definitions/sources)_.
@@ -80,7 +78,6 @@
     - <a id="properties/config/properties/redirectConfigs/properties/hosts"></a>**`hosts`** _(object)_: The hosts to use by name. Can contain additional properties.
       - <a id="properties/config/properties/redirectConfigs/properties/hosts/additionalProperties"></a>**Additional properties** _(string)_: The hosts to use.
   - <a id="properties/config/properties/sharedConfigs"></a>**`sharedConfigs`** _(object)_: Can contain additional properties.
-    - <a id="properties/config/properties/sharedConfigs/additionalProperties"></a>**Additional properties**
   - <a id="properties/config/properties/webhooks"></a>**`webhooks`** _(object)_: Additional WebHooks used by the GitHub WebHook operator to create WebHook in the GitHub repository of the related project. Cannot contain additional properties.
     - <a id="properties/config/properties/webhooks/properties/nameOverride"></a>**`nameOverride`**: Refer to _[#/definitions/nameOverride](#definitions/nameOverride)_.
     - <a id="properties/config/properties/webhooks/properties/fullnameOverride"></a>**`fullnameOverride`**: Refer to _[#/definitions/fullnameOverride](#definitions/fullnameOverride)_.
@@ -122,6 +119,6 @@
       - <a id="definitions/source/properties/template_engines/items/properties/dest_sub_dir"></a>**`dest_sub_dir`** _(string)_: The destination sub directory.
       - <a id="definitions/source/properties/template_engines/items/properties/data"></a>**`data`** _(object)_: The environment variable used to interpret this configuration. Can contain additional properties.
         - <a id="definitions/source/properties/template_engines/items/properties/data/additionalProperties"></a>**Additional properties** _(string)_
-  - <a id="definitions/source/properties/github_access_type"></a>**`github_access_type`** _(string)_: The type of access to check (admin|push|pull). Must be one of: `["admin", "push", "pull"]`. Default: `"push"`.
+  - <a id="definitions/source/properties/github_access_type"></a>**`github_access_type`** _(string)_: The type of access to check (admin|push|pull). Must be one of: "admin", "push", or "pull". Default: `"push"`.
 - <a id="definitions/sources"></a>**`sources`** _(object)_: The sources configuration. Can contain additional properties.
   - <a id="definitions/sources/additionalProperties"></a>**Additional properties**: Refer to _[#/definitions/source](#definitions/source)_.
