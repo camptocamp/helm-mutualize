@@ -35,7 +35,7 @@ acceptance:
 		--version=${VERSION} operator-github-webhook/operator-github-webhook | kubectl apply -f -
 
 	helm repo add bitnami https://charts.bitnami.com/bitnami
-	VERSION=`ci/get-version bitnami/redis` helm template test-redis --set=auth.enabled=false --set=replica.replicaCount=0 \
+	VERSION=`ci/get-version redis` helm template test-redis --set=auth.enabled=false --set=replica.replicaCount=0 \
 		--set=master.persistence.enabled=false --version=${VERSION} bitnami/redis | kubectl apply -f -
 
 	# Install prometheus CRD
