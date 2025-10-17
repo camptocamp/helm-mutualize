@@ -1,4 +1,4 @@
 # https://docs.renovatebot.com/modules/datasource/#github-releases-datasource
 camptocamp/operator-shared-config-manager: 1.1.0 # github-releases
 camptocamp/operator-github-webhook: 1.1.0 # github-releases
-bitnami/redis: 17.14.1 # helm
+redis: 17.14.1 # helm - https://charts.bitnami.com/bitnami
