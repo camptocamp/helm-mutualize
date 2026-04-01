@@ -20,3 +20,5 @@ github_organization
 repository_name
 github_repository
 github_access_type
+github
+config
