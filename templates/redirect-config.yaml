@@ -10,5 +10,6 @@ spec:
     mutualize-redirect-hosts{{ $.Values.postfix }}: 'true'
   configmapName: hosts.yaml
   property: sources
+  namespacePrefix: true
 {{- end }}
 {{- end }}
