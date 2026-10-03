@@ -115,6 +115,8 @@ data:
         </p>
       </body>
     </html>
+
+
 ---
 # Source: mutualize/templates/role.yaml
 apiVersion: rbac.authorization.k8s.io/v1
@@ -143,6 +145,7 @@ rules:
     - update
     - patch
     - delete
+
 ---
 # Source: mutualize/templates/rolebinding.yaml
 apiVersion: rbac.authorization.k8s.io/v1
@@ -167,6 +170,7 @@ roleRef:
   kind: Role
   name: test-mutualize
   apiGroup: rbac.authorization.k8s.io
+
 ---
 # Source: mutualize/templates/redirect-config.yaml
 apiVersion: camptocamp.com/v4
@@ -185,6 +189,7 @@ spec:
     mutualize-redirect-hosts-test: 'true'
   configmapName: hosts.yaml
   property: sources
+
 ---
 # Source: mutualize/templates/shared-config-config.yaml
 apiVersion: camptocamp.com/v4
@@ -209,6 +214,7 @@ spec:
     name: secret-store
     namespace: default
   externalSecretPrefix: config
+
 ---
 # Source: mutualize/templates/tilecloudchain-config-hosts.yaml
 apiVersion: camptocamp.com/v4
