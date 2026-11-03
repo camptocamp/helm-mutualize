@@ -22,9 +22,6 @@ jobs:
     timeout-minutes: 20
     if: "!startsWith(github.event.head_commit.message, '[skip ci] ')"
 
-    outputs:
-      success: ${{ steps.success.outputs.success }}
-
     steps:
       - run: docker system prune --all --force
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -80,16 +77,11 @@ jobs:
 
       - run: make acceptance-clean
 
-      # Mark as success
-      - id: success
-        run: echo "success=true" >> $GITHUB_OUTPUT
-
   publish:
     name: Publish
     runs-on: ubuntu-24.04
     timeout-minutes: 20
     needs: main
-    if: always()
 
     permissions:
       contents: write
@@ -97,8 +89,6 @@ jobs:
       id-token: write
 
     steps:
-      - run: '[[ "${{ needs.main.outputs.success }}" == "true" ]]'
-
       # The full history is required to compute the version from the tags.
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
