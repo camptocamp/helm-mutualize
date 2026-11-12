@@ -115,6 +115,7 @@ The TileCloud also need the hosts config:
     matchLabels:
       mutualize-tilecloudchain-hosts: 'true'
     configmap_name: hosts.yaml
+    namespacePrefix: true
   ```
 
 - Will create the hosts config for TileCloud-chain as a config map, used here:
