@@ -15,6 +15,7 @@ spec:
   contentType: json
   repository: camptocamp/demo
   url: https://example.com/test
+
 ---
 # Source: mutualize/templates/github-webhook.yaml
 apiVersion: camptocamp.com/v4
@@ -32,6 +33,7 @@ spec:
   contentType: json
   repository: print/repo
   url: https://example.com/print-example
+
 ---
 # Source: mutualize/templates/github-webhook.yaml
 apiVersion: camptocamp.com/v4
@@ -49,6 +51,7 @@ spec:
   contentType: json
   repository: print/repo-multi
   url: https://example.com/print-multi-example
+
 ---
 # Source: mutualize/templates/github-webhook.yaml
 apiVersion: camptocamp.com/v4
@@ -66,6 +69,7 @@ spec:
   contentType: json
   repository: tilecloudchain/repo
   url: https://example.com/tilecloudchain-example
+
 ---
 # Source: mutualize/templates/github-webhook.yaml
 apiVersion: camptocamp.com/v4
@@ -83,6 +87,7 @@ spec:
   contentType: json
   repository: tilecloudchain/repo-multi
   url: https://example.com/tilecloudchain-multi-example
+
 ---
 # Source: mutualize/templates/sharedconfig.yaml
 apiVersion: camptocamp.com/v4
@@ -108,6 +113,7 @@ spec:
     auth:
       github_access_type: admin
       github_repository: test
+
 ---
 # Source: mutualize/templates/sharedconfig.yaml
 apiVersion: camptocamp.com/v4
@@ -136,6 +142,8 @@ spec:
         environment_variables: true
         data:
           TOTO: toto
+
+
 ---
 # Source: mutualize/templates/sharedconfig.yaml
 apiVersion: camptocamp.com/v4
@@ -153,6 +161,8 @@ spec:
   name: no-env
   content:
     {}
+
+
 ---
 # Source: mutualize/templates/sharedconfig.yaml
 apiVersion: camptocamp.com/v4
@@ -187,6 +197,8 @@ spec:
       environment_variables: true
       type: shell
     type: git
+
+
 ---
 # Source: mutualize/templates/sharedconfig.yaml
 apiVersion: camptocamp.com/v4
@@ -205,6 +217,8 @@ spec:
   name: redirecthosts
   content:
     example.com: /etc/tilecloudchain-configs/example/config.yaml
+
+
 ---
 # Source: mutualize/templates/sharedconfig.yaml
 apiVersion: camptocamp.com/v4
@@ -237,6 +251,9 @@ spec:
       environment_variables: true
       type: shell
     type: git
+
+
+
 ---
 # Source: mutualize/templates/sharedconfig.yaml
 apiVersion: camptocamp.com/v4
@@ -264,6 +281,7 @@ spec:
       github_repository: print/repo
       # The type of access to check (admin|push|pull).
       github_access_type: push
+
 ---
 # Source: mutualize/templates/sharedconfig.yaml
 apiVersion: camptocamp.com/v4
@@ -304,6 +322,8 @@ spec:
       github_repository: print/repo-multi
       # The type of access to check (admin|push|pull).
       github_access_type: push
+
+
 ---
 # Source: mutualize/templates/sharedconfig.yaml
 apiVersion: camptocamp.com/v4
@@ -331,6 +351,7 @@ spec:
       github_repository: tilecloudchain/repo
       # The type of access to check (admin|push|pull).
       github_access_type: push
+
 ---
 # Source: mutualize/templates/sharedconfig.yaml
 apiVersion: camptocamp.com/v4
@@ -349,6 +370,7 @@ spec:
   name: tilecloudchain-example-host1
   content:
     host1.example.com: /etc/tilecloudchain-configs/tilecloudchain-example/config.yaml
+
 ---
 # Source: mutualize/templates/sharedconfig.yaml
 apiVersion: camptocamp.com/v4
@@ -367,6 +389,7 @@ spec:
   name: tilecloudchain-example-host2
   content:
     host2.example.com: /etc/tilecloudchain-configs/tilecloudchain-example/config.yaml
+
 ---
 # Source: mutualize/templates/sharedconfig.yaml
 apiVersion: camptocamp.com/v4
@@ -407,6 +430,7 @@ spec:
       github_repository: tilecloudchain/repo-multi
       # The type of access to check (admin|push|pull).
       github_access_type: push
+
 ---
 # Source: mutualize/templates/sharedconfig.yaml
 apiVersion: camptocamp.com/v4
@@ -425,6 +449,8 @@ spec:
   name: tilecloudchain-multi-example-host3
   content:
     host3.example.com: /etc/tilecloudchain-configs/tilecloudchain-multi-example/config.yaml
+
+
 ---
 # Source: mutualize/templates/sharedconfig.yaml
 apiVersion: camptocamp.com/v4
