@@ -189,6 +189,7 @@ spec:
     mutualize-redirect-hosts-test: 'true'
   configmapName: hosts.yaml
   property: sources
+  namespacePrefix: true
 
 ---
 # Source: mutualize/templates/shared-config-config.yaml
@@ -233,3 +234,4 @@ spec:
     mutualize-tilecloudchain-hosts-test: 'true'
   configmapName: hosts.yaml
   property: sources
+  namespacePrefix: true
